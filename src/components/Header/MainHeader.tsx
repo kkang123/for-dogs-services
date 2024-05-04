@@ -10,6 +10,7 @@ import { signOut, onAuthStateChanged } from "firebase/auth";
 import { Button } from "@/components/ui/button";
 
 import mainlogo from "@/assets/main-logo.svg";
+import mainother from "@/assets/mainother.svg";
 import basket from "@/assets/basket-buy-cart.svg";
 
 function MainHeader() {
@@ -21,6 +22,13 @@ function MainHeader() {
 
   const { cart, setCart } = useContext(CartContext) as CartContextProps;
   const { resetCart } = useContext(CartContext) as CartContextProps;
+
+  const [isOpen, setIsOpen] = useState(false); // 드롭다운 메뉴 상태
+
+  // 드롭다운 메뉴 토글 함수
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
 
   // localStorage에서 장바구니 정보를 호출
   useEffect(() => {
@@ -124,7 +132,7 @@ function MainHeader() {
           <img src={mainlogo} alt="main-logo" className="w-9 h-9" />
         </button>
 
-        <div className="flex">
+        <div className="hidden sm:flex">
           {!isSeller && uid && (
             <Link to={`/myprofile/${uid}`}>
               <Button variant={"ghost"} size="sm">
@@ -170,6 +178,45 @@ function MainHeader() {
             )}
           </div>
         </div>
+
+        {/* sm 이하 크기에서 표시될 버튼 */}
+        <button className="sm:hidden" onClick={toggleDropdown}>
+          <img src={mainother} alt="menu" className="w-10 h-10" />{" "}
+          {/* 메뉴 아이콘 이미지 경로 */}
+        </button>
+
+        {/* 드롭다운 메뉴 */}
+        {isOpen && (
+          <div className="absolute right-5 top-20 bg-white shadow-lg rounded-md z-50 sm:hidden">
+            {!isSeller && uid && (
+              <Link to={`/myprofile/${uid}`} onClick={() => setIsOpen(false)}>
+                <div className="px-4 py-2 hover:bg-gray-100">마이프로필</div>
+              </Link>
+            )}
+
+            {isSeller && (
+              <Link to={`/productlist/${uid}`} onClick={() => setIsOpen(false)}>
+                <div className="px-4 py-2 hover:bg-gray-100">판매자 센터</div>
+              </Link>
+            )}
+
+            {!isSeller && (
+              <Link
+                to={isLoggedIn && uid ? `/cart/${uid}` : "#"}
+                onClick={() => setIsOpen(false)}
+              >
+                <div className="px-4 py-2 hover:bg-gray-100">장바구니</div>
+              </Link>
+            )}
+
+            <div
+              className="px-4 py-2 hover:bg-gray-100"
+              onClick={isLoggedIn ? logOut : Login}
+            >
+              {isLoggedIn ? "로그아웃" : "로그인"}
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
