@@ -1,8 +1,9 @@
-import { FormEvent, useEffect, useState, useContext } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { CartContext, CartContextProps } from "@/contexts/CartContext";
+import { useRecoilState } from "recoil";
+import { cartState } from "@/recoil/cartState";
 
 import { auth } from "@/firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
@@ -20,8 +21,8 @@ function MainHeader() {
   const [uid, setUid] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const { cart, setCart } = useContext(CartContext) as CartContextProps;
-  const { resetCart } = useContext(CartContext) as CartContextProps;
+  const [cart, setCart] = useRecoilState(cartState);
+  const resetCart = () => setCart([]);
 
   const [isOpen, setIsOpen] = useState(false); // 드롭다운 메뉴 상태
 
@@ -36,7 +37,7 @@ function MainHeader() {
     if (savedCart) {
       setCart(JSON.parse(savedCart));
     }
-  }, []);
+  }, [setCart]);
 
   const uniqueProductCount = new Set(cart.map((item) => item.product.id)).size;
 

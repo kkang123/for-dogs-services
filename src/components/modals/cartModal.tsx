@@ -1,4 +1,5 @@
-import { useCart } from "@/contexts/CartContext";
+import { useRecoilValue } from "recoil";
+import { cartState } from "@/recoil/cartState";
 
 interface CartModalProps {
   isOpen: boolean;
@@ -6,7 +7,7 @@ interface CartModalProps {
 }
 
 const CartModal: React.FC<CartModalProps> = ({ isOpen, toggleModal }) => {
-  const { cart } = useCart();
+  const cart = useRecoilValue(cartState);
 
   if (!isOpen) return null;
 

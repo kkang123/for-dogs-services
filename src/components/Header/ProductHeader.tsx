@@ -1,11 +1,12 @@
-import { FormEvent, useContext, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { auth } from "@/firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { CartContext, CartContextProps } from "@/contexts/CartContext";
+import { useRecoilState } from "recoil";
+import { cartState } from "@/recoil/cartState";
 
 import mainlogo from "@/assets/main-logo.svg";
 import basket from "@/assets/basket-buy-cart.svg";
@@ -48,8 +49,8 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
     if (userId) navigate(`/productlist/${userId}`);
   };
 
-  const { cart, setCart } = useContext(CartContext) as CartContextProps;
-  const { resetCart } = useContext(CartContext) as CartContextProps;
+  const [cart, setCart] = useRecoilState(cartState);
+  const resetCart = () => setCart([]);
 
   // localStorage에서 장바구니 정보를 호출
   useEffect(() => {

@@ -6,7 +6,8 @@ import CartItem from "@/pages/Cart/CartItem";
 
 import { getCartItems } from "@/services/cartService";
 
-import { useCart } from "@/contexts/CartContext";
+import { useRecoilState } from "recoil";
+import { cartState } from "@/recoil/cartState";
 
 import { getAuth } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
@@ -18,7 +19,7 @@ import MainHeader from "@/components/Header/MainHeader";
 import { Button } from "@/components/ui/button";
 
 const Cart = () => {
-  const { cart, setCart } = useCart();
+  const [cart, setCart] = useRecoilState(cartState);
   const [quantities, setQuantities] = useState<Record<Product["id"], number>>(
     {}
   );
@@ -29,6 +30,27 @@ const Cart = () => {
   };
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const auth = getAuth();
+    const userId = auth.currentUser?.uid;
+
+    if (userId) {
+      const fetchCartItems = async () => {
+        const items = await getCartItems(userId);
+        setCart(items);
+      };
+
+      fetchCartItems();
+    }
+  }, [setCart]);
+
+  useEffect(() => {
+    const savedCart = localStorage.getItem("cart");
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
+  }, [setCart]);
 
   const goToPayment = () => {
     navigate("/pay");
@@ -53,27 +75,6 @@ const Cart = () => {
       await updateDoc(cartRef, { items: itemsToSave });
     }
   };
-
-  useEffect(() => {
-    const auth = getAuth();
-    const userId = auth.currentUser?.uid;
-
-    if (userId) {
-      const fetchCartItems = async () => {
-        const items = await getCartItems(userId);
-        setCart(items);
-      };
-
-      fetchCartItems();
-    }
-  }, []);
-
-  useEffect(() => {
-    const savedCart = localStorage.getItem("cart");
-    if (savedCart) {
-      setCart(JSON.parse(savedCart));
-    }
-  }, []);
 
   const updateQuantity = (productId: Product["id"], quantity: number) => {
     if (quantity >= 0) {

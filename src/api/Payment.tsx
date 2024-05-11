@@ -5,7 +5,8 @@ import { db } from "@/firebase";
 import { setDoc, doc, Timestamp, deleteDoc } from "firebase/firestore";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { useCart } from "@/contexts/CartContext";
+import { useRecoilState } from "recoil";
+import { cartState } from "@/recoil/cartState";
 
 import SEOMetaTag from "@/components/SEOMetaTag";
 
@@ -65,7 +66,11 @@ declare global {
 const Payment: React.FC = () => {
   const navigate = useNavigate();
   const { uid, nickname } = useAuth();
-  const { cart, resetCart } = useCart();
+  const [cart, setCart] = useRecoilState(cartState);
+
+  const resetCart = () => {
+    setCart([]);
+  };
 
   const [buyerInfo, setBuyerInfo] = useState({
     name: nickname || "",

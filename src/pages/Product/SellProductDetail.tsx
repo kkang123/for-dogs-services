@@ -18,7 +18,8 @@ import { UserType } from "@/interface/user";
 import { getCartItems } from "@/services/cartService";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { useCart } from "@/contexts/CartContext";
+import { useSetRecoilState } from "recoil";
+import { cartState } from "@/recoil/cartState";
 
 import SEOMetaTag from "@/components/SEOMetaTag";
 
@@ -46,7 +47,8 @@ function SellProductDetail() {
   const [count, setCount] = useState<number>(0);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
-  const { addToCart: addToCartContext } = useCart();
+  const setCart = useSetRecoilState(cartState);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleModal = () => {
@@ -149,13 +151,28 @@ function SellProductDetail() {
         Swal.fire({
           icon: "error",
           title: "수량 오류",
-          text: "한개 이상의 상품을 선택해주세요.",
+          text: "한 개 이상의 상품을 선택해주세요.",
         });
         return;
       }
 
+      // 장바구니 상태 업데이트 로직을 여기에 통합
+      setCart((oldCartItems) => {
+        const existItemIndex = oldCartItems.findIndex(
+          (item) => item.product.id === product.id
+        );
+        if (existItemIndex > -1) {
+          // 상품이 이미 카트에 있는 경우, 수량 갱신
+          const updatedCart = [...oldCartItems];
+          updatedCart[existItemIndex].quantity += count; // 사용자가 선택한 수량만큼 추가
+          return updatedCart;
+        } else {
+          // 새로운 상품 추가
+          return [...oldCartItems, { product: product, quantity: count }];
+        }
+      });
+
       const cartItem = { product, quantity: count };
-      addToCartContext(cartItem);
 
       const cartRef = doc(db, "carts", user.id);
       const cartSnap = await getDoc(cartRef);

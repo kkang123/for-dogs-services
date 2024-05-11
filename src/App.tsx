@@ -1,7 +1,8 @@
 import { QueryClient, QueryClientProvider } from "react-query";
 import AuthProvider from "@/contexts/AuthContext";
-import { CartProvider } from "@/contexts/CartContext";
+
 import { HelmetProvider } from "react-helmet-async";
+import { RecoilRoot } from "recoil";
 
 import AppRouter from "@/routes/AppRouter";
 
@@ -12,9 +13,9 @@ const App = () => {
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <CartProvider>
+          <RecoilRoot>
             <AppRouter />
-          </CartProvider>
+          </RecoilRoot>
         </AuthProvider>
       </QueryClientProvider>
     </HelmetProvider>
