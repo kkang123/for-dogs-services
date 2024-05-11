@@ -2,20 +2,20 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import AuthProvider from "@/contexts/AuthContext";
 
 import { HelmetProvider } from "react-helmet-async";
-import { RecoilRoot } from "recoil";
+import usePersistCart from "@/hooks/usePersistCart";
 
 import AppRouter from "@/routes/AppRouter";
 
 const queryClient = new QueryClient();
 
 const App = () => {
+  usePersistCart();
+
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <RecoilRoot>
-            <AppRouter />
-          </RecoilRoot>
+          <AppRouter />
         </AuthProvider>
       </QueryClientProvider>
     </HelmetProvider>
