@@ -6,8 +6,8 @@ import Home from "../pages/home/home";
 import BuyerSignUp from "@/pages/SignUp/BuyerSignUp";
 import SellerSignUp from "@/pages/SignUp/SellerSignUp";
 import Login from "@/pages/Login/Login";
-import findID from "@/pages/Login/findID";
-import findPassword from "@/pages/Login/findPassword";
+import FindID from "@/pages/Login/FindID";
+import FindPassword from "@/pages/Login/FindPassword";
 import MyProfile from "@/pages/SignUp/MyProfile";
 
 // 상품 판매
@@ -61,12 +61,12 @@ const AppRouter = () => {
           element={<ProtectRoute element={<Login />} isAuth={isAuth} />}
         />
         <Route
-          path="/findid"
-          element={<ProtectRoute element={<findID />} isAuth={isAuth} />}
+          path="/findId"
+          element={<ProtectRoute element={<FindID />} isAuth={isAuth} />}
         />
         <Route
           path="/findpw"
-          element={<ProtectRoute element={<findPassword />} isAuth={isAuth} />}
+          element={<ProtectRoute element={<FindPassword />} isAuth={isAuth} />}
         />
 
         {/* 카테고리 */}
