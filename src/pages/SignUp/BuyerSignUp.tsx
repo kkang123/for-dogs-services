@@ -131,8 +131,8 @@ export default function BuyerSignUp() {
             id="passwordConfirm"
             type="password"
             name="passwordConfirm"
-            // value={passwordConfirm}
-            // onChange={onChange}
+            value={passwordConfirm}
+            onChange={(e) => setPasswordConfirm(e.target.value)}
             className="w-full px-3 py-2 mb-4 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
             placeholder="비밀번호를 다시 입력해주세요."
           />
