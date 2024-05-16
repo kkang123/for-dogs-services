@@ -6,19 +6,19 @@ export default function BuyerSignUp() {
   const [userData, setUserData] = useState<User>({
     userId: "",
     userName: "",
-    email: "",
     emailId: "",
     emailDomain: "",
     password: "",
     role: "BUYER",
   });
 
+  const [email, setEmail] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const [emailId, emailDomain] = userData.email.split("@");
+    const [emailId, emailDomain] = email.split("@");
     const submitData = {
       ...userData,
       emailId,
@@ -97,10 +97,8 @@ export default function BuyerSignUp() {
             id="userEmail"
             type="email"
             placeholder="이메일을 입력해주세요."
-            value={userData.emailId}
-            onChange={(e) =>
-              setUserData({ ...userData, emailId: e.target.value })
-            }
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full px-3 py-2 mb-4 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
           />
 
