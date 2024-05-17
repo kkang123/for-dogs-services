@@ -1,6 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { registerUser } from "@/api/signupApi";
 import { User } from "@/interface/signup";
+
+import Swal from "sweetalert2";
 
 export default function BuyerSignUp() {
   const [userData, setUserData] = useState<User>({
@@ -14,30 +18,87 @@ export default function BuyerSignUp() {
 
   const [email, setEmail] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [passwordMessage, setPasswordMessage] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const [emailId, emailDomain] = email.split("@");
+    const emailPrefix = emailId;
+    const specialCharPattern = /[ !@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/g;
+    const upperCasePattern = /[A-Z]/;
+    const lowerCasePattern = /[a-z]/;
+    const numberPattern = /[0-9]/;
+    const easyPasswords = ["123", "abc", "password", "qwerty", "1111"];
+
+    let isValid = true;
+
+    if (userData.password !== passwordConfirm) {
+      Swal.fire(
+        "에러",
+        "비밀번호가 일치하지 않습니다. 다시 확인해주세요.",
+        "error"
+      );
+      return;
+    }
+
+    if (userData.password.length < 10) {
+      setPasswordMessage("비밀번호는 최소 10자리 이상이어야 합니다.");
+      isValid = false;
+    } else if (userData.password.length > 16) {
+      setPasswordMessage("비밀번호는 최대 16자리 이하이어야 합니다.");
+      isValid = false;
+    } else if (userData.password === email) {
+      setPasswordMessage("비밀번호에 이메일을 사용할 수 없습니다.");
+      isValid = false;
+    } else if (userData.password.includes(emailPrefix)) {
+      setPasswordMessage("비밀번호에 아이디값을 사용할 수 없습니다.");
+      isValid = false;
+    } else {
+      if (
+        [
+          specialCharPattern,
+          upperCasePattern,
+          lowerCasePattern,
+          numberPattern,
+        ].filter((pattern) => userData.password.match(pattern)).length < 2
+      ) {
+        setPasswordMessage(
+          "비밀번호는 영어 대문자/소문자, 숫자, 특수문자 중 2종류 이상의 문자 조합이어야 합니다."
+        );
+        isValid = false;
+      } else if (
+        easyPasswords.some((easyPassword) =>
+          userData.password.includes(easyPassword)
+        )
+      ) {
+        setPasswordMessage(
+          "비밀번호에는 쉬운 문자열(ex :123, abc, password 등)이 포함되지 않아야 합니다."
+        );
+        isValid = false;
+      }
+    }
+
+    if (!isValid) {
+      Swal.fire("비밀번호 유효성 검사 실패", passwordMessage, "error");
+      return;
+    }
+
     const submitData = {
       ...userData,
       emailId,
       emailDomain,
     };
 
-    // 비밀번호와 비밀번호 확인이 일치하는지 검사
-    if (userData.password !== passwordConfirm) {
-      alert("비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
-      return; // 일치하지 않으면 함수 종료
-    }
-
     try {
       await registerUser(submitData);
-      alert("회원가입 성공!");
-      // 성공 후 로그인 페이지나 메인 페이지로 리디렉션
+      Swal.fire("성공", "회원가입 성공!", "success");
+      navigate("/login");
     } catch (error) {
-      console.error(error); // 콘솔에 오류 로그 출력
-      alert("회원가입 실패. 다시 시도해주세요.");
+      // registerUser에서 이미 에러 처리를 하므로 여기서는 추가 처리 필요 없음
+      console.error("회원가입 중 에러 발생:", error);
     }
   };
 
