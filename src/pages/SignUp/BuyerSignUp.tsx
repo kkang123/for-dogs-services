@@ -24,6 +24,23 @@ export default function BuyerSignUp() {
 
   const navigate = useNavigate();
 
+  function validateNoConsecutiveChars(value: string) {
+    for (let i = 0; i < value.length - 2; i++) {
+      const current = value.charCodeAt(i);
+      const next = value.charCodeAt(i + 1);
+      const nextNext = value.charCodeAt(i + 2);
+
+      // 연속적으로 증가하거나 감소하는 문자 또는 숫자를 확인
+      if (
+        (current + 1 === next && next + 1 === nextNext) ||
+        (current - 1 === next && next - 1 === nextNext)
+      ) {
+        return false; // 연속된 문자를 찾으면 false 반환
+      }
+    }
+    return true; // 연속된 문자 없으면 true 반환
+  }
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -40,7 +57,7 @@ export default function BuyerSignUp() {
 
     if (userData.password !== passwordConfirm) {
       Swal.fire(
-        "에러",
+        "비밀번호 불일치",
         "비밀번호가 일치하지 않습니다. 다시 확인해주세요.",
         "error"
       );
@@ -75,6 +92,11 @@ export default function BuyerSignUp() {
           "비밀번호는 영어 대문자/소문자, 숫자, 특수문자 중 3종류 이상의 문자 조합이어야 합니다."
         );
         isValid = false;
+      } else if (!validateNoConsecutiveChars(userData.password)) {
+        setPasswordMessage(
+          "비밀번호는 연속되는 3자리 문자가 포함되지 않도록 입력해주세요."
+        );
+        isValid = false;
       } else if (
         easyPasswords.some((easyPassword) =>
           userData.password.includes(easyPassword)
@@ -88,7 +110,7 @@ export default function BuyerSignUp() {
     }
 
     if (!isValid) {
-      Swal.fire("비밀번호 유효성 검사 실패", passwordMessage, "error");
+      Swal.fire("비밀번호 조건을 지켜주세요.", passwordMessage, "error");
       return;
     }
 
