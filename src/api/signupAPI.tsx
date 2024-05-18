@@ -25,6 +25,15 @@ export const registerUser = async (userData: User) => {
             "중복된 아이디를 입력하셨습니다. 다른 아이디를 사용해주세요.",
             "error"
           );
+        } else if (
+          errorData.error &&
+          errorData.error.message === "이름은 한글과 영문만 사용할 수 있습니다."
+        ) {
+          Swal.fire(
+            "이름 오류",
+            "이름은 한글과 영문만 사용할 수 있습니다.",
+            "error"
+          );
         } else {
           Swal.fire(
             "회원가입 오류",
