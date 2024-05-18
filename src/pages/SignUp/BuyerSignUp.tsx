@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { registerUser } from "@/api/signupApi";
 import { User } from "@/interface/signup";
 
+import SEOMetaTag from "@/components/SEOMetaTag";
+
 import Swal from "sweetalert2";
 
 export default function BuyerSignUp() {
@@ -108,7 +110,12 @@ export default function BuyerSignUp() {
 
   return (
     <>
-      <header></header>
+      <header>
+        <SEOMetaTag
+          title="For Dogs - SellerSignUp"
+          description="구매자 회원가입 페이지입니다."
+        />
+      </header>
       <main className="flex flex-col items-center justify-center h-screen">
         <h2 className="mt-5 mb-2 text-3xl font-bold text-gray-700">
           구매자 회원가입
