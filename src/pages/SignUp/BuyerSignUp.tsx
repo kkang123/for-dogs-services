@@ -151,12 +151,12 @@ export default function BuyerSignUp() {
             className="block mb-2 text-sm font-bold text-gray-700 text-left"
             htmlFor="nickname"
           >
-            성함
+            이름
           </label>
           <input
             id="nickname"
             type="text"
-            placeholder="성함을 입력해주세요."
+            placeholder="이름을 입력해주세요."
             value={userData.userName}
             onChange={(e) =>
               setUserData({ ...userData, userName: e.target.value })
