@@ -1,6 +1,6 @@
 import axios from "axios";
 import { basicAxios } from "./axios";
-import { User } from "@/interface/signup";
+import { User } from "@/interface/user";
 import Swal from "sweetalert2";
 
 export const registerUser = async (userData: User) => {
