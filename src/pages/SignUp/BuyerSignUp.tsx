@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { registerUser } from "@/api/signupApi";
-import { User } from "@/interface/signup";
+import { registerUser } from "@/api/signupAPI";
+import { User } from "@/interface/user";
 
 import SEOMetaTag from "@/components/SEOMetaTag";
 
