@@ -31,6 +31,7 @@ export default function BuyerSignUp() {
     const upperCasePattern = /[A-Z]/;
     const lowerCasePattern = /[a-z]/;
     const numberPattern = /[0-9]/;
+    const spacePattern = /\s/; // 공백 검사를 위한 패턴 추가
     const easyPasswords = ["123", "abc", "password", "qwerty", "1111"];
 
     let isValid = true;
@@ -44,10 +45,10 @@ export default function BuyerSignUp() {
       return;
     }
 
-    if (userData.password.length < 10) {
+    if (userData.password.length <= 10) {
       setPasswordMessage("비밀번호는 최소 10자리 이상이어야 합니다.");
       isValid = false;
-    } else if (userData.password.length > 16) {
+    } else if (userData.password.length >= 16) {
       setPasswordMessage("비밀번호는 최대 16자리 이하이어야 합니다.");
       isValid = false;
     } else if (userData.password === email) {
@@ -56,6 +57,9 @@ export default function BuyerSignUp() {
     } else if (userData.password.includes(emailPrefix)) {
       setPasswordMessage("비밀번호에 아이디값을 사용할 수 없습니다.");
       isValid = false;
+    } else if (userData.password.match(spacePattern)) {
+      setPasswordMessage("비밀번호에는 공백을 포함할 수 없습니다.");
+      isValid = false;
     } else {
       if (
         [
@@ -63,10 +67,10 @@ export default function BuyerSignUp() {
           upperCasePattern,
           lowerCasePattern,
           numberPattern,
-        ].filter((pattern) => userData.password.match(pattern)).length < 2
+        ].filter((pattern) => userData.password.match(pattern)).length < 3
       ) {
         setPasswordMessage(
-          "비밀번호는 영어 대문자/소문자, 숫자, 특수문자 중 2종류 이상의 문자 조합이어야 합니다."
+          "비밀번호는 영어 대문자/소문자, 숫자, 특수문자 중 3종류 이상의 문자 조합이어야 합니다."
         );
         isValid = false;
       } else if (
@@ -118,12 +122,12 @@ export default function BuyerSignUp() {
             className="block mb-2 text-sm font-bold text-gray-700 text-left"
             htmlFor="nickname"
           >
-            닉네임
+            성함
           </label>
           <input
             id="nickname"
             type="text"
-            placeholder="닉네임을 입력해주세요."
+            placeholder="성함을 입력해주세요."
             value={userData.userName}
             onChange={(e) =>
               setUserData({ ...userData, userName: e.target.value })
