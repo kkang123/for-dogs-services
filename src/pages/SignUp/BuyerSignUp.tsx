@@ -35,10 +35,10 @@ export default function BuyerSignUp() {
         (current + 1 === next && next + 1 === nextNext) ||
         (current - 1 === next && next - 1 === nextNext)
       ) {
-        return false; // 연속된 문자를 찾으면 false 반환
+        return false;
       }
     }
-    return true; // 연속된 문자 없으면 true 반환
+    return true;
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

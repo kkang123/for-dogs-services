@@ -36,7 +36,8 @@ export default function BuyerSignUp() {
       ) {
         return false;
       }
-    } // 연속된 문자 없으면 true 반환
+    }
+    return true;
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
