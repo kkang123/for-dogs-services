@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 import Cookies from "js-cookie";
 
-export const BASE_URL = "hhttp://52.78.79.44/";
+export const BASE_URL = "http://52.78.79.44/";
 
 // 기본 axios 인스턴스 생성
 export const basicAxios = axios.create({
