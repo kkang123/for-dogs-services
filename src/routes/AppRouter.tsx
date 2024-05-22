@@ -1,5 +1,4 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
 import { ProtectRoute } from "./ProtectRoute";
 
 import Home from "../pages/home/home";
@@ -30,68 +29,51 @@ import Cart from "@/pages/Cart/Cart";
 import Pay from "@/api/Payment";
 
 const AppRouter = () => {
-  const { isSeller, isAuth } = useAuth();
-  console.log(isAuth);
-  console.log(isSeller);
-
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path="/pay"
-          element={<ProtectRoute element={<Pay />} isAuth={isAuth} />}
+          element={<ProtectRoute element={<Pay />} isPrivate={true} />}
         />
-        <Route
-          path="/"
-          element={<ProtectRoute element={<Home />} isAuth={isAuth} />}
-        />
+        <Route path="/" element={<ProtectRoute element={<Home />} />} />
 
         {/* 로그인, 회원 가입 */}
-
         <Route
           path="/buyersignup"
-          element={<ProtectRoute element={<BuyerSignUp />} isAuth={isAuth} />}
+          element={<ProtectRoute element={<BuyerSignUp />} />}
         />
         <Route
           path="/sellersignup"
-          element={<ProtectRoute element={<SellerSignUp />} isAuth={isAuth} />}
+          element={<ProtectRoute element={<SellerSignUp />} />}
         />
-        <Route
-          path="/login"
-          element={<ProtectRoute element={<Login />} isAuth={isAuth} />}
-        />
-        <Route
-          path="/findId"
-          element={<ProtectRoute element={<FindID />} isAuth={isAuth} />}
-        />
+        <Route path="/login" element={<ProtectRoute element={<Login />} />} />
+        <Route path="/findId" element={<ProtectRoute element={<FindID />} />} />
         <Route
           path="/findpw"
-          element={<ProtectRoute element={<FindPassword />} isAuth={isAuth} />}
+          element={<ProtectRoute element={<FindPassword />} />}
         />
 
         {/* 카테고리 */}
-
         <Route
           path="/category/:productCategory"
-          element={<ProtectRoute element={<CategoryA />} isAuth={isAuth} />}
+          element={<ProtectRoute element={<CategoryA />} />}
         />
 
         {/* 장바구니 */}
         <Route
           path="/cart/:uid"
-          element={<ProtectRoute element={<Cart />} isAuth={isAuth} />}
+          element={<ProtectRoute element={<Cart />} isPrivate={true} />}
         />
 
         {/* 구매자 */}
-
         <Route
           path="/myprofile/:uid"
           element={
             <ProtectRoute
               element={<MyProfile />}
-              isAuth={isAuth}
               isPrivate={true}
-              isProtected={false} // 구매자 전용
+              isProtected={false}
             />
           }
         />
@@ -99,9 +81,7 @@ const AppRouter = () => {
         {/* 상품 판매 */}
         <Route
           path="/sellproduct/:id"
-          element={
-            <ProtectRoute element={<SellProductDetail />} isAuth={isAuth} />
-          }
+          element={<ProtectRoute element={<SellProductDetail />} />}
         />
 
         {/* 판매자 페이지 */}
@@ -110,9 +90,8 @@ const AppRouter = () => {
           element={
             <ProtectRoute
               element={<ProductList />}
-              isAuth={isAuth}
               isPrivate={true}
-              isProtected={true} // 판매자 전용
+              isProtected={true}
             />
           }
         />
@@ -121,7 +100,6 @@ const AppRouter = () => {
           element={
             <ProtectRoute
               element={<ProductManagement />}
-              isAuth={isAuth}
               isPrivate={true}
               isProtected={true}
             />
@@ -132,9 +110,8 @@ const AppRouter = () => {
           element={
             <ProtectRoute
               element={<ProductDetail />}
-              isAuth={isAuth}
               isPrivate={true}
-              isProtected={true} // 판매자 전용
+              isProtected={true}
             />
           }
         />
@@ -143,9 +120,8 @@ const AppRouter = () => {
           element={
             <ProtectRoute
               element={<ProductEdit />}
-              isAuth={isAuth}
               isPrivate={true}
-              isProtected={true} // 판매자 전용
+              isProtected={true}
             />
           }
         />
@@ -154,10 +130,8 @@ const AppRouter = () => {
           element={
             <ProtectRoute
               element={<ProductUpload />}
-              isAuth={isAuth}
               isPrivate={true}
-              isProtected={true} // 판매자 전용
-              // isProtected={isSeller} // 판매자 전용
+              isProtected={true}
             />
           }
         />
@@ -167,5 +141,3 @@ const AppRouter = () => {
 };
 
 export default AppRouter;
-
-//isProtected true든 false 비공개 페이지면 꼭 걸어주어야함
