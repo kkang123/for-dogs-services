@@ -41,6 +41,10 @@ export const useLogin = () => {
       const { accessToken, refreshToken } = response.data.result;
 
       localStorage.setItem("accessToken", accessToken); // 액세스 토큰을 로컬 스토리지에 저장
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ isLoggedIn: true, userId, role })
+      ); // 사용자 데이터를 로컬 스토리지에 저장
       setAccessToken(accessToken);
 
       Cookies.set("refreshToken", refreshToken, { expires: 7 }); // 리프레시 토큰을 쿠키에 저장
@@ -130,6 +134,7 @@ export const useLogin = () => {
 
   const logout = () => {
     localStorage.removeItem("accessToken"); // 로컬 스토리지에서 액세스 토큰 제거
+    localStorage.removeItem("user");
     Cookies.remove("refreshToken"); // 쿠키에서 리프레시 토큰 제거
     setAccessToken(""); // 리코일 상태 초기화
     setIsLoggedIn(false); // 로그인 상태 초기화
