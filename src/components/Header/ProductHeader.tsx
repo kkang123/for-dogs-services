@@ -1,17 +1,17 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { auth } from "@/firebase";
-import { signOut, onAuthStateChanged } from "firebase/auth";
-
-import { useAuth } from "@/contexts/AuthContext";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { userState, isLoggedInState } from "@/recoil/userState";
 import { cartState } from "@/recoil/cartState";
+
+import { useLogin } from "@/api/loginAPI";
+
+import { Button } from "@/components/ui/button";
 
 import mainlogo from "@/assets/main-logo.svg";
 import basket from "@/assets/basket-buy-cart.svg";
 import backspace from "@/assets/icon-back-arrow.svg";
-import { Button } from "@/components/ui/button";
 
 interface ProductHeaderProps {
   showEditButton?: boolean;
@@ -38,19 +38,18 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   onDelete,
   onEdit,
 }) => {
-  const authContext = useAuth();
-  const { isSeller } = useAuth();
-  const { logout } = authContext;
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const user = useRecoilValue(userState);
+  const isLoggedIn = useRecoilValue(isLoggedInState);
+  const { logout } = useLogin();
+
   const navigate = useNavigate();
-  const [userId, setUserId] = useState<string | null>(null);
+  const userId = useState<string | null>(null);
+
   const goToProductListPage = () => {
     if (userId) navigate(`/productlist/${userId}`);
   };
 
   const [cart, setCart] = useRecoilState(cartState);
-  const resetCart = () => setCart([]);
 
   // localStorage에서 장바구니 정보를 호출
   useEffect(() => {
@@ -62,33 +61,10 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
 
   const uniqueProductCount = new Set(cart.map((item) => item.product.id)).size;
 
-  // 로그인 상태 확인
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsLoading(false);
-      if (user) {
-        setUserId(user.uid);
-        setIsLoggedIn(true);
-      } else {
-        setUserId(null);
-        setIsLoggedIn(false);
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  const logOut = async (event: FormEvent) => {
+  const handleLogout = (event: React.FormEvent) => {
     event.preventDefault();
-    try {
-      await signOut(auth);
-      resetCart();
-      logout();
-
-      console.log("Successfully logged out");
-    } catch (error) {
-      console.error("Error during log out", error);
-    }
+    logout();
+    navigate("/");
   };
 
   const Login = (event: FormEvent) => {
@@ -118,34 +94,6 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
     event.preventDefault();
     navigate(-1);
   };
-
-  if (isLoading) {
-    return (
-      <div className="fixed px-5 py-5 top-0 left-0 right-0 flex  w-full justify-between shadow-lg  bg-white z-50 h-20">
-        <button className="" onClick={Home}>
-          <img src={mainlogo} alt="main-logo" className="w-9  " />
-        </button>
-        <div className="flex">
-          {showEditButton && (
-            <Button variant="ghost" size="sm" onClick={onEdit}>
-              수정하기
-            </Button>
-          )}
-          {showDeleteButton && (
-            <Button variant="ghost" size="sm" onClick={onDelete}>
-              삭제하기
-            </Button>
-          )}
-
-          <div className=" inline-block ml-2 mr-2">
-            <Button variant="outline" size="sm" onClick={logOut}>
-              로그아웃
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <>
@@ -190,7 +138,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
 
           {showProductCart && (
             <div>
-              {!isSeller && (
+              {user.role === "BUYER" && (
                 <Link to={isLoggedIn && userId ? `/cart/${userId}` : "#"}>
                   <button className="">
                     <div className="relative">
@@ -213,7 +161,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
 
           <div className=" inline-block ml-2 mr-2">
             {isLoggedIn ? (
-              <Button variant="outline" size="sm" onClick={logOut}>
+              <Button variant="outline" size="sm" onClick={handleLogout}>
                 로그아웃
               </Button>
             ) : (
