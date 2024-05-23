@@ -7,12 +7,14 @@ interface ProtectRouteProps {
   element: React.ReactElement;
   isProtected?: boolean;
   isPrivate?: boolean;
+  isPublic?: boolean;
 }
 
 export const ProtectRoute: React.FC<ProtectRouteProps> = ({
   element,
   isProtected = false,
   isPrivate = false,
+  isPublic = false,
 }) => {
   const navigate = useNavigate();
   const isAuth = useRecoilValue(isLoggedInState);
@@ -24,8 +26,10 @@ export const ProtectRoute: React.FC<ProtectRouteProps> = ({
       navigate("/login");
     } else if (isPrivate && isAuth && isProtected !== isSeller) {
       navigate("/");
+    } else if (isPublic && isAuth) {
+      navigate("/");
     }
-  }, [isPrivate, isAuth, isSeller, isProtected, navigate]);
+  }, [isPrivate, isAuth, isSeller, isProtected, isPublic, navigate]);
 
   return element;
 };

@@ -36,22 +36,29 @@ const AppRouter = () => {
           path="/pay"
           element={<ProtectRoute element={<Pay />} isPrivate={true} />}
         />
+
         <Route path="/" element={<ProtectRoute element={<Home />} />} />
 
         {/* 로그인, 회원 가입 */}
         <Route
           path="/buyersignup"
-          element={<ProtectRoute element={<BuyerSignUp />} />}
+          element={<ProtectRoute element={<BuyerSignUp />} isPublic={true} />}
         />
         <Route
           path="/sellersignup"
-          element={<ProtectRoute element={<SellerSignUp />} />}
+          element={<ProtectRoute element={<SellerSignUp />} isPublic={true} />}
         />
-        <Route path="/login" element={<ProtectRoute element={<Login />} />} />
-        <Route path="/findId" element={<ProtectRoute element={<FindID />} />} />
+        <Route
+          path="/login"
+          element={<ProtectRoute element={<Login />} isPublic={true} />}
+        />
+        <Route
+          path="/findId"
+          element={<ProtectRoute element={<FindID />} isPublic={true} />}
+        />
         <Route
           path="/findpw"
-          element={<ProtectRoute element={<FindPassword />} />}
+          element={<ProtectRoute element={<FindPassword />} isPublic={true} />}
         />
 
         {/* 카테고리 */}
