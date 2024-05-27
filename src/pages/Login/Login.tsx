@@ -20,7 +20,7 @@ export default function SignIn() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await login({ userId, password, role: tab });
+      await login({ userId, userPassword: password, userRole: tab });
     } catch (error) {
       console.log(error);
     }

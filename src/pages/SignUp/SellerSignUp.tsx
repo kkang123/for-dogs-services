@@ -12,10 +12,10 @@ export default function BuyerSignUp() {
   const [userData, setUserData] = useState<User>({
     userId: "",
     userName: "",
-    emailId: "",
-    emailDomain: "",
-    password: "",
-    role: "SELLER",
+    userEmailId: "",
+    userEmailDomain: "",
+    userPassword: "",
+    userRole: "SELLER",
   });
 
   const [email, setEmail] = useState("");
@@ -54,7 +54,7 @@ export default function BuyerSignUp() {
 
     let isValid = true;
 
-    if (userData.password !== passwordConfirm) {
+    if (userData.userPassword !== passwordConfirm) {
       Swal.fire(
         "비밀번호 불일치",
         "비밀번호가 일치하지 않습니다. 다시 확인해주세요.",
@@ -63,19 +63,19 @@ export default function BuyerSignUp() {
       return;
     }
 
-    if (userData.password.length <= 10) {
+    if (userData.userPassword.length <= 10) {
       setPasswordMessage("비밀번호는 최소 10자리 이상이어야 합니다.");
       isValid = false;
-    } else if (userData.password.length >= 16) {
+    } else if (userData.userPassword.length >= 16) {
       setPasswordMessage("비밀번호는 최대 16자리 이하이어야 합니다.");
       isValid = false;
-    } else if (userData.password === email) {
+    } else if (userData.userPassword === email) {
       setPasswordMessage("비밀번호에 이메일을 사용할 수 없습니다.");
       isValid = false;
-    } else if (userData.password.includes(emailPrefix)) {
+    } else if (userData.userPassword.includes(emailPrefix)) {
       setPasswordMessage("비밀번호에 아이디값을 사용할 수 없습니다.");
       isValid = false;
-    } else if (userData.password.match(spacePattern)) {
+    } else if (userData.userPassword.match(spacePattern)) {
       setPasswordMessage("비밀번호에는 공백을 포함할 수 없습니다.");
       isValid = false;
     } else {
@@ -85,20 +85,20 @@ export default function BuyerSignUp() {
           upperCasePattern,
           lowerCasePattern,
           numberPattern,
-        ].filter((pattern) => userData.password.match(pattern)).length < 3
+        ].filter((pattern) => userData.userPassword.match(pattern)).length < 3
       ) {
         setPasswordMessage(
           "비밀번호는 영어 대문자/소문자, 숫자, 특수문자 중 3종류 이상의 문자 조합이어야 합니다."
         );
         isValid = false;
-      } else if (!validateNoConsecutiveChars(userData.password)) {
+      } else if (!validateNoConsecutiveChars(userData.userPassword)) {
         setPasswordMessage(
           "비밀번호는 연속되는 3자리 문자가 포함되지 않도록 입력해주세요."
         );
         isValid = false;
       } else if (
         easyPasswords.some((easyPassword) =>
-          userData.password.includes(easyPassword)
+          userData.userPassword.includes(easyPassword)
         )
       ) {
         setPasswordMessage(
@@ -115,8 +115,8 @@ export default function BuyerSignUp() {
 
     const submitData = {
       ...userData,
-      emailId,
-      emailDomain,
+      userEmailId: emailId,
+      userEmailDomain: emailDomain,
     };
 
     try {
@@ -204,9 +204,9 @@ export default function BuyerSignUp() {
             id="userPassword"
             type="password"
             placeholder="비밀번호를 입력해주세요."
-            value={userData.password}
+            value={userData.userPassword}
             onChange={(e) =>
-              setUserData({ ...userData, password: e.target.value })
+              setUserData({ ...userData, userPassword: e.target.value })
             }
             className="w-full px-3 py-2 mb-4 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
           />
