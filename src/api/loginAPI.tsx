@@ -6,17 +6,11 @@ import {
   accessTokenState,
   isLoggedInState,
 } from "@/recoil/userState";
-import { Login } from "@/interface/login";
+import { Login, ServerError } from "@/interface/login";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 
 import Swal, { SweetAlertIcon } from "sweetalert2";
-
-interface ServerError {
-  error: {
-    message: string;
-  };
-}
 
 export const useLogin = () => {
   const setUser = useSetRecoilState(userState);
@@ -25,16 +19,12 @@ export const useLogin = () => {
 
   const navigate = useNavigate();
 
-  const login = async ({
-    userId,
-    password,
-    role,
-  }: Login & { role: string }) => {
+  const login = async ({ userId, userPassword, userRole }: Login) => {
     try {
       const response = await basicAxios.post("/users/login", {
         userId,
-        password,
-        role,
+        userPassword,
+        userRole,
       });
       console.log("로그인 응답 데이터:", response.data);
 
@@ -43,12 +33,12 @@ export const useLogin = () => {
       localStorage.setItem("accessToken", accessToken); // 액세스 토큰을 로컬 스토리지에 저장
       localStorage.setItem(
         "user",
-        JSON.stringify({ isLoggedIn: true, userId, role })
+        JSON.stringify({ isLoggedIn: true, userId, userRole })
       ); // 사용자 데이터를 로컬 스토리지에 저장
       setAccessToken(accessToken);
 
       Cookies.set("refreshToken", refreshToken, { expires: 7 }); // 리프레시 토큰을 쿠키에 저장
-      setUser({ isLoggedIn: true, userId, role }); // 사용자 상태 업데이트
+      setUser({ isLoggedIn: true, userId, userRole }); // 사용자 상태 업데이트
       setIsLoggedIn(true);
 
       navigate("/");

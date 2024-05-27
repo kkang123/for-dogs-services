@@ -1,5 +1,11 @@
 export interface Login {
   userId: string;
-  password: string;
-  role?: string;
+  userPassword: string;
+  userRole?: string;
+}
+
+export interface ServerError {
+  error: {
+    message: string;
+  };
 }
