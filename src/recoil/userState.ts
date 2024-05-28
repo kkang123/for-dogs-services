@@ -1,4 +1,6 @@
-import { atom } from "recoil";
+import { atom, RecoilState } from "recoil";
+
+import { User } from "@/interface/user";
 
 const getInitialUserState = () => {
   const savedUser = localStorage.getItem("user");
@@ -17,7 +19,7 @@ export const isLoggedInState = atom({
   default: !!localStorage.getItem("accessToken"),
 });
 
-export const userState = atom({
+export const userState: RecoilState<User> = atom({
   key: "userState",
   default: getInitialUserState(),
 });
