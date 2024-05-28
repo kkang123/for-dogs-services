@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 
 import { auth, storage } from "@/firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -13,7 +14,7 @@ import {
 
 import { ref, getDownloadURL } from "firebase/storage";
 
-import { useAuth } from "@/contexts/AuthContext";
+import { userState } from "@/recoil/userState";
 
 import { Product } from "@/interface/product";
 
@@ -35,7 +36,7 @@ import {
 import SEOMetaTag from "@/components/SEOMetaTag";
 
 export default function Home() {
-  const { isSeller } = useAuth();
+  const user = useRecoilValue(userState);
 
   const [sirials, setSirials] = useState<Product[]>([]);
   const [clothingProducts, setClothingProducts] = useState<Product[]>([]);
@@ -334,7 +335,7 @@ export default function Home() {
               <CarouselNext />
             </Carousel>
           </div>
-          {!isSeller && (
+          {user.userRole === "BUYER" && (
             <div>
               <Button
                 onClick={toggleModal}
