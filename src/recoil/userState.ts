@@ -1,6 +1,5 @@
-import { atom, RecoilState } from "recoil";
-
-import { User } from "@/interface/user";
+import { atom } from "recoil";
+import Cookies from "js-cookie";
 
 const getInitialUserState = () => {
   const savedUser = localStorage.getItem("user");
@@ -16,10 +15,10 @@ export const accessTokenState = atom({
 
 export const isLoggedInState = atom({
   key: "isLoggedInState",
-  default: !!localStorage.getItem("accessToken"),
+  default: !!Cookies.get("refreshToken"), // 쿠키에 리프레시 토큰이 있는지 확인
 });
 
-export const userState: RecoilState<User> = atom({
+export const userState = atom({
   key: "userState",
   default: getInitialUserState(),
 });

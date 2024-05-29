@@ -1,3 +1,4 @@
+// axios.tsx
 import axios, { AxiosRequestConfig } from "axios";
 import Cookies from "js-cookie";
 
@@ -33,11 +34,12 @@ export const fetchWithAccessToken = async (
       // 엑세스 토큰 만료 등의 에러 처리
       if (error.response?.status === 401) {
         // 엑세스 토큰이 만료되었거나 유효하지 않을 때
-        await refreshTokenAndRetryRequest(endpoint, options);
+        return await refreshTokenAndRetryRequest(endpoint, options);
       }
     } else {
       console.error("An unexpected error occurred:", error);
     }
+    throw error; // 에러를 호출한 쪽에서 처리하도록 던집니다.
   }
 };
 
@@ -48,13 +50,27 @@ const refreshTokenAndRetryRequest = async (
 ) => {
   try {
     const refreshToken = Cookies.get("refreshToken");
+    if (!refreshToken) {
+      throw new Error("No refreshToken found");
+    }
+
     const response = await basicAxios.post("/users/refresh-token", {
       refreshToken,
     });
-    const { accessToken } = response.data;
+    const { accessToken, refreshToken: newRefreshToken } = response.data.result;
     localStorage.setItem("accessToken", accessToken); // 새 엑세스 토큰을 localStorage에 저장합니다.
+    Cookies.set("refreshToken", newRefreshToken); // 새 리프레시 토큰을 쿠키에 저장합니다.
     console.log("엑세스 토큰 재발급:", accessToken);
-    return await fetchWithAccessToken(endpoint, options); // 원래 요청을 재시도합니다.
+
+    // 재발급된 액세스 토큰을 사용하여 원래 요청을 재시도합니다.
+    const newOptions = {
+      ...options,
+      headers: {
+        ...options.headers,
+        Authorization: `Bearer ${accessToken}`, // 재발급된 액세스 토큰을 요청 헤더에 추가합니다.
+      },
+    };
+    return await basicAxios.request({ url: endpoint, ...newOptions });
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error(
@@ -68,13 +84,14 @@ const refreshTokenAndRetryRequest = async (
       );
     }
     // 여기에서 로그인 페이지로 리디렉션하거나 로그아웃 처리를 할 수 있습니다.
-    logout();
+    logout(); // 로그아웃을 호출합니다.
   }
 };
 
 // 로그아웃 처리 함수
-const logout = () => {
+export const logout = () => {
   localStorage.removeItem("accessToken");
   Cookies.remove("refreshToken");
   // 로그아웃 후 리디렉션 등 추가적인 작업을 처리할 수 있습니다.
+  window.location.href = "/login"; // 예: 로그인 페이지로 리디렉션
 };

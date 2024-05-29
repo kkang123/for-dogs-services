@@ -1,14 +1,17 @@
 import axios from "axios";
 import { basicAxios } from "./axios";
 import { useSetRecoilState } from "recoil";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
+
 import {
   userState,
   accessTokenState,
   isLoggedInState,
 } from "@/recoil/userState";
 import { Login, ServerError } from "@/interface/login";
-import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
+
+import { useLogout } from "@/hooks/useLogout";
 
 import Swal, { SweetAlertIcon } from "sweetalert2";
 
@@ -16,6 +19,8 @@ export const useLogin = () => {
   const setUser = useSetRecoilState(userState);
   const setAccessToken = useSetRecoilState(accessTokenState);
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
+
+  const { logout } = useLogout();
 
   const navigate = useNavigate();
 
@@ -120,15 +125,6 @@ export const useLogin = () => {
         });
       }
     }
-  };
-
-  const logout = () => {
-    localStorage.removeItem("accessToken"); // 로컬 스토리지에서 액세스 토큰 제거
-    localStorage.removeItem("user");
-    Cookies.remove("refreshToken"); // 쿠키에서 리프레시 토큰 제거
-    setAccessToken(""); // 리코일 상태 초기화
-    setIsLoggedIn(false); // 로그인 상태 초기화
-    setUser({ isLoggedIn: false, userId: "", role: "" }); // 사용자 상태 초기화
   };
 
   return { login, logout };
