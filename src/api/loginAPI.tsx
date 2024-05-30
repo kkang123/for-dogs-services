@@ -33,7 +33,7 @@ export const useLogin = () => {
       });
       console.log("로그인 응답 데이터:", response.data);
 
-      const { accessToken, refreshToken } = response.data.result;
+      const { accessToken, refreshToken, expiresIn } = response.data.result;
 
       localStorage.setItem("accessToken", accessToken); // 액세스 토큰을 로컬 스토리지에 저장
       localStorage.setItem(
@@ -42,7 +42,14 @@ export const useLogin = () => {
       ); // 사용자 데이터를 로컬 스토리지에 저장
       setAccessToken(accessToken);
 
-      Cookies.set("refreshToken", refreshToken, { expires: 7 }); // 리프레시 토큰을 쿠키에 저장
+      // expiresIn을 사용하여 만료 시간 계산
+      const expiresDate = new Date(Date.now() + expiresIn * 1000);
+
+      Cookies.set("refreshToken", refreshToken, { expires: expiresDate }); // 리프레시 토큰을 쿠키에 저장
+      Cookies.set(
+        "refreshTokenExpires",
+        Math.floor(Date.now() / 1000) + expiresIn
+      ); // 리프레시 토큰 만료 시간 쿠키에 저장
       setUser({ isLoggedIn: true, userId, userRole }); // 사용자 상태 업데이트
       setIsLoggedIn(true);
 
