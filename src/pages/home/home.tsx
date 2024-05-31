@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
+import Cookies from "js-cookie";
+
+import { refreshTokenAndRetryRequest } from "@/api/axios";
 
 import { auth, storage } from "@/firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -75,9 +78,6 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [imageURLs]);
 
-  console.log(currentImageIndex);
-  console.log(setCurrentImageIndex);
-
   useEffect(() => {
     const fetchProducts = async (
       category: string,
@@ -125,6 +125,23 @@ export default function Home() {
     fetchProducts("간식", setSnackProducts);
     fetchProducts("의류", setClothingProducts);
     fetchProducts("장난감", setToyProducts);
+  }, []);
+
+  useEffect(() => {
+    const fetchAccessTokenIfNeeded = async () => {
+      const accessToken = localStorage.getItem("AccessToken");
+      if (!accessToken) {
+        // 액세스 토큰이 없는 경우에만 재발급 받음
+        await refreshTokenAndRetryRequest("/users/refresh-token", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${Cookies.get("REFRESH_TOKEN")}`, // 요청 헤더에 리프레시 토큰을 포함합니다.
+          },
+        });
+      }
+    };
+
+    fetchAccessTokenIfNeeded();
   }, []);
 
   // 로그인 상태 확인

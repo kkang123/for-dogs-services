@@ -10,12 +10,12 @@ const getInitialUserState = () => {
 
 export const accessTokenState = atom({
   key: "accessTokenState",
-  default: localStorage.getItem("accessToken") || "",
+  default: localStorage.getItem("AccessToken") || "",
 });
 
 export const isLoggedInState = atom({
   key: "isLoggedInState",
-  default: !!Cookies.get("refreshToken"), // 쿠키에 리프레시 토큰이 있는지 확인
+  default: !!Cookies.get("REFRESH_TOKEN"), // 쿠키에 리프레시 토큰이 있는지 확인
 });
 
 export const userState = atom({
