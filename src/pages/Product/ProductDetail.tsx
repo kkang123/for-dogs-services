@@ -4,7 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { db } from "@/firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, deleteDoc } from "firebase/firestore";
-import {getStorage, deleteObject, ref } from "firebase/storage";
+import { getStorage, deleteObject, ref } from "firebase/storage";
 
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -31,7 +31,7 @@ function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const storage = getStorage();
-  
+
   const [product, setProduct] = useState<Product | null>(null);
   const [user, setUser] = useState<UserType | null>(null);
 
@@ -95,7 +95,6 @@ function ProductDetail() {
     }
   }, [id, user]);
 
-
   const handleDelete = async () => {
     if (id) {
       const productRef = doc(db, "products", id);
@@ -109,12 +108,11 @@ function ProductDetail() {
               await deleteObject(imageRef);
             } catch (error) {
               console.error("이미지 삭제 실패: ", error);
- 
             }
           });
         }
       }
-      
+
       await deleteDoc(productRef);
       Swal.fire({
         icon: "success",
