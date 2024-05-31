@@ -1,20 +1,24 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+
 import { useRecoilState, useRecoilValue } from "recoil";
 import { userState, isLoggedInState } from "@/recoil/userState";
 import { cartState } from "@/recoil/cartState";
+
+import { useLogin } from "@/api/loginAPI";
+
 import { Button } from "@/components/ui/button";
+
 import mainlogo from "@/assets/main-logo.svg";
 import mainother from "@/assets/mainother.svg";
 import basket from "@/assets/basket-buy-cart.svg";
-import { useLogin } from "@/api/loginAPI";
 
 function MainHeader() {
   const user = useRecoilValue(userState);
   const isLoggedIn = useRecoilValue(isLoggedInState);
+  const { logout } = useLogin();
   const [cart, setCart] = useRecoilState(cartState);
   const [isOpen, setIsOpen] = useState(false);
-  const { logout } = useLogin();
   const navigate = useNavigate();
 
   const toggleDropdown = () => {
