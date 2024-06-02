@@ -5,7 +5,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { userState, isLoggedInState } from "@/recoil/userState";
 import { cartState } from "@/recoil/cartState";
 
-import { useLogin } from "@/api/loginAPI";
+import { useLogout } from "@/hooks/useLogout";
 
 import { Button } from "@/components/ui/button";
 
@@ -16,7 +16,7 @@ import basket from "@/assets/basket-buy-cart.svg";
 function MainHeader() {
   const user = useRecoilValue(userState);
   const isLoggedIn = useRecoilValue(isLoggedInState);
-  const { logout } = useLogin();
+  const { logout } = useLogout();
   const [cart, setCart] = useRecoilState(cartState);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();

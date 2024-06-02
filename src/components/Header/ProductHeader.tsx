@@ -5,7 +5,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { userState, isLoggedInState } from "@/recoil/userState";
 import { cartState } from "@/recoil/cartState";
 
-import { useLogin } from "@/api/loginAPI";
+import { useLogout } from "@/hooks/useLogout";
 
 import { Button } from "@/components/ui/button";
 
@@ -40,7 +40,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
 }) => {
   const user = useRecoilValue(userState);
   const isLoggedIn = useRecoilValue(isLoggedInState);
-  const { logout } = useLogin();
+  const { logout } = useLogout();
 
   const navigate = useNavigate();
   const userId = useState<string | null>(null);
