@@ -19,6 +19,9 @@ export default defineConfig({
       plugins: [visualizer()],
     },
   },
+  server: {
+    host: "127.0.0.1",
+  },
 });
 
 // https://vitejs.dev/config/
