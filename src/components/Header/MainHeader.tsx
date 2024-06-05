@@ -5,6 +5,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { userState, isLoggedInState } from "@/recoil/userState";
 import { cartState } from "@/recoil/cartState";
 
+import { refreshTokenAndRetryRequest } from "@/api/axios";
 import { useLogout } from "@/hooks/useLogout";
 
 import { Button } from "@/components/ui/button";
@@ -49,6 +50,24 @@ function MainHeader() {
     event.preventDefault();
     navigate("/");
   };
+
+  useEffect(() => {
+    const checkAndRefreshToken = async () => {
+      const expiration = localStorage.getItem("AccessTokenExpiration");
+      const isTokenExpired = !expiration || Date.now() > parseInt(expiration);
+
+      if (isTokenExpired) {
+        try {
+          await refreshTokenAndRetryRequest("", {}); // 엔드포인트와 옵션을 비워둡니다. 필요시 수정해주세요.
+        } catch (error) {
+          console.error("Failed to refresh access token", error);
+          // 추가적인 에러 처리 로직을 여기에 추가할 수 있습니다.
+        }
+      }
+    };
+
+    checkAndRefreshToken();
+  }, []);
 
   return (
     <>
