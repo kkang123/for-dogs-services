@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import { useSetRecoilState } from "recoil";
 import { userState, isLoggedInState } from "@/recoil/userState";
 import Cookies from "js-cookie";
@@ -16,29 +16,29 @@ export const useLogout = () => {
     setUser({ isLoggedIn: false, userId: "", role: "" }); // 사용자 상태 초기화
   };
 
-  useEffect(() => {
-    // 리프레시 토큰 쿠키를 읽는 함수
-    const getCookie = (name: string) => {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop()?.split(";").shift();
-    };
+  // useEffect(() => {
+  //   // 리프레시 토큰 쿠키를 읽는 함수
+  //   const getCookie = (name: string) => {
+  //     const value = `; ${document.cookie}`;
+  //     const parts = value.split(`; ${name}=`);
+  //     if (parts.length === 2) return parts.pop()?.split(";").shift();
+  //   };
 
-    // 새로고침 시 쿠키 상태를 확인하고 로컬 스토리지 데이터를 삭제하는 함수
-    const checkAndDeleteLocalStorage = () => {
-      const refreshToken = getCookie("REFRESH_TOKEN"); // 'REFRESH_TOKEN'은 리프레시 토큰의 쿠키 이름
-      if (!refreshToken) {
-        // 리프레시 토큰이 없으면 로컬 스토리지 데이터를 삭제하고 로그아웃 처리
-        localStorage.removeItem("AccessToken");
-        localStorage.removeItem("AccessTokenExpiration");
-        localStorage.removeItem("user");
-        setIsLoggedIn(false);
-        setUser({ isLoggedIn: false, userId: "", role: "" });
-      }
-    };
+  //   // 새로고침 시 쿠키 상태를 확인하고 로컬 스토리지 데이터를 삭제하는 함수
+  //   const checkAndDeleteLocalStorage = () => {
+  //     const refreshToken = getCookie("REFRESH_TOKEN"); // 'REFRESH_TOKEN'은 리프레시 토큰의 쿠키 이름
+  //     if (!refreshToken) {
+  //       // 리프레시 토큰이 없으면 로컬 스토리지 데이터를 삭제하고 로그아웃 처리
+  //       localStorage.removeItem("AccessToken");
+  //       localStorage.removeItem("AccessTokenExpiration");
+  //       localStorage.removeItem("user");
+  //       setIsLoggedIn(false);
+  //       setUser({ isLoggedIn: false, userId: "", role: "" });
+  //     }
+  //   };
 
-    checkAndDeleteLocalStorage();
-  }, [setIsLoggedIn, setUser]);
+  //   checkAndDeleteLocalStorage();
+  // }, [setIsLoggedIn, setUser]);
 
   return { logout };
 };

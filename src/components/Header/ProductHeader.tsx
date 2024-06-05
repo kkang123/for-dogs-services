@@ -6,6 +6,7 @@ import { userState, isLoggedInState } from "@/recoil/userState";
 import { cartState } from "@/recoil/cartState";
 
 import { useLogout } from "@/hooks/useLogout";
+import useAuth from "@/hooks/useAuth"; // useAuth 훅 추가
 
 import { Button } from "@/components/ui/button";
 
@@ -44,6 +45,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
 
   const navigate = useNavigate();
   const userId = useState<string | null>(null);
+  const { isLoggedIn: authIsLoggedIn } = useAuth();
 
   const goToProductListPage = () => {
     if (userId) navigate(`/productlist/${userId}`);
@@ -160,7 +162,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
           )}
 
           <div className=" inline-block ml-2 mr-2">
-            {isLoggedIn ? (
+            {authIsLoggedIn ? (
               <Button variant="outline" size="sm" onClick={handleLogout}>
                 로그아웃
               </Button>
