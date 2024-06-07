@@ -19,7 +19,7 @@ export const ProtectRoute: React.FC<ProtectRouteProps> = ({
   const navigate = useNavigate();
   const isAuth = useRecoilValue(isLoggedInState);
   const user = useRecoilValue(userState);
-  const isSeller = user.role === "SELLER";
+  const isSeller = user.userRole === "SELLER";
 
   useEffect(() => {
     if (isPrivate && !isAuth) {

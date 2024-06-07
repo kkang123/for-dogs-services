@@ -140,7 +140,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
 
           {showProductCart && (
             <div>
-              {user.role === "BUYER" && (
+              {user.userRole === "BUYER" && (
                 <Link to={isLoggedIn && userId ? `/cart/${userId}` : "#"}>
                   <button className="">
                     <div className="relative">

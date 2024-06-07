@@ -232,7 +232,7 @@ function MainHeader() {
         </button>
 
         <div className="hidden sm:flex">
-          {user.role !== "SELLER" && user.userId && (
+          {user.userRole !== "SELLER" && user.userId && (
             <Link to={`/myprofile/${user.userId}`}>
               <Button variant={"ghost"} size="sm">
                 마이프로필
@@ -240,13 +240,13 @@ function MainHeader() {
             </Link>
           )}
 
-          {user.role === "SELLER" && (
+          {user.userRole === "SELLER" && (
             <Link to={`/productlist/${user.userId}`}>
               <Button size="sm">판매자 센터</Button>
             </Link>
           )}
 
-          {user.role !== "SELLER" && (
+          {user.userRole !== "SELLER" && (
             <Link to={isLoggedIn && user.userId ? `/cart/${user.userId}` : "#"}>
               <button>
                 <div className="relative">
@@ -283,7 +283,7 @@ function MainHeader() {
 
         {isOpen && (
           <div className="absolute right-5 top-20 bg-white shadow-lg rounded-md z-50 sm:hidden">
-            {user.role !== "SELLER" && user.userId && (
+            {user.userRole !== "SELLER" && user.userId && (
               <Link
                 to={`/myprofile/${user.userId}`}
                 onClick={() => setIsOpen(false)}
@@ -292,7 +292,7 @@ function MainHeader() {
               </Link>
             )}
 
-            {user.role === "SELLER" && (
+            {user.userRole === "SELLER" && (
               <Link
                 to={`/productlist/${user.userId}`}
                 onClick={() => setIsOpen(false)}
@@ -301,7 +301,7 @@ function MainHeader() {
               </Link>
             )}
 
-            {user.role !== "SELLER" && (
+            {user.userRole !== "SELLER" && (
               <Link
                 to={isLoggedIn && user.userId ? `/cart/${user.userId}` : "#"}
                 onClick={() => setIsOpen(false)}
