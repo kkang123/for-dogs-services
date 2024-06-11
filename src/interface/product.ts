@@ -1,6 +1,6 @@
 export interface Product {
-  // id: string;
-  // sellerId: string;
+  productId?: string;
+  productSeller?: string;
   productName: string; // 상품명
   productPrice: number; // 상품 가격
   productQuantity: number; // 상품 수량
