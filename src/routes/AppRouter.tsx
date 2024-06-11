@@ -113,7 +113,7 @@ const AppRouter = () => {
           }
         />
         <Route
-          path="/productdetail/:id"
+          path="/productdetail/:productId"
           element={
             <ProtectRoute
               element={<ProductDetail />}

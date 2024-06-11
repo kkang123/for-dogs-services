@@ -1,20 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-
-import { db } from "@/firebase";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, deleteDoc } from "firebase/firestore";
-import { getStorage, deleteObject, ref } from "firebase/storage";
-
-import { useAuth } from "@/contexts/AuthContext";
+import { basicAxios } from "@/api/axios";
 
 import { Product } from "@/interface/product";
-import { UserType } from "@/interface/user";
 
 import SEOMetaTag from "@/components/SEOMetaTag";
-
 import ProductHeader from "@/components/Header/ProductHeader";
-
 import {
   Carousel,
   CarouselContent,
@@ -26,108 +17,61 @@ import {
 import Swal from "sweetalert2";
 
 function ProductDetail() {
-  const auth = getAuth();
-  const { uid } = useAuth();
-  const { id } = useParams<{ id: string }>();
+  const { productId } = useParams<{ productId: string }>(); // Change id to productId to match the API URL
   const navigate = useNavigate();
-  const storage = getStorage();
 
   const [product, setProduct] = useState<Product | null>(null);
-  const [user, setUser] = useState<UserType | null>(null);
-
-  const goToProductPage = () => navigate(`/productlist/${uid}`);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        const firebaseUserDocRef = doc(db, "users", firebaseUser?.uid);
-        const firebaseUserSnap = await getDoc(firebaseUserDocRef);
-        if (firebaseUserSnap.exists()) {
-          const userData = firebaseUserSnap.data();
-          if (userData) {
-            setUser({
-              id: firebaseUser.uid,
-              email: userData.email,
-              isSeller: userData.isSeller,
-              nickname: userData.nickname,
-              createdAt: userData.createdAt,
-              updatedAt: userData.updateAt,
-            });
-          }
-        }
-      } else {
-        setUser(null);
-      }
-    });
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      const userId = user.id;
-
-      const fetchProduct = async () => {
-        if (id) {
-          const productRef = doc(db, "products", id);
-          const productSnap = await getDoc(productRef);
-
-          if (productSnap.exists()) {
-            const productData = productSnap.data() as Product;
-
-            if (productData.sellerId === userId) {
-              setProduct(productData);
-            } else {
-              Swal.fire({
-                icon: "error",
-                title: "접근 권한이 없습니다",
-                text: "해당 제품의 판매자만 열람이 가능합니다",
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  goToProductPage();
-                }
-              });
-            }
-          }
-        }
-      };
-
-      fetchProduct();
-    }
-  }, [id, user]);
-
-  const handleDelete = async () => {
-    if (id) {
-      const productRef = doc(db, "products", id);
-      const productSnapshot = await getDoc(productRef);
-      if (productSnapshot.exists()) {
-        const productData = productSnapshot.data();
-        if (productData && productData.productImage) {
-          productData.productImage.forEach(async (imageURL: string) => {
-            const imageRef = ref(storage, imageURL);
-            try {
-              await deleteObject(imageRef);
-            } catch (error) {
-              console.error("이미지 삭제 실패: ", error);
-            }
+    const fetchProduct = async () => {
+      try {
+        const response = await basicAxios.get(`/products/${productId}/details`);
+        if (response.data.ok) {
+          const result = response.data.result;
+          console.log(result);
+          const fetchedProduct: Product = {
+            productId: result.productId,
+            productSeller: result.productSeller,
+            productName: result.productName,
+            productPrice: result.productPrice,
+            productQuantity: result.productQuantity,
+            productDescription: result.productDescription,
+            productCategory: result.productCategory,
+            productImages: result.productImages,
+          };
+          setProduct(fetchedProduct);
+        } else {
+          const errorMessage = response.data.error || "Unknown error occurred";
+          console.error("Failed to fetch product details:", errorMessage);
+          Swal.fire({
+            icon: "error",
+            title: "상품 불러오기 실패",
+            text: "상품 정보를 불러오는데 실패했습니다.",
+          }).then(() => {
+            navigate("/"); // Redirect to homepage or another appropriate page
           });
         }
+      } catch (error) {
+        console.error("Failed to fetch product details:", error);
+        Swal.fire({
+          icon: "error",
+          title: "상품 불러오기 실패",
+          text: "상품 정보를 불러오는데 실패했습니다.",
+        }).then(() => {
+          navigate("/"); // Redirect to homepage or another appropriate page
+        });
       }
+    };
 
-      await deleteDoc(productRef);
-      Swal.fire({
-        icon: "success",
-        title: "제품 삭제 완료",
-        text: "제품이 성공적으로 삭제되었습니다.",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          goToProductPage();
-        }
-      });
-    }
+    fetchProduct();
+  }, [productId, navigate]); // Update dependency array to use productId
+
+  const handleDelete = () => {
+    // 상품 삭제 나중에 추가 예정
   };
-
+  // 수정 함수(추후 api 추가 시 적용)
   const handleEdit = () => {
-    navigate(`/productedit/${id}`);
+    navigate(`/productedit/${productId}`);
   };
 
   if (!product) {
@@ -154,16 +98,11 @@ function ProductDetail() {
         />
       </header>
       <main style={{ minWidth: "1300px" }}>
-        <div className="flex  w-full gap-12 pt-[70px] pb-[80px] justify-center">
+        <div className="flex w-full gap-12 pt-[70px] pb-[80px] justify-center">
           <div className="w-[580px] h-[580px]">
-            <Carousel
-              opts={{
-                align: "start",
-              }}
-              className="w-full "
-            >
+            <Carousel opts={{ align: "start" }} className="w-full">
               <CarouselContent>
-                {product.productImage.map((image, index) => (
+                {product.productImages.map((image, index) => (
                   <CarouselItem key={index} className=" ">
                     <div className="">
                       <img
@@ -199,7 +138,7 @@ function ProductDetail() {
         <div>
           <div className="mx-12 text-4xl">상품 설명</div>
           <p
-            className="mx-10 mt-3 border-4 border-LightBlue-500 rounded  overflow-y-auto overflow-x-hidden word-wrap: break-word"
+            className="mx-10 mt-3 border-4 border-LightBlue-500 rounded overflow-y-auto overflow-x-hidden word-wrap: break-word"
             style={{ height: "8em" }}
           >
             {product.productDescription}
