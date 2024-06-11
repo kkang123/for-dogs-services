@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import { useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
-import { Product } from "@/interface/product";
 
 import { basicAxios } from "@/api/axios";
+import { userState } from "@/recoil/userState";
+import { Product } from "@/interface/product";
+
 import SEOMetaTag from "@/components/SEOMetaTag";
 
 import ProductHeader from "@/components/Header/ProductHeader";
@@ -15,9 +18,9 @@ import Swal from "sweetalert2";
 
 function ProductUpload() {
   const navigate = useNavigate();
-  const userId = useState<string | null>(null);
+  const user = useRecoilValue(userState);
   const goToProductPage = () => {
-    if (userId) navigate(`/productlist/${userId}`);
+    if (user.userId) navigate(`/productlist/${user.userId}`);
   };
 
   const [product, setProduct] = useState<Product>({
