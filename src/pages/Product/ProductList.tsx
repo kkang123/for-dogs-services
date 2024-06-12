@@ -1,51 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { userState } from "@/recoil/userState";
+
 import { useInfiniteQuery } from "react-query";
 import { useInView } from "react-intersection-observer";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  orderBy,
-  limit,
-  startAfter,
-} from "firebase/firestore";
-import { db } from "@/firebase";
+import { basicAxios } from "@/api/axios";
 
 import SEOMetaTag from "@/components/SEOMetaTag";
-
 import { Product } from "@/interface/product";
-
 import ProductHeader from "@/components/Header/ProductHeader";
 
 function ProductList() {
-  const { uid } = useParams<{ uid: string }>();
+  const userInfo = useRecoilValue(userState);
+  const { userId } = userInfo;
   const [currentImageIndex] = useState(0);
 
   const fetchProducts = async ({ pageParam = null }) => {
-    const productsRef = collection(db, "products");
-    let q = query(
-      productsRef,
-      where("sellerId", "==", uid),
-      orderBy("updatedAt", "desc"),
-      limit(3)
-    );
+    try {
+      const response = await basicAxios.get("/products/search", {
+        params: {
+          seller: userId,
+          pageParam: pageParam,
+        },
+      });
 
-    if (pageParam) {
-      q = query(q, startAfter(pageParam));
+      console.log("Response data:", response.data);
+
+      return {
+        data: response.data.result.content,
+        nextStart: response.data.nextStart,
+      };
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      throw new Error("Error fetching products");
     }
-
-    const querySnapshot = await getDocs(q);
-    const qproducts: Product[] = [];
-    querySnapshot.forEach((doc) => {
-      const productData = doc.data() as Product;
-      qproducts.push(productData);
-    });
-
-    const lastDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
-
-    return { data: qproducts, nextStart: lastDoc };
   };
 
   const {
@@ -95,19 +84,19 @@ function ProductList() {
       <main className="mt-16">
         <div>
           <div className="flex flex-wrap justify-start">
-            {data?.pages.map((group, i) => (
-              <React.Fragment key={i}>
-                {group.data.map((product: Product, index: number) => (
+            {data?.pages.map((page, pageIndex) => (
+              <React.Fragment key={pageIndex}>
+                {page.data.map((product: Product, index: number) => (
                   <Link
                     key={index}
-                    to={`/productdetail/${product.id}`}
+                    to={`/productdetail/${product.productId}`}
                     className="w-full lg:w-1/3 md:w-1/2 sm:w-full p-4"
                   >
                     <div className="shadow border-2 rounded h-[380px]">
-                      {product.productImage[currentImageIndex] ? (
+                      {product.productImages[currentImageIndex] ? (
                         <img
                           className="w-full h-[300px] rounded"
-                          src={product.productImage[currentImageIndex]}
+                          src={product.productImages[currentImageIndex]}
                           alt={`Uploaded image ${currentImageIndex + 1}`}
                         />
                       ) : null}
@@ -127,6 +116,7 @@ function ProductList() {
                 ))}
               </React.Fragment>
             ))}
+
             <div ref={ref}></div>
           </div>
           {hasNextPage && (
