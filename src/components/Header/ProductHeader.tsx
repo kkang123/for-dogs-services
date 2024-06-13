@@ -61,7 +61,8 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
     }
   }, []);
 
-  const uniqueProductCount = new Set(cart.map((item) => item.product.id)).size;
+  const uniqueProductCount = new Set(cart.map((item) => item.product.productId))
+    .size;
 
   const handleLogout = (event: React.FormEvent) => {
     event.preventDefault();
