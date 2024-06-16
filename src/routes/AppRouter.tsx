@@ -10,13 +10,13 @@ import FindPassword from "@/pages/Login/FindPassword";
 import MyProfile from "@/pages/SignUp/MyProfile";
 
 // 상품 판매
-import SellProductDetail from "@/pages/Product/SellProductDetail";
+// import SellProductDetail from "@/pages/Product/SellProductDetail";
 
 // 판매자전용
 import ProductUpload from "@/pages/Product/ProductUpload";
 import ProductList from "@/pages/Product/ProductList";
 import ProductDetail from "@/pages/Product/ProductDetail";
-import ProductEdit from "@/pages/Product/ProductEdit";
+// import ProductEdit from "@/pages/Product/ProductEdit";
 import ProductManagement from "@/pages/Product/ProductManagement";
 
 // 카테고리
@@ -88,7 +88,7 @@ const AppRouter = () => {
         {/* 상품 판매 */}
         <Route
           path="/sellproduct/:id"
-          element={<ProtectRoute element={<SellProductDetail />} />}
+          // element={<ProtectRoute element={<SellProductDetail />} />}
         />
 
         {/* 판매자 페이지 */}
@@ -124,13 +124,13 @@ const AppRouter = () => {
         />
         <Route
           path="/productedit/:id"
-          element={
-            <ProtectRoute
-              element={<ProductEdit />}
-              isPrivate={true}
-              isProtected={true}
-            />
-          }
+          // element={
+          //   // <ProtectRoute
+          //     // element={<ProductEdit />}
+          //   //   isPrivate={true}
+          //   //   isProtected={true}
+          //   // />
+          // }
         />
         <Route
           path="/productupload"
