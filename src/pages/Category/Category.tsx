@@ -145,14 +145,14 @@ function Category() {
                 {group.data.map((product: Product, index: number) => (
                   <Link
                     key={index}
-                    to={`/sellproduct/${product.id}`}
+                    to={`/sellproduct/${product.productId}`}
                     className="flex justify-center items-center w-full md:w-1/2 lg:w-1/3 p-4"
                   >
                     <div className=" shadow border-2 rounded w-[380px] h-[380px]">
-                      {product.productImage[currentImageIndex] ? (
+                      {product.productImages[currentImageIndex] ? (
                         <img
                           className="w-full h-[300px] rounded "
-                          src={product.productImage[currentImageIndex]}
+                          src={product.productImages[currentImageIndex]}
                           alt={`Uploaded image ${currentImageIndex + 1}`}
                         />
                       ) : null}

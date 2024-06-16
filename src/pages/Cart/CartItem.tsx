@@ -8,8 +8,11 @@ import { Button } from "@/components/ui/button";
 
 interface CartItemProps {
   item: CartItemType;
-  updateQuantity?: (productId: Product["id"], newQuantity: number) => void;
-  removeFromCart?: (productId: Product["id"]) => void;
+  updateQuantity?: (
+    productId: Product["productId"],
+    newQuantity: number
+  ) => void;
+  removeFromCart?: (productId: Product["productId"]) => void;
 }
 
 const CartItem: React.FC<CartItemProps> = ({
@@ -27,10 +30,10 @@ const CartItem: React.FC<CartItemProps> = ({
 
   return (
     <div className="w-48 h-48">
-      <Link to={`/sellproduct/${product.id}`}>
+      <Link to={`/sellproduct/${product.productId}`}>
         <img
           className="w-48 h-48"
-          src={product.productImage[0]}
+          src={product.productImages[0]}
           alt={product.productName}
         />
         <div className="mt-2">
@@ -47,7 +50,7 @@ const CartItem: React.FC<CartItemProps> = ({
             <Button
               size="sm"
               onClick={() => {
-                updateQuantity(product.id, quantity + 1);
+                updateQuantity(product.productId, quantity + 1);
                 setQuantity(quantity + 1);
               }}
             >
@@ -57,7 +60,7 @@ const CartItem: React.FC<CartItemProps> = ({
               size="sm"
               onClick={() => {
                 if (quantity > 0) {
-                  updateQuantity(product.id, quantity - 1);
+                  updateQuantity(product.productId, quantity - 1);
                   setQuantity(quantity - 1);
                 }
               }}
@@ -70,7 +73,7 @@ const CartItem: React.FC<CartItemProps> = ({
             <Button
               variant="destructive"
               size="sm"
-              onClick={() => removeFromCart(product.id)}
+              onClick={() => removeFromCart(product.productId)}
             >
               삭제
             </Button>

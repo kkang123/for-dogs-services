@@ -34,12 +34,12 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, toggleModal }) => {
       >
         {cart.map((cartItem) => (
           <div
-            key={cartItem.product.id}
+            key={cartItem.product.productId}
             className="bg-white border-b-2 w-full flex flex-col items-center mt-4"
           >
             <img
               className="w-48 h-48"
-              src={cartItem.product.productImage[0]}
+              src={cartItem.product.productImages[0]}
               alt={cartItem.product.productName}
             />
 

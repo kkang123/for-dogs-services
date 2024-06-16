@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-// import Cookies from "js-cookie";
-
-// import { refreshTokenAndRetryRequest } from "@/api/axios";
 
 import { auth, storage } from "@/firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -105,16 +102,14 @@ export default function Home() {
         }
 
         const productData: Product = {
-          id: idNumber,
-          sellerId: data.sellerId,
+          productId: data.productId,
+          productSeller: data.sellerId,
           productName: data.productName,
           productPrice: data.productPrice,
           productQuantity: data.productQuantity,
           productDescription: data.productDescription,
           productCategory: data.productCategory,
-          productImage: data.productImage,
-          createdAt: data.createdAt,
-          updatedAt: data.updatedAt,
+          productImages: data.productImage,
         };
         products.push(productData);
       });
@@ -216,13 +211,16 @@ export default function Home() {
               <CarouselContent>
                 {sirials.map((product) => (
                   <CarouselItem
-                    key={product.id}
+                    key={product.productId}
                     className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4 "
                   >
                     <div className="m-3">
-                      <Link to={`/sellproduct/${product.id}`} className="m-1">
+                      <Link
+                        to={`/sellproduct/${product.productId}`}
+                        className="m-1"
+                      >
                         <img
-                          src={product.productImage[0]}
+                          src={product.productImages[0]}
                           alt={product.productName}
                           className="w-72 h-72"
                         />
@@ -254,13 +252,16 @@ export default function Home() {
               <CarouselContent>
                 {clothingProducts.map((product) => (
                   <CarouselItem
-                    key={product.id}
+                    key={product.productId}
                     className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4 "
                   >
                     <div className="m-3">
-                      <Link to={`/sellproduct/${product.id}`} className="m-1">
+                      <Link
+                        to={`/sellproduct/${product.productId}`}
+                        className="m-1"
+                      >
                         <img
-                          src={product.productImage[0]}
+                          src={product.productImages[0]}
                           alt={product.productName}
                           className="w-72 h-72"
                         />
@@ -292,13 +293,16 @@ export default function Home() {
               <CarouselContent>
                 {snackProducts.map((product) => (
                   <CarouselItem
-                    key={product.id}
+                    key={product.productId}
                     className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4 "
                   >
                     <div className="m-3">
-                      <Link to={`/sellproduct/${product.id}`} className="m-1">
+                      <Link
+                        to={`/sellproduct/${product.productId}`}
+                        className="m-1"
+                      >
                         <img
-                          src={product.productImage[0]}
+                          src={product.productImages[0]}
                           alt={product.productName}
                           className="w-72 h-72"
                         />
@@ -330,13 +334,16 @@ export default function Home() {
               <CarouselContent>
                 {toyProducts.map((product) => (
                   <CarouselItem
-                    key={product.id}
+                    key={product.productId}
                     className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4 "
                   >
                     <div className="m-3">
-                      <Link to={`/sellproduct/${product.id}`} className="m-1">
+                      <Link
+                        to={`/sellproduct/${product.productId}`}
+                        className="m-1"
+                      >
                         <img
-                          src={product.productImage[0]}
+                          src={product.productImages[0]}
                           alt={product.productName}
                           className="w-72 h-72"
                         />
