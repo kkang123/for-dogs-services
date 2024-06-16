@@ -171,7 +171,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 
-export const BASE_URL = "http://52.78.79.44/";
+export const BASE_URL = " https://api.fordogs.store/";
 
 export const basicAxios = axios.create({
   baseURL: BASE_URL,
