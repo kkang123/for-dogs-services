@@ -61,7 +61,7 @@ export const updateQuantity = async (
   if (cartSnap.exists()) {
     const cartData = cartSnap.data().items;
     const itemToUpdate = cartData.find(
-      (item: CartItem) => String(item.product.id) === productId
+      (item: CartItem) => String(item.product.productId) === productId
     );
 
     if (itemToUpdate) {
@@ -83,7 +83,7 @@ export const removeFromCart = async (
   if (cartSnap.exists()) {
     const cartData = cartSnap.data().items;
     const updatedItems = cartData.filter(
-      (item: CartItem) => String(item.product.id) !== productId
+      (item: CartItem) => String(item.product.productId) !== productId
     );
 
     await updateDoc(cartRef, { items: updatedItems });
