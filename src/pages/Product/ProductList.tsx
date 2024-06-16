@@ -406,7 +406,7 @@
 
 // 확인 코드 추가
 
-import React, { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { userState } from "@/recoil/userState";
