@@ -29,3 +29,11 @@ dist-ssr
 
 # bundle
 stats.html
+
+# 인증서
+127.0.0.1-key.pem
+127.0.0.1.pem
+fordogs.store-key.pem
+fordogs.store.pem
+.env.development
+.env.production

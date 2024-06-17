@@ -24,38 +24,56 @@
 //   },
 // });
 
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { fileURLToPath } from "url";
+import { visualizer } from "rollup-plugin-visualizer";
+import fs from "fs";
+import type { ServerOptions } from "https"; // 추가
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-import { visualizer } from "rollup-plugin-visualizer";
 
-export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "src/"),
-    },
-  },
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes("node_modules")) {
-            return "vendor";
-          }
-        },
-      },
-      plugins: [visualizer()],
-    },
-    chunkSizeWarningLimit: 1000,
-  },
-  server: {
+export default ({ mode }: { mode: string }) => {
+  // 환경 변수 로드
+  process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
+
+  const isDevelop = process.env.VITE_DEVELOP === "true";
+
+  const serverConfig = {
     host: "127.0.0.1",
-  },
-});
+    https: isDevelop
+      ? ({
+          key: fs.readFileSync("127.0.0.1-key.pem"),
+          cert: fs.readFileSync("127.0.0.1.pem"),
+        } as ServerOptions)
+      : undefined,
+  };
+
+  return defineConfig({
+    plugins: [react()],
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "src/"),
+      },
+    },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes("node_modules")) {
+              return "vendor";
+            }
+          },
+        },
+        plugins: [visualizer()],
+      },
+      chunkSizeWarningLimit: 1000,
+    },
+    server: serverConfig,
+  });
+};
 
 // https://vitejs.dev/config/
 // export default defineConfig({
