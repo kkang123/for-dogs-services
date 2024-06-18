@@ -335,7 +335,7 @@ const useAuth = () => {
           if (newAccessToken) {
             setIsLoggedIn(true);
           } else {
-            logout(); // 새 액세스 토큰 갱신 실패 시 로그아웃
+            // logout(); // 새 액세스 토큰 갱신 실패 시 로그아웃
           }
         }
       } else {
