@@ -470,6 +470,112 @@
 
 // export default useAuth;
 
+// 2 -> 흰화면 모든 컴포넌트에서 출력되는 이상현상 발생
+
+// import { useEffect, useMemo, useCallback } from "react";
+// import { useRecoilState } from "recoil";
+// import { userState, isLoggedInState } from "@/recoil/userState";
+// import { useLogout } from "@/hooks/useLogout";
+// import { basicAxios } from "@/api/axios";
+// import axios from "axios";
+
+// const useAuth = () => {
+//   const [user, setUser] = useRecoilState(userState);
+//   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
+//   const { logout } = useLogout();
+
+//   const refreshAccessToken = useCallback(async () => {
+//     try {
+//       const response = await basicAxios.post("/users/refresh");
+//       const { accessToken } = response.data;
+//       localStorage.setItem("AccessToken", accessToken);
+
+//       // 액세스 토큰 만료 시간 갱신 (예시: 5분 후 만료)
+//       const accessTokenExpiration = new Date().getTime() + 5 * 60 * 1000;
+//       localStorage.setItem(
+//         "AccessTokenExpiration",
+//         accessTokenExpiration.toString()
+//       );
+
+//       return accessToken;
+//     } catch (error) {
+//       console.error("Failed to refresh access token:", error);
+
+//       if (axios.isAxiosError(error)) {
+//         const response = error.response;
+//         if (
+//           response?.status === 400 &&
+//           response.data?.error?.message ===
+//             "refresh_token 필수 요청 쿠키가 누락되었습니다."
+//         ) {
+//           logout();
+//         }
+//       }
+
+//       return null;
+//     }
+//   }, [logout]);
+
+//   const checkAndRefreshToken = useMemo(
+//     () => async () => {
+//       const accessToken = localStorage.getItem("AccessToken");
+//       const accessTokenExpiration = localStorage.getItem(
+//         "AccessTokenExpiration"
+//       );
+
+//       if (accessToken && accessTokenExpiration) {
+//         const now = new Date().getTime();
+//         const expirationTime = Number(accessTokenExpiration);
+
+//         if (now >= expirationTime) {
+//           // 액세스 토큰이 만료된 경우 갱신 시도
+//           const newAccessToken = await refreshAccessToken();
+//           if (newAccessToken) {
+//             setIsLoggedIn(true);
+//           } else {
+//             //   logout(); // 새 액세스 토큰 갱신 실패 시 로그아웃
+//           }
+//         }
+//       } else {
+//         logout(); // 액세스 토큰이 없는 경우 (로그아웃 처리)
+//       }
+//     },
+//     [refreshAccessToken, logout, setIsLoggedIn]
+//   );
+
+//   useEffect(() => {
+//     const accessToken = localStorage.getItem("AccessToken");
+//     const accessTokenExpiration = localStorage.getItem("AccessTokenExpiration");
+
+//     if (accessToken && accessTokenExpiration) {
+//       const now = new Date().getTime();
+//       const expirationTime = Number(accessTokenExpiration);
+
+//       if (now < expirationTime) {
+//         // 액세스 토큰이 유효한 경우
+//         setIsLoggedIn(true);
+//         const storedUser = localStorage.getItem("user");
+//         if (storedUser) {
+//           const parsedUser = JSON.parse(storedUser);
+//           setUser(parsedUser);
+//         }
+//       } else {
+//         // 액세스 토큰이 만료된 경우
+//         checkAndRefreshToken();
+//       }
+//     } else {
+//       // 액세스 토큰이 없는 경우 (로그아웃 처리)
+//       logout();
+//     }
+//   }, [checkAndRefreshToken, logout, setIsLoggedIn, setUser]);
+
+//   return { user, isLoggedIn, checkAndRefreshToken };
+// };
+
+// export default useAuth;
+
+// 3 제발
+
 import { useEffect, useMemo, useCallback } from "react";
 import { useRecoilState } from "recoil";
 import { userState, isLoggedInState } from "@/recoil/userState";
@@ -542,30 +648,39 @@ const useAuth = () => {
   );
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("AccessToken");
-    const accessTokenExpiration = localStorage.getItem("AccessTokenExpiration");
+    const checkTokenAndRefresh = async () => {
+      const accessToken = localStorage.getItem("AccessToken");
+      const accessTokenExpiration = localStorage.getItem(
+        "AccessTokenExpiration"
+      );
 
-    if (accessToken && accessTokenExpiration) {
-      const now = new Date().getTime();
-      const expirationTime = Number(accessTokenExpiration);
+      if (accessToken && accessTokenExpiration) {
+        const now = new Date().getTime();
+        const expirationTime = Number(accessTokenExpiration);
 
-      if (now < expirationTime) {
-        // 액세스 토큰이 유효한 경우
-        setIsLoggedIn(true);
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) {
-          const parsedUser = JSON.parse(storedUser);
-          setUser(parsedUser);
+        if (now < expirationTime) {
+          // 액세스 토큰이 유효한 경우
+          setIsLoggedIn(true);
+          const storedUser = localStorage.getItem("user");
+          if (storedUser) {
+            const parsedUser = JSON.parse(storedUser);
+            setUser(parsedUser);
+          }
+        } else {
+          // 액세스 토큰이 만료된 경우
+          await checkAndRefreshToken(); // 비동기 처리
         }
       } else {
-        // 액세스 토큰이 만료된 경우
-        checkAndRefreshToken();
+        // 액세스 토큰이 없는 경우 (로그아웃 처리)
+        logout();
       }
-    } else {
-      // 액세스 토큰이 없는 경우 (로그아웃 처리)
-      logout();
-    }
-  }, [checkAndRefreshToken, logout, setIsLoggedIn, setUser]);
+    };
+
+    checkTokenAndRefresh(); // 함수 호출
+
+    // useEffect의 의존성 배열은 비우지 않도록 주의하세요.
+    // 단, 빈 의존성 배열을 사용해야 할 때, [setUser, setIsLoggedIn, checkAndRefreshToken, logout]를 사용하십시오
+  }, []);
 
   return { user, isLoggedIn, checkAndRefreshToken };
 };
