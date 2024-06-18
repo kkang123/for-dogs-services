@@ -51,9 +51,9 @@ export default function Home() {
 
   const [imageURLs, setImageURLs] = useState<string[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const imageNames = ["찌비.webp", "찌비001.webp", "찌비003.webp"];
 
   useEffect(() => {
+    const imageNames = ["찌비.webp", "찌비001.webp", "찌비003.webp"];
     imageNames.forEach((imageName) => {
       const imageRef = ref(storage, `folder/${imageName}`);
 
