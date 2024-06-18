@@ -215,6 +215,10 @@ function MainHeader() {
     navigate("/");
   };
 
+  useEffect(() => {
+    console.log("authIsLoggedIn:", authIsLoggedIn);
+  }, [authIsLoggedIn]);
+
   const handleLogin = (event: React.FormEvent) => {
     event.preventDefault();
     navigate("/login");
@@ -266,7 +270,7 @@ function MainHeader() {
             </Link>
           )}
           <div className="inline-block ml-2 mr-2">
-            {authIsLoggedIn ? ( // useAuth 훅에서 가져온 isLoggedIn 상태 사용
+            {authIsLoggedIn ? (
               <Button variant="outline" size="sm" onClick={handleLogout}>
                 로그아웃
               </Button>

@@ -247,155 +247,71 @@ basicAxios.interceptors.request.use(
 
 // test
 
-// import axios, { AxiosResponse, AxiosError, AxiosRequestConfig } from "axios";
+// axios.tsx
+// import axios, {
+//   AxiosResponse,
+//   AxiosError,
+//   AxiosRequestConfig,
+// } from "axios";
 
-// export const BASE_URL = "http://52.78.79.44/";
+// export const BASE_URL = "https://api.fordogs.store/";
 
 // export const basicAxios = axios.create({
 //   baseURL: BASE_URL,
 //   headers: {
 //     "Content-Type": "application/json",
 //   },
-//   withCredentials: true, // 쿠키에 있는 HTTP-Only 리프레시 토큰을 자동으로 포함시키기 위해 필요
+//   withCredentials: true,
 // });
 
-// // 액세스 토큰 만료 시간 설정
-// const setAccessToken = (token: string, expiration: string) => {
-//   const newExpiration = new Date(expiration).getTime();
-//   localStorage.setItem("AccessToken", token);
-//   localStorage.setItem("AccessTokenExpiration", newExpiration.toString());
-
-//   console.log(`새로운 액세스 토큰: ${token}`);
-//   console.log(
-//     `새로운 액세스 토큰 만료시간: ${new Date(newExpiration).toString()}`
-//   );
-// };
-
-// // 액세스 토큰 갱신 함수
-// const refreshAccessToken = async () => {
-//   try {
-//     const response = await basicAxios.post("/users/refresh");
-//     const { accessToken } = response.data;
-
-//     setAccessToken(accessToken.value, accessToken.expiration);
-
-//     // 기본 Axios 인스턴스의 헤더 업데이트
-//     basicAxios.defaults.headers[
-//       "Authorization"
-//     ] = `Bearer ${accessToken.value}`;
-
-//     console.log(`새로 발급된 액세스 토큰: ${accessToken.value}`);
-//     console.log(`새로 발급된 액세스 토큰 만료시간: ${accessToken.expiration}`);
-
-//     return accessToken.value;
-//   } catch (error) {
-//     return Promise.reject(error);
-//   }
-// };
-
-// basicAxios.interceptors.request.use((request) => {
-//   console.log("Request Headers: ", request.headers);
-//   return request;
-// });
-
-// // 응답 인터셉터 추가
-// basicAxios.interceptors.response.use(
-//   (response: AxiosResponse) => response,
-//   async (error: AxiosError) => {
-//     const originalRequest = error.config as AxiosRequestConfig & {
-//       _retry?: boolean;
-//     };
-
-//     // 401 Unauthorized 응답을 받고, 요청이 이미 재시도된 상태가 아니라면
-//     if (error.response?.status === 401 && !originalRequest._retry) {
-//       originalRequest._retry = true; // 요청 재시도 표시
-//       try {
-//         const newAccessToken = await refreshAccessToken();
-
-//         // 재시도 전에 요청 헤더 업데이트
-//         if (originalRequest.headers) {
-//           originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-//         }
-
-//         // 요청 재시도
-//         return basicAxios(originalRequest);
-//       } catch (refreshError) {
-//         return Promise.reject(refreshError);
-//       }
+// basicAxios.interceptors.request.use(
+//   (config: AxiosRequestConfig) => {
+//     const accessToken = localStorage.getItem("AccessToken");
+//     if (accessToken && config.headers) {
+//       config.headers["Authorization"] = `Bearer ${accessToken}`;
 //     }
-
+//     return config;
+//   },
+//   (error: AxiosError) => {
 //     return Promise.reject(error);
 //   }
 // );
 
-// const checkTokenExpiration = async () => {
-//   const expireAt = parseInt(
-//     localStorage.getItem("AccessTokenExpiration") || "0"
-//   );
-
-//   // 현재 시간과 만료 시간의 차이를 계산
-//   const timeLeft = expireAt - Date.now();
-
-//   // 만료 시간이 1분 이내로 남았을 때 토큰 갱신
-//   if (timeLeft < 60000) {
-//     await refreshAccessToken();
-//   }
-// };
-
-// setInterval(checkTokenExpiration, 60000); // 1분마다 체크
-
-// export default basicAxios;
-
-// 일단 대기
-
-// import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-
-// export const BASE_URL = "http://52.78.79.44/";
-
-// // _retry 속성을 포함하도록 AxiosRequestConfig 타입을 확장합니다.
-// interface CustomAxiosRequestConfig extends AxiosRequestConfig {
-//   _retry?: boolean;
-// }
-
-// export const basicAxios = axios.create({
-//   baseURL: BASE_URL,
-//   withCredentials: true,
-// });
-
-// // 토큰 만료 확인 및 갱신 로직은 유지합니다.
 // basicAxios.interceptors.response.use(
 //   (response: AxiosResponse) => response,
 //   async (error: AxiosError) => {
-//     if (!error.config) {
-//       return Promise.reject(error);
-//     }
-
-//     const originalRequest = error.config as CustomAxiosRequestConfig;
-
+//     const originalRequest = error.config;
 //     if (error.response?.status === 401 && !originalRequest._retry) {
 //       originalRequest._retry = true;
 //       try {
-//         const response = await basicAxios.post("/user/refresh");
-//         const { accessToken, expiresIn } = response.data;
-
+//         const response = await basicAxios.post("/users/refresh");
+//         const { accessToken } = response.data;
 //         localStorage.setItem("AccessToken", accessToken);
-//         const expirationTime = new Date().getTime() + expiresIn * 1000; // 만료 시간을 현재 시간에서 5분 뒤로 설정합니다.
-//         localStorage.setItem(
-//           "AccessTokenExpiration",
-//           expirationTime.toString()
-//         );
-
-//         // 새로운 액세스 토큰을 콘솔에 출력합니다.
-//         console.log("New AccessToken:", accessToken);
-
-//         originalRequest.headers = originalRequest.headers || {};
 //         originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
-
-//         return basicAxios(originalRequest);
+//         return basicAxios(originalRequest); // retry the original request
 //       } catch (refreshError) {
 //         return Promise.reject(refreshError);
 //       }
 //     }
 //     return Promise.reject(error);
 //   }
+// );
+
+// const checkAccessTokenExpiration = () => {
+//   const accessTokenExpiration = localStorage.getItem("AccessTokenExpiration");
+//   if (accessTokenExpiration && new Date().getTime() >= Number(accessTokenExpiration)) {
+//     return true; // access token expired
+//   }
+//   return false; // access token valid
+// };
+
+// basicAxios.interceptors.request.use(
+//   (config: AxiosRequestConfig) => {
+//     if (checkAccessTokenExpiration()) {
+//       console.log("Access token is expired.");
+//       // Additional actions if access token is expired
+//     }
+//     return config;
+//   },
+//   (error: AxiosError) => Promise.reject(error)
 // );
