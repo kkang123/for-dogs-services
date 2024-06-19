@@ -703,13 +703,12 @@ const useAuth = () => {
 
   const refreshAccessToken = useCallback(async () => {
     try {
+      console.log("Starting token refresh..."); // 추가된 로그
       const response = await basicAxios.post("/users/refresh");
+      console.log("Refresh response:", response); // 추가된 로그
+
       const { accessToken } = response.data;
       localStorage.setItem("AccessToken", accessToken);
-      console.log("Sending request to /users/refresh with headers:", {
-        "Content-Type": "application/json",
-        // 필요한 경우 다른 헤더 추가
-      });
 
       // 액세스 토큰 만료 시간 갱신 (예시: 5분 후 만료)
       const accessTokenExpiration = new Date().getTime() + 5 * 60 * 1000;
