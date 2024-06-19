@@ -165,13 +165,95 @@
 
 // 이미지 전송이 잘 되는 코드
 
+// import axios, {
+//   AxiosResponse,
+//   AxiosError,
+//   InternalAxiosRequestConfig,
+// } from "axios";
+
+// export const BASE_URL = " https://api.fordogs.store/";
+
+// export const basicAxios = axios.create({
+//   baseURL: BASE_URL,
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+//   withCredentials: true,
+// });
+
+// // 요청 인터셉터 추가
+// basicAxios.interceptors.request.use(
+//   (config: InternalAxiosRequestConfig) => {
+//     const accessToken = localStorage.getItem("AccessToken");
+//     if (accessToken && config.headers) {
+//       (config.headers as Record<string, string | number | boolean>)[
+//         "Authorization"
+//       ] = `Bearer ${accessToken}`;
+//     }
+//     return config;
+//   },
+//   (error: AxiosError) => {
+//     return Promise.reject(error);
+//   }
+// );
+
+// // 응답 인터셉터 추가
+// basicAxios.interceptors.response.use(
+//   (response: AxiosResponse) => response,
+//   async (error: AxiosError) => {
+//     const originalRequest = error.config as InternalAxiosRequestConfig & {
+//       _retry?: boolean;
+//     };
+//     if (error.response?.status === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true;
+//       try {
+//         const response = await basicAxios.post("/users/refresh");
+//         const { accessToken } = response.data;
+//         localStorage.setItem("AccessToken", accessToken);
+
+//         // 재시도 전에 헤더 업데이트
+//         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+//         return basicAxios(originalRequest); // 요청 재시도
+//       } catch (refreshError) {
+//         return Promise.reject(refreshError);
+//       }
+//     }
+//     return Promise.reject(error);
+//   }
+// );
+
+// // 액세스 토큰 만료 여부 확인
+// const checkAccessTokenExpiration = () => {
+//   const accessTokenExpiration = localStorage.getItem("AccessTokenExpiration");
+//   if (
+//     accessTokenExpiration &&
+//     new Date().getTime() >= Number(accessTokenExpiration)
+//   ) {
+//     return true; // 액세스 토큰이 만료됨
+//   }
+//   return false; // 액세스 토큰이 유효함
+// };
+
+// basicAxios.interceptors.request.use(
+//   (config: InternalAxiosRequestConfig) => {
+//     if (checkAccessTokenExpiration()) {
+//       // 액세스 토큰이 만료되었을 때 추가적인 동작이 필요할 경우 여기에 작성
+//       console.log("Access token is expired.");
+//     }
+//     return config;
+//   },
+//   (error: AxiosError) => Promise.reject(error)
+// );
+
+// 불필요한 중복 코드 제거 및 인터셉터 응답 확인
+
 import axios, {
   AxiosResponse,
   AxiosError,
   InternalAxiosRequestConfig,
 } from "axios";
 
-export const BASE_URL = " https://api.fordogs.store/";
+export const BASE_URL = "https://api.fordogs.store/";
 
 export const basicAxios = axios.create({
   baseURL: BASE_URL,
@@ -181,48 +263,7 @@ export const basicAxios = axios.create({
   withCredentials: true,
 });
 
-// 요청 인터셉터 추가
-basicAxios.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    const accessToken = localStorage.getItem("AccessToken");
-    if (accessToken && config.headers) {
-      (config.headers as Record<string, string | number | boolean>)[
-        "Authorization"
-      ] = `Bearer ${accessToken}`;
-    }
-    return config;
-  },
-  (error: AxiosError) => {
-    return Promise.reject(error);
-  }
-);
-
-// 응답 인터셉터 추가
-basicAxios.interceptors.response.use(
-  (response: AxiosResponse) => response,
-  async (error: AxiosError) => {
-    const originalRequest = error.config as InternalAxiosRequestConfig & {
-      _retry?: boolean;
-    };
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      try {
-        const response = await basicAxios.post("/users/refresh");
-        const { accessToken } = response.data;
-        localStorage.setItem("AccessToken", accessToken);
-
-        // 재시도 전에 헤더 업데이트
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        return basicAxios(originalRequest); // 요청 재시도
-      } catch (refreshError) {
-        return Promise.reject(refreshError);
-      }
-    }
-    return Promise.reject(error);
-  }
-);
-
-// 액세스 토큰 만료 여부 확인
+// 액세스 토큰 만료 여부 확인 함수
 const checkAccessTokenExpiration = () => {
   const accessTokenExpiration = localStorage.getItem("AccessTokenExpiration");
   if (
@@ -234,15 +275,57 @@ const checkAccessTokenExpiration = () => {
   return false; // 액세스 토큰이 유효함
 };
 
+// 요청 인터셉터 추가
 basicAxios.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    console.log("Starting request:", config); // 요청 시작 로그 추가
+    const accessToken = localStorage.getItem("AccessToken");
+
     if (checkAccessTokenExpiration()) {
-      // 액세스 토큰이 만료되었을 때 추가적인 동작이 필요할 경우 여기에 작성
-      console.log("Access token is expired.");
+      console.log("Access token is expired."); // 액세스 토큰 만료 로그 추가
+    }
+
+    if (accessToken && config.headers) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
     }
     return config;
   },
-  (error: AxiosError) => Promise.reject(error)
+  (error: AxiosError) => {
+    console.error("Request error:", error); // 요청 에러 로그 추가
+    return Promise.reject(error);
+  }
+);
+
+// 응답 인터셉터 추가
+basicAxios.interceptors.response.use(
+  (response: AxiosResponse) => {
+    console.log("Response received:", response); // 응답 로그 추가
+    return response;
+  },
+  async (error: AxiosError) => {
+    const originalRequest = error.config as InternalAxiosRequestConfig & {
+      _retry?: boolean;
+    };
+    console.error("Response error:", error); // 응답 에러 로그 추가
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        console.log("Attempting token refresh..."); // 토큰 갱신 시도 로그 추가
+        const response = await basicAxios.post("/users/refresh");
+        const { accessToken } = response.data;
+        localStorage.setItem("AccessToken", accessToken);
+
+        // 재시도 전에 헤더 업데이트
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        return basicAxios(originalRequest); // 요청 재시도
+      } catch (refreshError) {
+        console.error("Token refresh failed:", refreshError); // 토큰 갱신 실패 로그 추가
+        return Promise.reject(refreshError);
+      }
+    }
+    return Promise.reject(error);
+  }
 );
 
 // test
