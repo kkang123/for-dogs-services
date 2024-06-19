@@ -706,6 +706,10 @@ const useAuth = () => {
       const response = await basicAxios.post("/users/refresh");
       const { accessToken } = response.data;
       localStorage.setItem("AccessToken", accessToken);
+      console.log("Sending request to /users/refresh with headers:", {
+        "Content-Type": "application/json",
+        // 필요한 경우 다른 헤더 추가
+      });
 
       // 액세스 토큰 만료 시간 갱신 (예시: 5분 후 만료)
       const accessTokenExpiration = new Date().getTime() + 5 * 60 * 1000;
@@ -716,10 +720,12 @@ const useAuth = () => {
 
       return accessToken;
     } catch (error) {
-      console.error("Failed to refresh access token:", error);
+      console.error("액세스 토큰 갱신 실패:", error);
 
       if (axios.isAxiosError(error)) {
         const response = error.response;
+        console.log("Axios 오류 응답:", response); // 응답 로그 추가
+
         if (
           response?.status === 400 &&
           response.data?.error?.message ===
@@ -727,7 +733,7 @@ const useAuth = () => {
         ) {
           logout();
         } else if (response?.status === 401) {
-          console.log("Unauthorized error response:", response.data);
+          console.log("Unauthorized 오류 응답:", response.data);
         }
       }
 
