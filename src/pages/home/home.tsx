@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 
-import { auth, storage } from "@/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { storage } from "@/firebase";
 import {
   collection,
   getDocs,
@@ -138,19 +137,6 @@ export default function Home() {
 
   //   fetchAccessTokenIfNeeded();
   // }, []);
-
-  // 로그인 상태 확인
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log(true);
-        console.log(user);
-      } else {
-        console.log(false);
-      }
-    });
-    return () => unsubscribe();
-  }, []);
 
   return (
     <>
