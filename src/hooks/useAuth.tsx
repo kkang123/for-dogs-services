@@ -806,7 +806,328 @@
 
 // 401 에러 해결
 
-import { useEffect, useMemo, useCallback } from "react";
+// import { useEffect, useMemo, useCallback } from "react";
+// import { useRecoilState } from "recoil";
+// import { userState, isLoggedInState } from "@/recoil/userState";
+// import { useLogout } from "@/hooks/useLogout";
+// import { basicAxios } from "@/api/axios";
+// import axios from "axios";
+
+// const useAuth = () => {
+//   const [user, setUser] = useRecoilState(userState);
+//   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
+//   const { logout } = useLogout();
+
+//   const refreshAccessToken = useCallback(async () => {
+//     try {
+//       console.log("Starting token refresh...");
+//       const response = await basicAxios.post("/users/refresh");
+//       console.log("Refresh response:", response);
+
+//       const { accessToken } = response.data;
+//       localStorage.setItem("AccessToken", accessToken);
+
+//       // 액세스 토큰 만료 시간 갱신 (예시: 5분 후 만료)
+//       const accessTokenExpiration = new Date().getTime() + 5 * 60 * 1000;
+//       localStorage.setItem(
+//         "AccessTokenExpiration",
+//         accessTokenExpiration.toString()
+//       );
+
+//       return accessToken;
+//     } catch (error) {
+//       console.error("액세스 토큰 갱신 실패:", error);
+
+//       if (axios.isAxiosError(error)) {
+//         const response = error.response;
+//         console.log("Axios 오류 응답:", response);
+
+//         if (response?.status === 401) {
+//           console.log("Unauthorized 오류 응답:", response.data);
+//         }
+//       }
+
+//       return null;
+//     }
+//   }, [logout]);
+
+//   const checkAndRefreshToken = useMemo(
+//     () => async () => {
+//       const accessToken = localStorage.getItem("AccessToken");
+//       const accessTokenExpiration = localStorage.getItem(
+//         "AccessTokenExpiration"
+//       );
+
+//       if (accessToken && accessTokenExpiration) {
+//         const now = new Date().getTime();
+//         const expirationTime = Number(accessTokenExpiration);
+
+//         if (now >= expirationTime) {
+//           const newAccessToken = await refreshAccessToken();
+//           if (newAccessToken) {
+//             setIsLoggedIn(true);
+//           } else {
+//             logout();
+//           }
+//         }
+//       } else {
+//         logout();
+//       }
+//     },
+//     [refreshAccessToken, logout, setIsLoggedIn]
+//   );
+
+//   useEffect(() => {
+//     const checkTokenAndRefresh = async () => {
+//       const accessToken = localStorage.getItem("AccessToken");
+//       const accessTokenExpiration = localStorage.getItem(
+//         "AccessTokenExpiration"
+//       );
+
+//       if (accessToken && accessTokenExpiration) {
+//         const now = new Date().getTime();
+//         const expirationTime = Number(accessTokenExpiration);
+
+//         if (now < expirationTime) {
+//           setIsLoggedIn(true);
+//           const storedUser = localStorage.getItem("user");
+//           if (storedUser) {
+//             const parsedUser = JSON.parse(storedUser);
+//             setUser(parsedUser);
+//           }
+//         } else {
+//           await checkAndRefreshToken();
+//         }
+//       } else {
+//         logout();
+//       }
+//     };
+
+//     checkTokenAndRefresh();
+//   }, [checkAndRefreshToken, logout, setIsLoggedIn, setUser]);
+
+//   return { user, isLoggedIn, checkAndRefreshToken };
+// };
+
+// export default useAuth;
+
+// 의존성 배열 최소화
+
+// import { useEffect, useCallback } from "react";
+// import { useRecoilState } from "recoil";
+// import { userState, isLoggedInState } from "@/recoil/userState";
+// import { useLogout } from "@/hooks/useLogout";
+// import { basicAxios } from "@/api/axios";
+// import axios from "axios";
+
+// const useAuth = () => {
+//   const [user, setUser] = useRecoilState(userState);
+//   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
+//   const { logout } = useLogout();
+
+//   const refreshAccessToken = useCallback(async () => {
+//     try {
+//       console.log("Starting token refresh...");
+//       const response = await basicAxios.post("/users/refresh");
+//       console.log("Refresh response:", response);
+
+//       const { accessToken } = response.data;
+//       localStorage.setItem("AccessToken", accessToken);
+
+//       // 액세스 토큰 만료 시간 갱신 (예시: 5분 후 만료)
+//       const accessTokenExpiration = new Date().getTime() + 5 * 60 * 1000;
+//       localStorage.setItem(
+//         "AccessTokenExpiration",
+//         accessTokenExpiration.toString()
+//       );
+
+//       return accessToken;
+//     } catch (error) {
+//       console.error("액세스 토큰 갱신 실패:", error);
+
+//       if (axios.isAxiosError(error)) {
+//         const response = error.response;
+//         console.log("Axios 오류 응답:", response);
+
+//         if (response?.status === 401) {
+//           console.log("Unauthorized 오류 응답:", response.data);
+//         }
+//       }
+
+//       return null;
+//     }
+//   }, []);
+
+//   const checkAndRefreshToken = useCallback(async () => {
+//     const accessToken = localStorage.getItem("AccessToken");
+//     const accessTokenExpiration = localStorage.getItem("AccessTokenExpiration");
+
+//     if (accessToken && accessTokenExpiration) {
+//       const now = new Date().getTime();
+//       const expirationTime = Number(accessTokenExpiration);
+
+//       if (now >= expirationTime) {
+//         const newAccessToken = await refreshAccessToken();
+//         if (newAccessToken) {
+//           setIsLoggedIn(true);
+//         } else {
+//           logout();
+//         }
+//       }
+//     } else {
+//       logout();
+//     }
+//   }, [refreshAccessToken, setIsLoggedIn, logout]);
+
+//   useEffect(() => {
+//     const checkTokenAndRefresh = async () => {
+//       const accessToken = localStorage.getItem("AccessToken");
+//       const accessTokenExpiration = localStorage.getItem(
+//         "AccessTokenExpiration"
+//       );
+
+//       if (accessToken && accessTokenExpiration) {
+//         const now = new Date().getTime();
+//         const expirationTime = Number(accessTokenExpiration);
+
+//         if (now < expirationTime) {
+//           if (!isLoggedIn) {
+//             setIsLoggedIn(true);
+//           }
+//           const storedUser = localStorage.getItem("user");
+//           if (storedUser) {
+//             const parsedUser = JSON.parse(storedUser);
+//             setUser(parsedUser);
+//           }
+//         } else {
+//           await checkAndRefreshToken();
+//         }
+//       } else {
+//         logout();
+//       }
+//     };
+
+//     checkTokenAndRefresh();
+//   }, [checkAndRefreshToken, isLoggedIn, logout, setIsLoggedIn, setUser]);
+
+//   return { user, isLoggedIn, checkAndRefreshToken };
+// };
+
+// export default useAuth;
+
+// 콘솔 추가
+
+// import { useEffect, useCallback } from "react";
+// import { useRecoilState } from "recoil";
+// import { userState, isLoggedInState } from "@/recoil/userState";
+// import { useLogout } from "@/hooks/useLogout";
+// import { basicAxios } from "@/api/axios";
+// import axios from "axios";
+
+// const useAuth = () => {
+//   const [user, setUser] = useRecoilState(userState);
+//   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
+//   const { logout } = useLogout();
+
+//   const refreshAccessToken = useCallback(async () => {
+//     try {
+//       console.log("Starting token refresh...");
+//       const response = await basicAxios.post("/users/refresh");
+//       console.log("Refresh response:", response);
+
+//       const { accessToken } = response.data;
+//       localStorage.setItem("AccessToken", accessToken);
+
+//       return accessToken;
+//     } catch (error) {
+//       console.error("액세스 토큰 갱신 실패:", error);
+
+//       if (axios.isAxiosError(error)) {
+//         const response = error.response;
+//         console.log("Axios 오류 응답:", response);
+
+//         if (response?.status === 401) {
+//           console.log("Unauthorized 오류 응답:", response.data);
+//         }
+//       }
+
+//       return null;
+//     }
+//   }, []);
+
+//   const checkAndRefreshToken = useCallback(async () => {
+//     console.log("Checking and refreshing token...");
+//     const accessToken = localStorage.getItem("AccessToken");
+//     const accessTokenExpiration = localStorage.getItem("AccessTokenExpiration");
+
+//     if (accessToken && accessTokenExpiration) {
+//       const now = new Date().getTime();
+//       const expirationTime = Number(accessTokenExpiration);
+
+//       if (now >= expirationTime) {
+//         console.log("Token expired. Refreshing token...");
+//         const newAccessToken = await refreshAccessToken();
+//         if (newAccessToken) {
+//           console.log("Token refreshed successfully");
+//           setIsLoggedIn(true);
+//         } else {
+//           console.log("Token refresh failed. Logging out...");
+//           logout();
+//         }
+//       }
+//     } else {
+//       console.log("No access token found. Logging out...");
+//       logout();
+//     }
+//   }, [refreshAccessToken, setIsLoggedIn, logout]);
+
+//   useEffect(() => {
+//     const checkTokenAndRefresh = async () => {
+//       console.log(
+//         "Executing useEffect to check token and refresh if necessary"
+//       );
+//       const accessToken = localStorage.getItem("AccessToken");
+//       const accessTokenExpiration = localStorage.getItem(
+//         "AccessTokenExpiration"
+//       );
+
+//       if (accessToken && accessTokenExpiration) {
+//         const now = new Date().getTime();
+//         const expirationTime = Number(accessTokenExpiration);
+
+//         if (now < expirationTime) {
+//           console.log("Access token is still valid");
+//           if (!isLoggedIn) {
+//             console.log("User is not logged in. Setting isLoggedIn to true");
+//             setIsLoggedIn(true);
+//           }
+//           const storedUser = localStorage.getItem("user");
+//           if (storedUser) {
+//             console.log("User data found in localStorage. Setting user state");
+//             const parsedUser = JSON.parse(storedUser);
+//             setUser(parsedUser);
+//           }
+//         } else {
+//           console.log("Access token expired. Refreshing token...");
+//           await checkAndRefreshToken();
+//         }
+//       } else {
+//         console.log("No access token or expiration time found. Logging out...");
+//         logout();
+//       }
+//     };
+
+//     checkTokenAndRefresh();
+//   }, [checkAndRefreshToken, isLoggedIn, logout, setIsLoggedIn, setUser]);
+
+//   return { user, isLoggedIn, checkAndRefreshToken };
+// };
+
+// export default useAuth;
+
+// 불필요하다고 생각하는 부분 제거
+
+import { useEffect, useCallback } from "react";
 import { useRecoilState } from "recoil";
 import { userState, isLoggedInState } from "@/recoil/userState";
 import { useLogout } from "@/hooks/useLogout";
@@ -814,8 +1135,8 @@ import { basicAxios } from "@/api/axios";
 import axios from "axios";
 
 const useAuth = () => {
-  const [user, setUser] = useRecoilState(userState);
-  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
+  const [user] = useRecoilState(userState);
+  const [isLoggedIn] = useRecoilState(isLoggedInState);
   const { logout } = useLogout();
 
   const refreshAccessToken = useCallback(async () => {
@@ -826,13 +1147,6 @@ const useAuth = () => {
 
       const { accessToken } = response.data;
       localStorage.setItem("AccessToken", accessToken);
-
-      // 액세스 토큰 만료 시간 갱신 (예시: 5분 후 만료)
-      const accessTokenExpiration = new Date().getTime() + 5 * 60 * 1000;
-      localStorage.setItem(
-        "AccessTokenExpiration",
-        accessTokenExpiration.toString()
-      );
 
       return accessToken;
     } catch (error) {
@@ -849,62 +1163,45 @@ const useAuth = () => {
 
       return null;
     }
-  }, [logout]);
+  }, []);
 
-  const checkAndRefreshToken = useMemo(
-    () => async () => {
-      const accessToken = localStorage.getItem("AccessToken");
-      const accessTokenExpiration = localStorage.getItem(
-        "AccessTokenExpiration"
-      );
+  const checkAndRefreshToken = useCallback(async () => {
+    const accessToken = localStorage.getItem("AccessToken");
+    const accessTokenExpiration = localStorage.getItem("AccessTokenExpiration");
 
-      if (accessToken && accessTokenExpiration) {
-        const now = new Date().getTime();
-        const expirationTime = Number(accessTokenExpiration);
+    if (accessToken && accessTokenExpiration) {
+      const now = new Date().getTime();
+      const expirationTime = Number(accessTokenExpiration);
 
-        if (now >= expirationTime) {
-          const newAccessToken = await refreshAccessToken();
-          if (newAccessToken) {
-            setIsLoggedIn(true);
-          } else {
-            logout();
-          }
+      if (now >= expirationTime) {
+        // Access token expired, refresh it
+        const newAccessToken = await refreshAccessToken();
+        if (newAccessToken) {
+          // Update localStorage with new access token and expiration time
+          localStorage.setItem("AccessToken", newAccessToken);
+          // Update headers if your axios instance uses Authorization header
+          basicAxios.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${newAccessToken}`;
+        } else {
+          // Handle token refresh failure, possibly log out user
+          logout();
         }
       } else {
-        logout();
+        // Access token is still valid, update axios headers if needed
+        basicAxios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${accessToken}`;
       }
-    },
-    [refreshAccessToken, logout, setIsLoggedIn]
-  );
+    } else {
+      // No access token found, possibly log out user
+      logout();
+    }
+  }, [refreshAccessToken, logout]);
 
   useEffect(() => {
-    const checkTokenAndRefresh = async () => {
-      const accessToken = localStorage.getItem("AccessToken");
-      const accessTokenExpiration = localStorage.getItem(
-        "AccessTokenExpiration"
-      );
-
-      if (accessToken && accessTokenExpiration) {
-        const now = new Date().getTime();
-        const expirationTime = Number(accessTokenExpiration);
-
-        if (now < expirationTime) {
-          setIsLoggedIn(true);
-          const storedUser = localStorage.getItem("user");
-          if (storedUser) {
-            const parsedUser = JSON.parse(storedUser);
-            setUser(parsedUser);
-          }
-        } else {
-          await checkAndRefreshToken();
-        }
-      } else {
-        logout();
-      }
-    };
-
-    checkTokenAndRefresh();
-  }, [checkAndRefreshToken, logout, setIsLoggedIn, setUser]);
+    checkAndRefreshToken();
+  }, [checkAndRefreshToken]);
 
   return { user, isLoggedIn, checkAndRefreshToken };
 };

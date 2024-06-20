@@ -346,13 +346,10 @@
 import React, { useState } from "react";
 import { useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
-
 import { basicAxios } from "@/api/axios";
 import { userState } from "@/recoil/userState";
 import { Product } from "@/interface/product";
-
 import SEOMetaTag from "@/components/SEOMetaTag";
-
 import ProductHeader from "@/components/Header/ProductHeader";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -360,13 +357,12 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import photo from "@/assets/icon-photo.svg";
 import Swal from "sweetalert2";
-
 import useAuth from "@/hooks/useAuth";
 
 function ProductUpload() {
   const navigate = useNavigate();
   const user = useRecoilValue(userState);
-  const { checkAndRefreshToken } = useAuth(); // useAuth 훅에서 checkAndRefreshToken 함수 가져오기
+  const { checkAndRefreshToken } = useAuth();
 
   const goToProductPage = () => {
     if (user.userId) navigate(`/productlist/${user.userId}`);
