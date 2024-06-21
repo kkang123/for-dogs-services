@@ -1210,6 +1210,93 @@
 
 // 로컬 스토리지에 새로 발급 받은 액세스 토큰 만료시간 추가
 
+// import { useEffect, useCallback } from "react";
+// import { useRecoilState } from "recoil";
+// import { userState, isLoggedInState } from "@/recoil/userState";
+// import { useLogout } from "@/hooks/useLogout";
+// import { basicAxios } from "@/api/axios";
+// import axios from "axios";
+
+// const useAuth = () => {
+//   const [user] = useRecoilState(userState);
+//   const [isLoggedIn] = useRecoilState(isLoggedInState);
+//   const { logout } = useLogout();
+
+//   const refreshAccessToken = useCallback(async () => {
+//     try {
+//       console.log("Starting token refresh...");
+//       const response = await basicAxios.post("/users/refresh");
+//       console.log("Refresh response:", response);
+
+//       const { accessToken, expiration } = response.data.result;
+
+//       // Store the new access token and its expiration time in local storage
+//       localStorage.setItem("AccessToken", accessToken);
+//       localStorage.setItem(
+//         "AccessTokenExpiration",
+//         new Date(expiration).getTime().toString()
+//       );
+
+//       return accessToken;
+//     } catch (error) {
+//       console.error("액세스 토큰 갱신 실패:", error);
+
+//       if (axios.isAxiosError(error)) {
+//         const response = error.response;
+//         console.log("Axios 오류 응답:", response);
+
+//         if (response?.status === 401) {
+//           console.log("Unauthorized 오류 응답:", response.data);
+//         }
+//       }
+
+//       return null;
+//     }
+//   }, []);
+
+//   const checkAndRefreshToken = useCallback(async () => {
+//     const accessToken = localStorage.getItem("AccessToken");
+//     const accessTokenExpiration = localStorage.getItem("AccessTokenExpiration");
+
+//     if (accessToken && accessTokenExpiration) {
+//       const now = new Date().getTime();
+//       const expirationTime = Number(accessTokenExpiration);
+
+//       if (now >= expirationTime) {
+//         // Access token expired, refresh it
+//         const newAccessToken = await refreshAccessToken();
+//         if (newAccessToken) {
+//           // Update headers if your axios instance uses Authorization header
+//           basicAxios.defaults.headers.common[
+//             "Authorization"
+//           ] = `Bearer ${newAccessToken}`;
+//         } else {
+//           // Handle token refresh failure, possibly log out user
+//           logout(); // 이 부분에서 토큰 갱신 실패 시 로그아웃을 호출합니다
+//         }
+//       } else {
+//         // Access token is still valid, update axios headers if needed
+//         basicAxios.defaults.headers.common[
+//           "Authorization"
+//         ] = `Bearer ${accessToken}`;
+//       }
+//     } else {
+//       // No access token found, possibly log out user
+//       logout();
+//     }
+//   }, [refreshAccessToken, logout]);
+
+//   useEffect(() => {
+//     checkAndRefreshToken();
+//   }, [checkAndRefreshToken]);
+
+//   return { user, isLoggedIn, checkAndRefreshToken };
+// };
+
+// export default useAuth;
+
+// 로컬 스토리지에 액세스 토큰과 만료시간을 제대로 처리하지 않고 저장하지 않아서 response.data.result 객체에서 value와 expiration 값을 각각 분리 후 저장
+
 import { useEffect, useCallback } from "react";
 import { useRecoilState } from "recoil";
 import { userState, isLoggedInState } from "@/recoil/userState";
@@ -1228,16 +1315,17 @@ const useAuth = () => {
       const response = await basicAxios.post("/users/refresh");
       console.log("Refresh response:", response);
 
-      const { accessToken, expiration } = response.data.result;
+      const { value, expiration } = response.data.result;
 
       // Store the new access token and its expiration time in local storage
-      localStorage.setItem("AccessToken", accessToken);
+      console.log("Access Token: ", { value, expiration });
+      localStorage.setItem("AccessToken", value);
       localStorage.setItem(
         "AccessTokenExpiration",
         new Date(expiration).getTime().toString()
       );
 
-      return accessToken;
+      return value;
     } catch (error) {
       console.error("액세스 토큰 갱신 실패:", error);
 
@@ -1263,25 +1351,27 @@ const useAuth = () => {
       const expirationTime = Number(accessTokenExpiration);
 
       if (now >= expirationTime) {
-        // Access token expired, refresh it
+        // 액세스 토큰이 만료되었습니다. 새로고침하세요.
         const newAccessToken = await refreshAccessToken();
         if (newAccessToken) {
-          // Update headers if your axios instance uses Authorization header
+          // 새로운 액세스 토큰 및 만료 시간으로 localStorage 업데이트
+          localStorage.setItem("AccessToken", newAccessToken);
+          // axios 인스턴스가 Authorization 헤더를 사용하는 경우 헤더 업데이트 -> 새로운 액세스 토큰 헤더에 저장
           basicAxios.defaults.headers.common[
             "Authorization"
           ] = `Bearer ${newAccessToken}`;
         } else {
-          // Handle token refresh failure, possibly log out user
+          // 토큰 새로 고침 실패 처리, 사용자 로그아웃 가능
           logout(); // 이 부분에서 토큰 갱신 실패 시 로그아웃을 호출합니다
         }
       } else {
-        // Access token is still valid, update axios headers if needed
+        // 액세스 토큰은 여전히 유효합니다. 필요한 경우 axios 헤더를 업데이트하세요.
         basicAxios.defaults.headers.common[
           "Authorization"
         ] = `Bearer ${accessToken}`;
       }
     } else {
-      // No access token found, possibly log out user
+      // 액세스 토큰을 찾을 수 없습니다. 사용자가 로그아웃될 수 있습니다.
       logout();
     }
   }, [refreshAccessToken, logout]);
