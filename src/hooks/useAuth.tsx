@@ -1315,7 +1315,8 @@ const useAuth = () => {
       const response = await basicAxios.post("/users/refresh");
       console.log("Refresh response:", response);
 
-      const { value, expiration } = response.data.result;
+      const { accessToken } = response.data.result;
+      const { value, expiration } = accessToken;
 
       // Store the new access token and its expiration time in local storage
       console.log("Access Token: ", { value, expiration });
