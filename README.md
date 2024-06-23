@@ -2,32 +2,23 @@
 
 ![main imag](https://github.com/kkang123/ForDogs_Shop/assets/85389685/e91633ca-32c7-4198-b05b-686fbbda598e)
 
-배포 URL : https://fordogs-shop.vercel.app/
+배포 URL : https://www.fordogs.store/
 
 ```
 테스트 계정
 
 - 구매자 계정
-ID : buyer001@gmail.com
-PW : wlgjsdl987!!@@
+ID : buyer001
+PW : test001!!@@
 
 - 판매자 계정
-ID : seller001@gmail.com
-PW : wlgjsdl987!!@@
+ID : seller001
+PW : test001!!@@
 ```
 
 ## 📅 프로젝트 기간
 
-✨ 2024.01.24 ~ 2024.02.22 기능 구현 <br>
-♻️ 2024.02.23 ~ 24.04.16 리팩토링
-♻️ 24.04.16 이후 파이어베이스 기능을 제거 후 백엔드 api 추가 계획
-
-| 1주차              | 2주차        | 3주차            | 4주차              |
-| ------------------ | ------------ | ---------------- | ------------------ |
-| 페이지 라우팅 설계 | 상품 CRUD    | 상품 판매 페이지 | Lazy Loding        |
-| Firebase연동       | 장바구니CRUD | 구매자 기능      | 이미지 변환(.webp) |
-| 로그인/회원가입    |              | 판매자 기능      | 번들 사이즈 줄이기 |
-|                    |              |                  | SEO 개선           |
+♻️ 24.04.16 이후 기존 프로젝트에서 파이어베이스 기능을 제거 후 백엔드와 협업하여 api 연결 등 리팩토링 진행
 
 ## 🔨 사용 기술
 
