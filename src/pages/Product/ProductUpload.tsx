@@ -343,7 +343,7 @@
 
 // export default ProductUpload;
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
 import { basicAxios } from "@/api/axios";
@@ -532,6 +532,7 @@ function ProductUpload() {
             const imageUrl = data.result.uploadedImages[0].imageFileUrl;
             console.log(`Uploaded file URL: ${imageUrl}`);
             downloadURLs.push(imageUrl);
+            console.log("downloadURLs", downloadURLs);
           } else {
             console.error("imageFileUrl not found in response data");
           }
@@ -549,6 +550,30 @@ function ProductUpload() {
       productImages: downloadURLs,
     }));
   };
+
+  const deleteUploadedImages = async () => {
+    try {
+      await checkAndRefreshToken();
+      const response = await basicAxios.delete("/products/images", {
+        data: { imageUrls: product.productImages },
+      });
+      if (response.status === 200) {
+        console.log("업로드된 이미지가 성공적으로 삭제되었습니다.");
+      } else {
+        console.error("업로드된 이미지를 삭제하는 데 실패했습니다.", response);
+      }
+    } catch (error) {
+      console.error("업로드된 이미지를 삭제하는 중 오류 발생: ", error);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (product.productImages.length > 0) {
+        deleteUploadedImages();
+      }
+    };
+  }, [product.productImages]);
 
   return (
     <>
