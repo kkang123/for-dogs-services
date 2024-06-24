@@ -555,7 +555,7 @@ function ProductUpload() {
     try {
       await checkAndRefreshToken();
       const response = await basicAxios.delete("/products/images", {
-        data: { imageUrls: product.productImages },
+        params: { imageUrls: product.productImages },
       });
       if (response.status === 200) {
         console.log("업로드된 이미지가 성공적으로 삭제되었습니다.");
