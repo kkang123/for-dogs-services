@@ -551,22 +551,6 @@ function ProductUpload() {
     }));
   };
 
-  // const deleteUploadedImages = async () => {
-  //   try {
-  //     await checkAndRefreshToken();
-  //     const response = await basicAxios.delete("/products/images", {
-  //       params: { imageUrls: product.productImages },
-  //     });
-  //     if (response.status === 200) {
-  //       console.log("업로드된 이미지가 성공적으로 삭제되었습니다.");
-  //     } else {
-  //       console.error("업로드된 이미지를 삭제하는 데 실패했습니다.", response);
-  //     }
-  //   } catch (error) {
-  //     console.error("업로드된 이미지를 삭제하는 중 오류 발생: ", error);
-  //   }
-  // };
-
   const deleteUploadedImages = async () => {
     try {
       await checkAndRefreshToken();
@@ -584,7 +568,7 @@ function ProductUpload() {
 
       // 모든 요청이 성공했는지 확인할 수도 있음
       responses.forEach((response) => {
-        if (response.status === 200) {
+        if (response.status === 204) {
           console.log(`이미지 삭제 성공: ${response.config.params.imageUrls}`);
         } else {
           console.error(
