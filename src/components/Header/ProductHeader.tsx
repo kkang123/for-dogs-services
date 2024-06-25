@@ -25,6 +25,7 @@ interface ProductHeaderProps {
   showProductCart?: boolean;
   onDelete?: () => void;
   onEdit?: () => void;
+  onBackspaceClick?: () => void;
 }
 
 const ProductHeader: React.FC<ProductHeaderProps> = ({
@@ -38,6 +39,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   showProductCart = false,
   onDelete,
   onEdit,
+  onBackspaceClick,
 }) => {
   const user = useRecoilValue(userState);
   const isLoggedIn = useRecoilValue(isLoggedInState);
@@ -82,8 +84,12 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
 
   const Backspace = (event: FormEvent) => {
     event.preventDefault();
+    if (onBackspaceClick) {
+      onBackspaceClick();
+    }
     goToProductListPage();
   };
+
   const Upload = (event: FormEvent) => {
     event.preventDefault();
     navigate("/productupload");

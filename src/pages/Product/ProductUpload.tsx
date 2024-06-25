@@ -343,7 +343,7 @@
 
 // export default ProductUpload;
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
 import { basicAxios } from "@/api/axios";
@@ -362,6 +362,7 @@ import useAuth from "@/hooks/useAuth";
 function ProductUpload() {
   const navigate = useNavigate();
   const user = useRecoilValue(userState);
+
   const { checkAndRefreshToken } = useAuth();
 
   const goToProductPage = () => {
@@ -489,6 +490,10 @@ function ProductUpload() {
 
     if (files && files.length <= 3) {
       const selectedFiles = Array.from(files);
+
+      // 새 이미지를 업로드하기 전에 기존 이미지를 삭제
+      await deleteUploadedImages();
+
       try {
         await handleUpload(selectedFiles);
       } catch (error) {
@@ -581,18 +586,14 @@ function ProductUpload() {
     }
   };
 
-  useEffect(() => {
-    return () => {
-      if (product.productImages.length > 0) {
-        deleteUploadedImages();
-      }
-    };
-  }, [product.productImages]);
-
   return (
     <>
       <header>
-        <ProductHeader showBackspaseButton={true} showEditButton={false} />
+        <ProductHeader
+          showBackspaseButton={true}
+          showEditButton={false}
+          onBackspaceClick={deleteUploadedImages}
+        />
         <SEOMetaTag
           title="For Dogs - ProductUpload"
           description="상품 업로드 페이지입니다."
