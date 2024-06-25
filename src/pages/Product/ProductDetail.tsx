@@ -15,12 +15,20 @@ import {
 } from "@/components/ui/carousel";
 
 import Swal from "sweetalert2";
+import { useRecoilValue } from "recoil";
+import { userState } from "@/recoil/userState";
 
 function ProductDetail() {
   const { productId } = useParams<{ productId: string }>(); // Change id to productId to match the API URL
   const navigate = useNavigate();
 
   const [product, setProduct] = useState<Product | null>(null);
+
+  const user = useRecoilValue(userState);
+
+  const goToProductPage = () => {
+    if (user.userId) navigate(`/productlist/${user.userId}`);
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -66,9 +74,38 @@ function ProductDetail() {
     fetchProduct();
   }, [productId, navigate]); // Update dependency array to use productId
 
-  const handleDelete = () => {
-    // 상품 삭제 나중에 추가 예정
+  const handleDelete = async () => {
+    try {
+      const response = await basicAxios.delete(
+        `/products/${productId}/deactivate`
+      );
+      if (response.status === 204) {
+        // 삭제 성공 시
+        Swal.fire({
+          icon: "success",
+          title: "상품 삭제 완료",
+          text: "상품이 성공적으로 삭제되었습니다.",
+        }).then(() => {
+          goToProductPage();
+        });
+      } else {
+        // 삭제 실패 시
+        Swal.fire({
+          icon: "error",
+          title: "상품 삭제 실패",
+          text: "상품 삭제 중 문제가 발생했습니다.",
+        });
+      }
+    } catch (error) {
+      console.error("상품 삭제 실패:", error);
+      Swal.fire({
+        icon: "error",
+        title: "상품 삭제 실패",
+        text: "상품 삭제 중 문제가 발생했습니다.",
+      });
+    }
   };
+
   // 수정 함수(추후 api 추가 시 적용)
   const handleEdit = () => {
     navigate(`/productedit/${productId}`);
