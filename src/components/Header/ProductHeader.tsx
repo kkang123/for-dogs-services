@@ -6,7 +6,7 @@ import { userState, isLoggedInState } from "@/recoil/userState";
 import { cartState } from "@/recoil/cartState";
 
 import { useLogout } from "@/hooks/useLogout";
-import useAuth from "@/hooks/useAuth"; // useAuth 훅 추가
+import useAuth from "@/hooks/useAuth";
 
 import { Button } from "@/components/ui/button";
 

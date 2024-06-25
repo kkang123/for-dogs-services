@@ -19,7 +19,7 @@ import { useRecoilValue } from "recoil";
 import { userState } from "@/recoil/userState";
 
 function ProductDetail() {
-  const { productId } = useParams<{ productId: string }>(); // Change id to productId to match the API URL
+  const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
 
   const [product, setProduct] = useState<Product | null>(null);
@@ -56,7 +56,7 @@ function ProductDetail() {
             title: "상품 불러오기 실패",
             text: "상품 정보를 불러오는데 실패했습니다.",
           }).then(() => {
-            navigate("/"); // Redirect to homepage or another appropriate page
+            navigate("/");
           });
         }
       } catch (error) {
@@ -66,13 +66,13 @@ function ProductDetail() {
           title: "상품 불러오기 실패",
           text: "상품 정보를 불러오는데 실패했습니다.",
         }).then(() => {
-          navigate("/"); // Redirect to homepage or another appropriate page
+          navigate("/");
         });
       }
     };
 
     fetchProduct();
-  }, [productId, navigate]); // Update dependency array to use productId
+  }, [productId, navigate]);
 
   const handleDelete = async () => {
     try {
@@ -80,7 +80,6 @@ function ProductDetail() {
         `/products/${productId}/deactivate`
       );
       if (response.status === 204) {
-        // 삭제 성공 시
         Swal.fire({
           icon: "success",
           title: "상품 삭제 완료",
@@ -89,7 +88,6 @@ function ProductDetail() {
           goToProductPage();
         });
       } else {
-        // 삭제 실패 시
         Swal.fire({
           icon: "error",
           title: "상품 삭제 실패",
