@@ -1,4 +1,4 @@
-import { basicAxios } from "@/api/axios";
+// import { basicAxios } from "@/api/axios";
 import { useSetRecoilState } from "recoil";
 import { userState, isLoggedInState } from "@/recoil/userState";
 
