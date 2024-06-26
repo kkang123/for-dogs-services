@@ -1,7 +1,7 @@
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { basicAxios } from "./axios";
 import { useSetRecoilState } from "recoil";
-import { useNavigate } from "react-router-dom";
 import { userState, isLoggedInState } from "@/recoil/userState";
 import { Login, ServerError } from "@/interface/login";
 import Swal, { SweetAlertIcon } from "sweetalert2";
