@@ -17,13 +17,13 @@ const useAuth = () => {
       console.log("Refresh response:", response);
 
       const { accessToken } = response.data.result;
-      const { value, expiration } = accessToken;
+      const { value, expirationTime } = accessToken;
 
-      console.log("Access Token: ", { value, expiration });
+      console.log("Access Token: ", { value, expirationTime });
       localStorage.setItem("AccessToken", value);
       localStorage.setItem(
         "AccessTokenExpiration",
-        new Date(expiration).getTime().toString()
+        new Date(expirationTime).getTime().toString()
       );
 
       return value;
