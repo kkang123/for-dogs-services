@@ -22,14 +22,9 @@ export const useLogin = () => {
 
       const { accessToken } = response.data.result || {};
 
-      const accessTokenExpiration = new Date(
-        accessToken.expirationTime
-      ).getTime();
+      const accessTokenExpiration = accessToken.expirationTime;
       localStorage.setItem("AccessToken", accessToken.value);
-      localStorage.setItem(
-        "AccessTokenExpiration",
-        accessTokenExpiration.toString()
-      );
+      localStorage.setItem("AccessTokenExpiration", accessTokenExpiration);
 
       const user = { isLoggedIn: true, userId, userRole };
       localStorage.setItem("user", JSON.stringify(user));
