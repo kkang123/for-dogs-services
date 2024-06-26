@@ -13,14 +13,14 @@ export const useLogout = () => {
     setIsLoggedIn(false);
     setUser({ isLoggedIn: false, userId: "", role: "" });
 
-    try {
-      const response = await basicAxios.post("/users/logout", {
-        withCredentials: true,
-      });
-      console.log("로그아웃 성공 : ", response.data);
-    } catch (error) {
-      console.error("로그아웃 실패 : ", error);
-    }
+    // try {
+    //   const response = await basicAxios.post("/users/logout", {
+    //     withCredentials: true,
+    //   });
+    //   console.log("로그아웃 성공 : ", response.data);
+    // } catch (error) {
+    //   console.error("로그아웃 실패 : ", error);
+    // }
   };
 
   return { logout };
