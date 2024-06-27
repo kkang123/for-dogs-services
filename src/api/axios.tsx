@@ -3,7 +3,6 @@ import axios, {
   AxiosError,
   InternalAxiosRequestConfig,
 } from "axios";
-import Swal from "sweetalert2";
 
 export const BASE_URL = "https://api.fordogs.store/";
 
@@ -29,14 +28,7 @@ const checkAccessTokenExpiration = () => {
 const logout = () => {
   localStorage.removeItem("AccessToken");
   localStorage.removeItem("AccessTokenExpiration");
-  Swal.fire({
-    title: "세션 만료",
-    text: "로그인 시간이 만료되었습니다. 다시 로그인해주세요.",
-    icon: "warning",
-    confirmButtonText: "확인",
-  }).then(() => {
-    window.location.href = "/login";
-  });
+  window.location.href = "/login?sessionExpired=true";
 };
 
 let retryCount = 0;

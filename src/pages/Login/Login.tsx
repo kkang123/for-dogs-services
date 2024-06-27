@@ -1,15 +1,17 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { useLogin } from "@/api/loginAPI";
 
 import SEOMetaTag from "@/components/SEOMetaTag";
 import GoogleLogin from "@/api/GoogleLogin";
+import Swal from "sweetalert2";
 
 export default function SignIn() {
   const [userId, setUserId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [tab, setTab] = useState<"BUYER" | "SELLER">("BUYER");
+  const location = useLocation();
 
   const { login } = useLogin(); // 로그인 함수 사용
 
@@ -57,6 +59,20 @@ export default function SignIn() {
     event.preventDefault();
     navigate("/findPassword");
   };
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const sessionExpired = queryParams.get("sessionExpired");
+
+    if (sessionExpired) {
+      Swal.fire({
+        title: "세션 만료",
+        text: "로그인 시간이 만료되었습니다. 다시 로그인해주세요.",
+        icon: "warning",
+        confirmButtonText: "확인",
+      });
+    }
+  }, [location]);
 
   return (
     <>
