@@ -19,9 +19,7 @@ function MyProfile() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await basicAxios.get(
-          `/users/details?userId=${userId}`
-        );
+        const response = await basicAxios.get("/users/details");
         setUser(response.data);
       } catch (error) {
         console.error("Failed to fetch user:", error);
