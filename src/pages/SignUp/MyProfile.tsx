@@ -6,13 +6,13 @@ import { basicAxios } from "@/api/axios";
 // import { Button } from "@/components/ui/button";
 
 // import { Order } from "@/interface/order";
-import { User } from "@/interface/user";
+import { UserDetails } from "@/interface/userDetail";
 
 import SEOMetaTag from "@/components/SEOMetaTag";
 import ProductHeader from "@/components/Header/ProductHeader";
 
 function MyProfile() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserDetails | null>(null);
 
   const { userId } = useParams<{ userId: string }>();
 
