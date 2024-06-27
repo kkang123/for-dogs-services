@@ -3,6 +3,7 @@ import axios, {
   AxiosError,
   InternalAxiosRequestConfig,
 } from "axios";
+import Swal from "sweetalert2";
 
 export const BASE_URL = "https://api.fordogs.store/";
 
@@ -24,6 +25,22 @@ const checkAccessTokenExpiration = () => {
   }
   return false;
 };
+
+const logout = () => {
+  localStorage.removeItem("AccessToken");
+  localStorage.removeItem("AccessTokenExpiration");
+  Swal.fire({
+    title: "세션 만료",
+    text: "로그인 시간이 만료되었습니다. 다시 로그인해주세요.",
+    icon: "warning",
+    confirmButtonText: "확인",
+  }).then(() => {
+    window.location.href = "/login";
+  });
+};
+
+let retryCount = 0;
+const MAX_RETRIES = 1;
 
 basicAxios.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
@@ -48,6 +65,7 @@ basicAxios.interceptors.request.use(
 basicAxios.interceptors.response.use(
   (response: AxiosResponse) => {
     console.log("Response received:", response);
+    retryCount = 0; // Reset retry count on a successful response
     return response;
   },
   async (error: AxiosError) => {
@@ -56,8 +74,13 @@ basicAxios.interceptors.response.use(
     };
     console.error("Response error:", error);
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      retryCount < MAX_RETRIES
+    ) {
       originalRequest._retry = true;
+      retryCount += 1;
       try {
         console.log("Attempting token refresh...");
         const response = await basicAxios.post("/users/refresh");
@@ -71,6 +94,12 @@ basicAxios.interceptors.response.use(
         return Promise.reject(refreshError);
       }
     }
+
+    if (retryCount >= MAX_RETRIES) {
+      console.error("Max retries reached. Logging out...");
+      logout();
+    }
+
     return Promise.reject(error);
   }
 );
