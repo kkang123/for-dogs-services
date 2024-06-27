@@ -1,99 +1,35 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { db } from "@/firebase";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  orderBy,
-  doc,
-  updateDoc,
-  Timestamp,
-} from "firebase/firestore";
+import { basicAxios } from "@/api/axios";
 
-import { useAuth } from "@/contexts/AuthContext";
+// import { Button } from "@/components/ui/button";
 
-import { Button } from "@/components/ui/button";
-
-import { Order } from "@/interface/order";
+// import { Order } from "@/interface/order";
+import { User } from "@/interface/user";
 
 import SEOMetaTag from "@/components/SEOMetaTag";
 import ProductHeader from "@/components/Header/ProductHeader";
 
-interface UserType {
-  uid: string;
-  email: string;
-  isSeller: boolean;
-  nickname: string;
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
-}
-
 function MyProfile() {
-  const user = useAuth();
-  const { uid } = useAuth();
-  const { uid: urlUid } = useParams<{ uid: string }>();
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [users, setUsers] = useState<UserType[]>([]);
+  const [user, setUser] = useState<User | null>(null);
+
+  const { userId } = useParams<{ userId: string }>();
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      const usersRef = collection(db, "users");
-      const usersSnapshot = await getDocs(usersRef);
-      const usersData: UserType[] = [];
-      for (const doc of usersSnapshot.docs) {
-        const user = doc.data() as UserType;
-        user.uid = doc.id;
-        usersData.push(user);
+    const fetchUser = async () => {
+      try {
+        const response = await basicAxios.get(
+          `/users/details?userId=${userId}`
+        );
+        setUser(response.data);
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
       }
-      setUsers(usersData);
     };
 
-    fetchUsers();
-
-    const fetchOrders = async () => {
-      const ordersRef = collection(db, "orders");
-      const q = query(
-        ordersRef,
-        where("uid", "==", urlUid),
-        orderBy("timestamp", "desc")
-      );
-      const querySnapshot = await getDocs(q);
-      setOrders(
-        querySnapshot.docs.map(
-          (doc) => ({ id: doc.id, ...doc.data() } as Order)
-        )
-      );
-    };
-
-    fetchOrders();
-  }, [uid, urlUid]);
-
-  const cancelOrder = async (orderId: string) => {
-    const order = orders.find((o) => o.id === orderId);
-    if (!order) return;
-
-    const orderRef = doc(db, "orders", orderId);
-    await updateDoc(orderRef, { status: "주문 취소" });
-
-    setOrders(
-      orders.map((o) => (o.id === orderId ? { ...o, status: "주문 취소" } : o))
-    );
-  };
-
-  function groupOrdersByGroupId(orders: Order[]): { [key: string]: Order[] } {
-    return orders.reduce((acc, order) => {
-      if (!acc[order.groupid]) {
-        acc[order.groupid] = [];
-      }
-      acc[order.groupid].push(order);
-      return acc;
-    }, {} as { [key: string]: Order[] });
-  }
-
-  const groupedOrders = groupOrdersByGroupId(orders);
+    fetchUser();
+  }, [userId]);
 
   return (
     <>
@@ -105,10 +41,10 @@ function MyProfile() {
         />
       </header>
       <main className="mt-16 ">
-        <h1 className="text-4xl">안녕하세요. {user?.nickname}님</h1>
+        <h1 className="text-4xl">안녕하세요. {user?.userName}님</h1>
         <hr />
         <h2 className="text-3xl p-2 mt-4">구매 내역</h2>
-        <div className="flex-col ">
+        {/* <div className="flex-col ">
           {Object.entries(groupedOrders).map(([groupid, orders]) => {
             const totalAmount = orders.reduce(
               (sum, order) =>
@@ -153,7 +89,7 @@ function MyProfile() {
               </div>
             );
           })}
-        </div>
+        </div> */}
       </main>
       <footer></footer>
     </>
