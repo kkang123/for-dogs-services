@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 
 export const registerUser = async (userData: User) => {
   try {
-    const response = await basicAxios.post("/users/join", userData);
+    const response = await basicAxios.post("/users/signup", userData);
     console.log("User registered successfully:", response.data);
     Swal.fire("성공!", "회원가입이 완료되었습니다.", "success");
   } catch (error) {
