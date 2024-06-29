@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { basicAxios } from "@/api/axios";
 
-import { Button } from "@/components/ui/button";
+import useDeleteUser from "@/hooks/useDeleteUser";
 
 // import { Order } from "@/interface/order";
 import { UserDetails } from "@/interface/userDetail";
@@ -11,11 +11,14 @@ import { UserDetails } from "@/interface/userDetail";
 import SEOMetaTag from "@/components/SEOMetaTag";
 import ProductHeader from "@/components/Header/ProductHeader";
 
+import { Button } from "@/components/ui/button";
+
 function MyProfile() {
   const [user, setUser] = useState<UserDetails | null>(null);
 
   const { userId } = useParams<{ userId: string }>();
-  const navigate = useNavigate();
+
+  const deleteUser = useDeleteUser();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -29,28 +32,6 @@ function MyProfile() {
 
     fetchUser();
   }, [userId]);
-
-  const deleteuser = async () => {
-    try {
-      const token = localStorage.getItem("AccessToken"); // 토큰이 localStorage에 저장되어 있다고 가정합니다.
-      if (!token) {
-        throw new Error("토큰이 없습니다");
-      }
-
-      const response = await basicAxios.delete("/user/deactivate", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          accept: "application/json",
-        },
-      });
-
-      if (response.status === 204) {
-        navigate("/");
-      }
-    } catch (error) {
-      console.error("사용자 탈퇴에 실패했습니다:", error);
-    }
-  };
 
   return (
     <>
@@ -113,7 +94,7 @@ function MyProfile() {
         </div> */}
       </main>
       <footer>
-        <Button onClick={deleteuser}>탈퇴하기</Button>
+        <Button onClick={deleteUser}>탈퇴하기</Button>
       </footer>
     </>
   );
