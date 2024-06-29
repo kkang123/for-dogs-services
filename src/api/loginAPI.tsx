@@ -83,8 +83,8 @@ export const useLogin = () => {
         };
 
         if (serverResponse) {
-          if (serverResponse.status === 401) {
-            const errorData = serverResponse.data as ServerError;
+          const errorData = serverResponse.data as ServerError;
+          if (serverResponse.status === 401 || serverResponse.status === 403) {
             if (errorData.error && errorMessages[errorData.error.message]) {
               Swal.fire(errorMessages[errorData.error.message]);
             } else {
@@ -98,9 +98,6 @@ export const useLogin = () => {
             serverResponse.status === 400 ||
             serverResponse.status === 404
           ) {
-            const errorData = serverResponse.data as ServerError;
-            console.error("서버로부터 받은 오류 데이터:", errorData);
-
             if (errorData.error && errorMessages[errorData.error.message]) {
               Swal.fire(errorMessages[errorData.error.message]);
             } else {
