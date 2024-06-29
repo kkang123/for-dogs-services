@@ -1,8 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { basicAxios } from "@/api/axios";
 
+import { useLogout } from "@/hooks/useLogout";
+
 const useDeleteUser = () => {
   const navigate = useNavigate();
+  const { logout } = useLogout();
 
   const deleteUser = async () => {
     try {
@@ -20,6 +23,7 @@ const useDeleteUser = () => {
 
       if (response.status === 204) {
         navigate("/");
+        logout();
       }
     } catch (error) {
       console.error("사용자 탈퇴에 실패했습니다:", error);
