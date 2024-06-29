@@ -191,10 +191,7 @@ basicAxios.interceptors.response.use(
     }
 
     if (retryCount >= MAX_RETRIES) {
-      if (
-        error.response?.status === 401 &&
-        errorMessage === "UUID 토큰 검증에 실패하였습니다."
-      ) {
+      if (errorMessage === "UUID 토큰 검증에 실패하였습니다.") {
         console.error("Max retries reached. Logging out...");
         logout();
       }
