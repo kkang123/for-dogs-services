@@ -1,24 +1,34 @@
-// import { basicAxios } from "@/api/axios";
-import { useSetRecoilState } from "recoil";
+import { basicAxios } from "@/api/axios";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState, isLoggedInState } from "@/recoil/userState";
 
 export const useLogout = () => {
   const setUser = useSetRecoilState(userState);
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
+  const isLoggedIn = useRecoilValue(isLoggedInState);
 
-  const logout = async () => {
+  const clearUserState = () => {
     localStorage.removeItem("AccessToken");
     localStorage.removeItem("AccessTokenExpiration");
     localStorage.removeItem("user");
     setIsLoggedIn(false);
     setUser({ isLoggedIn: false, userId: "", role: "" });
+  };
 
-    // try {
-    //   await basicAxios.post("/users/logout", {}, { withCredentials: true });
-    //   console.log("로그아웃 성공");
-    // } catch (error) {
-    //   console.error("로그아웃 실패 : ", error);
-    // }
+  const logout = async () => {
+    if (!isLoggedIn) {
+      clearUserState();
+      return;
+    }
+
+    try {
+      await basicAxios.post("/users/logout", {}, { withCredentials: true });
+      console.log("로그아웃 성공");
+
+      clearUserState();
+    } catch (error) {
+      console.error("로그아웃 실패 : ", error);
+    }
   };
 
   return { logout };
