@@ -30,6 +30,15 @@ function ProductDetail() {
     if (user.userId) navigate(`/productlist/${user.userId}`);
   };
 
+  const categoryMap: { [key: string]: string } = {
+    FOOD: "음식",
+    CLOTHING: "의류",
+    SNACK: "간식",
+    TOY: "장난감",
+    ACCESSORY: "용품",
+    SUPPLEMENT: "영양제",
+  };
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -117,6 +126,9 @@ function ProductDetail() {
     );
   }
 
+  const Category =
+    categoryMap[product.productCategory] || product.productCategory;
+
   return (
     <>
       <header className="h-20">
@@ -163,9 +175,7 @@ function ProductDetail() {
             <div className="border-b-2"></div>
 
             <button className="text-2xl text-gray-500 flex justify-end mr-2">
-              <Link to={`/category/${product.productCategory}`}>
-                #{product.productCategory}
-              </Link>
+              <Link to={`/category/${Category}`}>#{Category}</Link>
             </button>
           </div>
         </div>
