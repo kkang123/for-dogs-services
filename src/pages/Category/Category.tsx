@@ -181,9 +181,7 @@
 
 // export default Category;
 
-// 상품 표시 완료
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useInfiniteQuery } from "react-query";
 import { useInView } from "react-intersection-observer";
@@ -214,9 +212,19 @@ function Category() {
     영양제: "SUPPLEMENT",
   };
 
-  const [sortType, setSortType] = useState<"updatedAt" | "productPrice">(
-    "updatedAt"
-  );
+  const [sortType, setSortType] = useState<
+    "updatedAtDesc" | "updatedAtAsc" | "priceAsc" | "priceDesc"
+  >("updatedAtDesc");
+
+  const sortField =
+    sortType === "updatedAtDesc"
+      ? "updatedAt,desc"
+      : sortType === "updatedAtAsc"
+      ? "updatedAt,asc"
+      : sortType === "priceAsc"
+      ? "price,asc"
+      : "price,desc";
+
   const [currentImageIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -227,7 +235,7 @@ function Category() {
   const fetchProducts = async ({ pageParam = 0 }) => {
     try {
       const pageSize = pageParam === 0 ? 9 : 3;
-      const category = productCategory ? categoryMap[productCategory] : ""; // 맵핑된 카테고리 값 사용
+      const category = productCategory ? categoryMap[productCategory] : ""; // 매핑된 카테고리 값 사용
       if (!category) throw new Error("Invalid category");
 
       const response = await basicAxios.get("/products/search", {
@@ -235,11 +243,13 @@ function Category() {
           category,
           page: pageParam,
           size: pageSize,
+          sort: sortField,
         },
       });
 
       const products: Product[] = response.data.result.content; // 응답에서 제품 데이터를 가져옴
-      const nextStart = response.data.result.nextStart; // 다음 페이지의 시작점
+      const nextStart =
+        response.data.result.content.length > 0 ? pageParam + 1 : undefined;
 
       return { data: products, nextStart };
     } catch (error) {
@@ -258,9 +268,7 @@ function Category() {
     remove, // 이전 데이터 삭제
     refetch,
   } = useInfiniteQuery("products", fetchProducts, {
-    getNextPageParam: (lastPage) => {
-      lastPage.nextStart;
-    },
+    getNextPageParam: (lastPage) => lastPage.nextStart,
   });
 
   const { ref, inView } = useInView({
@@ -277,6 +285,15 @@ function Category() {
     remove();
     refetch();
   }, [sortType]);
+
+  const uniqueProducts = useMemo(() => {
+    const allProducts = data?.pages.flatMap((page) => page.data) || [];
+    const productMap = new Map();
+    allProducts.forEach((product) => {
+      productMap.set(product.productId, product);
+    });
+    return Array.from(productMap.values());
+  }, [data]);
 
   if (isLoading) {
     return (
@@ -310,64 +327,64 @@ function Category() {
           <h1 className="text-4xl px-4">{productCategory}</h1>
           <div className="flex justify-end gap-2 pr-7">
             <Button
-              variant={sortType === "updatedAt" ? "default" : "ghost"}
+              variant={sortType.includes("updatedAt") ? "default" : "ghost"}
               size={"sm"}
-              onClick={() => setSortType("updatedAt")}
+              onClick={() =>
+                setSortType(
+                  sortType === "updatedAtDesc"
+                    ? "updatedAtAsc"
+                    : "updatedAtDesc"
+                )
+              }
             >
-              최신순
+              날짜순 {sortType === "updatedAtDesc" ? "▼" : "▲"}
             </Button>
             <Button
-              variant={sortType === "productPrice" ? "default" : "ghost"}
+              variant={sortType.includes("price") ? "default" : "ghost"}
               size={"sm"}
-              onClick={() => setSortType("productPrice")}
+              onClick={() =>
+                setSortType(sortType === "priceAsc" ? "priceDesc" : "priceAsc")
+              }
             >
-              가격순
+              가격순 {sortType === "priceAsc" ? "▲" : "▼"}
             </Button>
           </div>
 
           <div className="flex flex-wrap justify-start min-w-[452px] overflow-x-auto">
-            {data?.pages ? (
-              data.pages.map((group, pageIndex) => (
-                <React.Fragment key={pageIndex}>
-                  {group.data.map((product: Product) => (
-                    <Link
-                      key={product.productId}
-                      to={`/sellproduct/${product.productId}`}
-                      className="flex justify-center items-center w-full md:w-1/2 lg:w-1/3 p-4"
-                    >
-                      <div className="shadow border-2 rounded w-[380px] h-[380px]">
-                        {product.productImages[currentImageIndex] ? (
-                          <img
-                            className="w-full h-[300px] rounded"
-                            src={product.productImages[currentImageIndex]}
-                            alt={`Uploaded image ${currentImageIndex + 1}`}
-                          />
-                        ) : null}
-                        <div className="m-1">
-                          <div className="overflow-hidden text-overflow ellipsis whitespace-nowrap">
-                            {product.productName}
-                          </div>
-                          <div className="overflow-hidden text-overflow ellipsis whitespace-nowrap">
-                            {product.productPrice}원
-                          </div>
-                          <div className="overflow-hidden text-overflow ellipsis whitespace-nowrap font-bold">
-                            남은 수량: {product.productQuantity}
-                          </div>
-                        </div>
+            {uniqueProducts.length > 0 ? (
+              uniqueProducts.map((product: Product) => (
+                <Link
+                  key={product.productId}
+                  to={`/sellproduct/${product.productId}`}
+                  className="flex justify-center items-center w-full md:w-1/2 lg:w-1/3 p-4"
+                >
+                  <div className="shadow border-2 rounded w-[380px] h-[380px]">
+                    {product.productImages[currentImageIndex] ? (
+                      <img
+                        className="w-full h-[300px] rounded"
+                        src={product.productImages[currentImageIndex]}
+                        alt={`Uploaded image ${currentImageIndex + 1}`}
+                      />
+                    ) : null}
+                    <div className="m-1">
+                      <div className="overflow-hidden text-overflow ellipsis whitespace-nowrap">
+                        {product.productName}
                       </div>
-                    </Link>
-                  ))}
-                </React.Fragment>
+                      <div className="overflow-hidden text-overflow ellipsis whitespace-nowrap">
+                        {product.productPrice}원
+                      </div>
+                      <div className="overflow-hidden text-overflow ellipsis whitespace-nowrap font-bold">
+                        남은 수량: {product.productQuantity}
+                      </div>
+                    </div>
+                  </div>
+                </Link>
               ))
             ) : (
               <div>데이터가 없습니다.</div>
             )}
             <div ref={ref}></div>
           </div>
-          {/* {hasNextPage && (
-            <button onClick={() => fetchNextPage()}>다음 페이지</button>
-          )}
-        </div> */}
           {isFetchingNextPage && <div>Loading more...</div>}
         </div>
 
