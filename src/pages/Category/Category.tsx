@@ -325,7 +325,7 @@ function Category() {
       <main className="mt-16">
         <div>
           <h1 className="text-4xl px-4">{productCategory}</h1>
-          <div className="flex justify-end gap-2 pr-7">
+          <div className="flex justify-end gap-2 pr-7 mb-4">
             <Button
               variant={sortType.includes("updatedAt") ? "default" : "ghost"}
               size={"sm"}
@@ -350,15 +350,15 @@ function Category() {
             </Button>
           </div>
 
-          <div className="flex flex-wrap justify-start min-w-[452px] overflow-x-auto">
+          <div className="flex flex-wrap justify-center justify-start gap-4 overflow-x-auto ">
             {uniqueProducts.length > 0 ? (
               uniqueProducts.map((product: Product) => (
                 <Link
                   key={product.productId}
                   to={`/sellproduct/${product.productId}`}
-                  className="flex justify-center items-center w-full md:w-1/2 lg:w-1/3 p-4"
+                  className="flex justify-center items-center"
                 >
-                  <div className="shadow border-2 rounded w-[380px] h-[380px]">
+                  <div className="shadow border-2 rounded w-[380px] h-[380px] flex-shrink-0">
                     {product.productImages[currentImageIndex] ? (
                       <img
                         className="w-full h-[300px] rounded"
