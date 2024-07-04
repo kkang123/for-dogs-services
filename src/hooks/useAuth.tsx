@@ -1,13 +1,13 @@
 import { useEffect, useCallback, useRef } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { userState, isLoggedInState } from "@/recoil/userState";
 import { useLogout } from "@/hooks/useLogout";
 import { basicAxios } from "@/api/axios";
 import axios, { AxiosError } from "axios";
 
 const useAuth = () => {
-  const [user] = useRecoilState(userState);
-  const [isLoggedIn] = useRecoilState(isLoggedInState);
+  const user = useRecoilValue(userState);
+  const isLoggedIn = useRecoilValue(isLoggedInState);
   const { logout } = useLogout();
 
   const refreshAccessToken = useCallback(async () => {
