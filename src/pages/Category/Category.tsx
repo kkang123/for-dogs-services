@@ -181,7 +181,7 @@
 
 // export default Category;
 
-import React, { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useInfiniteQuery } from "react-query";
 import { useInView } from "react-intersection-observer";
