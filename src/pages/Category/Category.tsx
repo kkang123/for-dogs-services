@@ -350,7 +350,7 @@ function Category() {
             </Button>
           </div>
 
-          <div className="flex flex-wrap justify-center justify-start gap-4 overflow-x-auto ">
+          <div className="flex flex-wrap justify-center  gap-4 overflow-x-auto ">
             {uniqueProducts.length > 0 ? (
               uniqueProducts.map((product: Product) => (
                 <Link
