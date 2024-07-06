@@ -385,7 +385,11 @@ function Category() {
             )}
             <div ref={ref}></div>
           </div>
-          {isFetchingNextPage && <div>Loading more...</div>}
+          {isFetchingNextPage && (
+            <div className="text-center">
+              상품을 불러오는 중입니다. 잠시만 기다려주세요!
+            </div>
+          )}
         </div>
 
         {user.Rule === "BUYER" && (
@@ -400,6 +404,7 @@ function Category() {
           </div>
         )}
       </main>
+      <footer className="h-10"></footer>
     </>
   );
 }
