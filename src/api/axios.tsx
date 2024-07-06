@@ -102,6 +102,13 @@ basicAxios.interceptors.response.use(
       }
     }
 
+    if (
+      error.response?.status === 401 &&
+      errorMessage === "토큰 유효 기간이 만료되었습니다."
+    ) {
+      logout();
+    }
+
     return Promise.reject(error);
   }
 );
