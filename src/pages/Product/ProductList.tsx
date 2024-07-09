@@ -1,13 +1,18 @@
 import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { useRecoilValue } from "recoil";
-import { userState } from "@/recoil/userState";
 import { useInfiniteQuery } from "react-query";
 import { useInView } from "react-intersection-observer";
+
 import { basicAxios } from "@/api/axios";
-import SEOMetaTag from "@/components/SEOMetaTag";
-import { Product } from "@/interface/product";
+
+import { useRecoilValue } from "recoil";
+import { userState } from "@/recoil/userState";
+
 import ProductHeader from "@/components/Header/ProductHeader";
+import useDeleteUser from "@/hooks/useDeleteUser";
+import SEOMetaTag from "@/components/SEOMetaTag";
+
+import { Product } from "@/interface/product";
 
 function ProductList() {
   const userInfo = useRecoilValue(userState);
@@ -73,6 +78,8 @@ function ProductList() {
     return Array.from(productMap.values());
   }, [data]);
 
+  const handleSecession = useDeleteUser();
+
   if (isLoading) {
     return <div className="flex justify-center mt-10">Loading...</div>;
   }
@@ -88,6 +95,8 @@ function ProductList() {
           showProductManagement={true}
           showHomeButton={true}
           showUploadButton={true}
+          showSecessionButton={true}
+          onSellerSecession={handleSecession}
         />
         <SEOMetaTag
           title="For Dogs - ProductList"

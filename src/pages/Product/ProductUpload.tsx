@@ -237,7 +237,6 @@ function ProductUpload() {
       <header>
         <ProductHeader
           showBackspaseButton={true}
-          showEditButton={false}
           onBackspaceClick={deleteUploadedImages}
         />
         <SEOMetaTag
