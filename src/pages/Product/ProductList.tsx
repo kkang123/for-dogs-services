@@ -17,7 +17,7 @@ function ProductList() {
   const fetchProducts = async ({ pageParam = 0 }) => {
     try {
       const pageSize = pageParam === 0 ? 9 : 3;
-      const response = await basicAxios.get("/products/search", {
+      const response = await basicAxios.get("/products", {
         params: {
           seller: userId,
           page: pageParam,

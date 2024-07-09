@@ -238,7 +238,7 @@ function Category() {
       const category = productCategory ? categoryMap[productCategory] : ""; // 매핑된 카테고리 값 사용
       if (!category) throw new Error("Invalid category");
 
-      const response = await basicAxios.get("/products/search", {
+      const response = await basicAxios.get("/products", {
         params: {
           category,
           page: pageParam,
@@ -350,40 +350,42 @@ function Category() {
             </Button>
           </div>
 
-          <div className="flex flex-wrap justify-center  gap-4 overflow-x-auto ">
-            {uniqueProducts.length > 0 ? (
-              uniqueProducts.map((product: Product) => (
-                <Link
-                  key={product.productId}
-                  to={`/sellproduct/${product.productId}`}
-                  className="flex justify-center items-center"
-                >
-                  <div className="shadow border-2 rounded w-[380px] h-[380px] flex-shrink-0">
-                    {product.productImages[currentImageIndex] ? (
-                      <img
-                        className="w-full h-[300px] rounded"
-                        src={product.productImages[currentImageIndex]}
-                        alt={`Uploaded image ${currentImageIndex + 1}`}
-                      />
-                    ) : null}
-                    <div className="m-1">
-                      <div className="overflow-hidden text-overflow ellipsis whitespace-nowrap">
-                        {product.productName}
-                      </div>
-                      <div className="overflow-hidden text-overflow ellipsis whitespace-nowrap">
-                        {product.productPrice}원
-                      </div>
-                      <div className="overflow-hidden text-overflow ellipsis whitespace-nowrap font-bold">
-                        남은 수량: {product.productQuantity}
+          <div className="flex flex-wrap justify-center border-red-200 border-4 gap-4 overflow-x-auto ">
+            <div className="flex flex-wrap justify-start w-[1270px] gap-4 border-blue-600  border-4">
+              {uniqueProducts.length > 0 ? (
+                uniqueProducts.map((product: Product) => (
+                  <Link
+                    key={product.productId}
+                    to={`/sellproduct/${product.productId}`}
+                    className="flex justify-center items-center"
+                  >
+                    <div className="shadow border-2 rounded w-[380px] h-[380px] flex-shrink-0">
+                      {product.productImages[currentImageIndex] ? (
+                        <img
+                          className="w-full h-[300px] rounded"
+                          src={product.productImages[currentImageIndex]}
+                          alt={`Uploaded image ${currentImageIndex + 1}`}
+                        />
+                      ) : null}
+                      <div className="m-1">
+                        <div className="overflow-hidden text-overflow ellipsis whitespace-nowrap">
+                          {product.productName}
+                        </div>
+                        <div className="overflow-hidden text-overflow ellipsis whitespace-nowrap">
+                          {product.productPrice}원
+                        </div>
+                        <div className="overflow-hidden text-overflow ellipsis whitespace-nowrap font-bold">
+                          남은 수량: {product.productQuantity}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Link>
-              ))
-            ) : (
-              <div>데이터가 없습니다.</div>
-            )}
-            <div ref={ref}></div>
+                  </Link>
+                ))
+              ) : (
+                <div>데이터가 없습니다.</div>
+              )}
+              <div ref={ref}></div>
+            </div>
           </div>
           {isFetchingNextPage && (
             <div className="text-center">

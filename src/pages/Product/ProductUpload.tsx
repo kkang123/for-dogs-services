@@ -83,7 +83,7 @@ function ProductUpload() {
     }
 
     try {
-      const response = await basicAxios.post("/products/register", product);
+      const response = await basicAxios.post("/products", product);
       console.log("서버 응답 데이터:", response.data);
 
       if (response.status === 201) {
@@ -167,15 +167,11 @@ function ProductUpload() {
       const formData = new FormData();
       formData.append("imageFiles", file);
       try {
-        const response = await basicAxios.post(
-          "/products/images/upload",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        const response = await basicAxios.post("/products/images", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
 
         if (response.status === 200) {
           const data = response.data;

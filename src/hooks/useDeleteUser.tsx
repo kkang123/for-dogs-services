@@ -14,7 +14,7 @@ const useDeleteUser = () => {
         throw new Error("토큰이 없습니다");
       }
 
-      const response = await basicAxios.delete("/users/deactivate", {
+      const response = await basicAxios.delete("/users/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
           accept: "application/json",

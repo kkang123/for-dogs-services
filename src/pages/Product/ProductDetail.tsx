@@ -42,7 +42,7 @@ function ProductDetail() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await basicAxios.get(`/products/${productId}/details`);
+        const response = await basicAxios.get(`/products/${productId}`);
         if (response.data.ok) {
           const result = response.data.result;
           console.log(result);
@@ -85,9 +85,7 @@ function ProductDetail() {
 
   const handleDelete = async () => {
     try {
-      const response = await basicAxios.delete(
-        `/products/${productId}/deactivate`
-      );
+      const response = await basicAxios.delete(`/products/${productId}`);
       if (response.status === 204) {
         Swal.fire({
           icon: "success",
