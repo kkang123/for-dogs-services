@@ -126,7 +126,6 @@ export default function BuyerSignUp() {
       Swal.fire("성공", "회원가입 성공!", "success");
       navigate("/login");
     } catch (error) {
-      // registerUser에서 이미 에러 처리를 하므로 여기서는 추가 처리 필요 없음
       console.error("회원가입 중 에러 발생:", error);
     }
   };

@@ -14,7 +14,7 @@ export const registerUser = async (userData: User) => {
 
       if (serverResponse && serverResponse.status === 400) {
         const errorData = serverResponse.data;
-        console.log("Error data received from server:", errorData); // 응답 데이터 로깅
+        console.log("Error data received from server:", errorData);
 
         if (
           errorData.error &&
@@ -52,6 +52,6 @@ export const registerUser = async (userData: User) => {
       console.error("An unexpected error occurred:", error);
       Swal.fire("알 수 없는 오류", "알 수 없는 오류가 발생했습니다.", "error");
     }
-    throw error; // 에러를 다시 throw 해서 호출한 곳에서 처리할 수 있게 합니다.
+    throw error;
   }
 };

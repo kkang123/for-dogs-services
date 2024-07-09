@@ -57,7 +57,7 @@ basicAxios.interceptors.request.use(
 basicAxios.interceptors.response.use(
   (response: AxiosResponse) => {
     console.log("Response received:", response);
-    retryCount = 0; // Reset retry count on a successful response
+    retryCount = 0;
     return response;
   },
   async (error: AxiosError) => {
@@ -69,7 +69,7 @@ basicAxios.interceptors.response.use(
     const errorMessage = (
       error.response?.data as { error?: { message?: string } }
     )?.error?.message;
-    console.log("Error message from response:", errorMessage); // 에러 메시지를 로그로 출력
+    console.log("Error message from response:", errorMessage);
 
     if (
       error.response?.status === 401 &&

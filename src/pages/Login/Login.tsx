@@ -13,7 +13,7 @@ export default function SignIn() {
   const [tab, setTab] = useState<"BUYER" | "SELLER">("BUYER");
   const location = useLocation();
 
-  const { login } = useLogin(); // 로그인 함수 사용
+  const { login } = useLogin();
 
   const [passwordShown, setPasswordShown] = useState<boolean>(false);
 
