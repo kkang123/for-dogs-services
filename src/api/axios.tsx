@@ -39,6 +39,10 @@ basicAxios.interceptors.request.use(
     console.log("Starting request:", config);
     const accessToken = localStorage.getItem("AccessToken");
 
+    if (config.url?.includes("/users/login")) {
+      return config;
+    }
+
     if (checkAccessTokenExpiration()) {
       console.log("Access token is expired.");
     }
@@ -65,6 +69,10 @@ basicAxios.interceptors.response.use(
       _retry?: boolean;
     };
     console.error("Response error:", error);
+
+    if (originalRequest.url?.includes("/users/login")) {
+      return Promise.reject(error);
+    }
 
     const errorMessage = (
       error.response?.data as { error?: { message?: string } }
