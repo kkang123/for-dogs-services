@@ -28,6 +28,7 @@ const checkAccessTokenExpiration = () => {
 const logout = () => {
   localStorage.removeItem("AccessToken");
   localStorage.removeItem("AccessTokenExpiration");
+  localStorage.removeItem("user");
   window.location.href = "/login?sessionExpired=true";
 };
 
