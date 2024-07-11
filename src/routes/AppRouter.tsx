@@ -16,7 +16,7 @@ import MyProfile from "@/pages/SignUp/MyProfile";
 import ProductUpload from "@/pages/Product/ProductUpload";
 import ProductList from "@/pages/Product/ProductList";
 import ProductDetail from "@/pages/Product/ProductDetail";
-// import ProductEdit from "@/pages/Product/ProductEdit";
+import ProductEdit from "@/pages/Product/ProductEdit";
 import ProductManagement from "@/pages/Product/ProductManagement";
 
 // 카테고리
@@ -123,14 +123,14 @@ const AppRouter = () => {
           }
         />
         <Route
-          path="/productedit/:id"
-          // element={
-          //   // <ProtectRoute
-          //     // element={<ProductEdit />}
-          //   //   isPrivate={true}
-          //   //   isProtected={true}
-          //   // />
-          // }
+          path="/productedit/:productId"
+          element={
+            <ProtectRoute
+              element={<ProductEdit />}
+              isPrivate={true}
+              isProtected={true}
+            />
+          }
         />
         <Route
           path="/productupload"
