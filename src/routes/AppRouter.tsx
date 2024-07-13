@@ -10,7 +10,7 @@ import Login from "@/pages/Login/Login";
 import MyProfile from "@/pages/SignUp/MyProfile";
 
 // 상품 판매
-// import SellProductDetail from "@/pages/Product/SellProductDetail";
+import SellProductDetail from "@/pages/Product/SellProductDetail";
 
 // 판매자전용
 import ProductUpload from "@/pages/Product/ProductUpload";
@@ -20,7 +20,7 @@ import ProductEdit from "@/pages/Product/ProductEdit";
 import ProductManagement from "@/pages/Product/ProductManagement";
 
 // 카테고리
-import CategoryA from "@/pages/Category/Category";
+import Category from "@/pages/Category/Category";
 
 // 장바구니
 import Cart from "@/pages/Cart/Cart";
@@ -64,7 +64,7 @@ const AppRouter = () => {
         {/* 카테고리 */}
         <Route
           path="/category/:productCategory"
-          element={<ProtectRoute element={<CategoryA />} />}
+          element={<ProtectRoute element={<Category />} />}
         />
 
         {/* 장바구니 */}
@@ -87,8 +87,8 @@ const AppRouter = () => {
 
         {/* 상품 판매 */}
         <Route
-          path="/sellproduct/:id"
-          // element={<ProtectRoute element={<SellProductDetail />} />}
+          path="/sellproduct/:productId"
+          element={<ProtectRoute element={<SellProductDetail />} />}
         />
 
         {/* 판매자 페이지 */}
