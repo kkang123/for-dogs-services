@@ -12,7 +12,7 @@ const useDeleteUser = () => {
   const deleteUser = async () => {
     const result = await Swal.fire({
       title: "정말 탈퇴하시겠습니까?",
-      text: "탈퇴 버튼 선택 시, 계정은 삭제되어 복구되지 않습니다.",
+      html: "탈퇴 시 계정은 삭제되며 복구할 수 없습니다.<br> <p style='color:#ff6b6b;'>(탈퇴 시 로그아웃이 진행됩니다)</p>",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "네, 삭제합니다!",
