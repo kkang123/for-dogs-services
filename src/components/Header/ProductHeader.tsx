@@ -23,11 +23,11 @@ interface ProductHeaderProps {
   showPageBackSpaceButton?: boolean;
   showProductManagement?: boolean;
   showProductCart?: boolean;
-  showSecessionButton?: boolean;
+  showSellerProfileButton?: boolean;
   onDelete?: () => void;
   onEdit?: () => void;
   onBackspaceClick?: () => void;
-  onSellerSecession?: () => void;
+  onSellerProfile?: () => void;
 }
 
 const ProductHeader: React.FC<ProductHeaderProps> = ({
@@ -39,11 +39,11 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   showPageBackSpaceButton = false,
   showProductManagement = false,
   showProductCart = false,
-  showSecessionButton = false,
+  showSellerProfileButton = false,
   onDelete,
   onEdit,
   onBackspaceClick,
-  onSellerSecession,
+  onSellerProfile,
 }) => {
   const user = useRecoilValue(userState);
   const isLoggedIn = useRecoilValue(isLoggedInState);
@@ -148,9 +148,9 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
               삭제하기
             </Button>
           )}
-          {showSecessionButton && (
-            <Button variant="ghost" size="sm" onClick={onSellerSecession}>
-              탈퇴하기
+          {showSellerProfileButton && (
+            <Button variant="ghost" size="sm" onClick={onSellerProfile}>
+              마이프로필
             </Button>
           )}
 

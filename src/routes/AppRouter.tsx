@@ -7,7 +7,8 @@ import SellerSignUp from "@/pages/SignUp/SellerSignUp";
 import Login from "@/pages/Login/Login";
 // import FindID from "@/pages/Login/FindID";
 // import FindPassword from "@/pages/Login/FindPassword";
-import MyProfile from "@/pages/SignUp/MyProfile";
+import BuyerProfile from "@/pages/Profile/MyProfile";
+import SellerProfile from "@/pages/Profile/SellerProfile";
 
 // 상품 판매
 import SellProductDetail from "@/pages/Product/SellProductDetail";
@@ -78,7 +79,7 @@ const AppRouter = () => {
           path="/myprofile/:userId"
           element={
             <ProtectRoute
-              element={<MyProfile />}
+              element={<BuyerProfile />}
               isPrivate={true}
               isProtected={false}
             />
@@ -137,6 +138,17 @@ const AppRouter = () => {
           element={
             <ProtectRoute
               element={<ProductUpload />}
+              isPrivate={true}
+              isProtected={true}
+            />
+          }
+        />
+
+        <Route
+          path="/sellerprofile/:uid"
+          element={
+            <ProtectRoute
+              element={<SellerProfile />}
               isPrivate={true}
               isProtected={true}
             />
