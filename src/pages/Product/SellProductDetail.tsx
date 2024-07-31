@@ -46,9 +46,8 @@ function SellProductDetail() {
       if (productId) {
         try {
           const response = await basicAxios.get(`/products/${productId}`);
-          console.log("API 응답:", response.data); // 전체 응답 로그
+          console.log("API 응답:", response.data);
 
-          // 'result' 객체를 사용하여 상태를 설정합니다.
           const productData: Product = response.data.result;
           console.log("상품 데이터:", productData);
 
@@ -126,7 +125,6 @@ function SellProductDetail() {
       const cartItem = { productId: product.productId, productQuantity: count };
 
       try {
-        // 장바구니 등록 API 호출
         const response = await basicAxios.post(`/carts`, cartItem);
 
         if (response.status === 201) {
