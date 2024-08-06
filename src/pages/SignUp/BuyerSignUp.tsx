@@ -6,12 +6,16 @@ import { User } from "@/interface/user";
 
 import SEOMetaTag from "@/components/SEOMetaTag";
 
+import { Calendar } from "@/components/ui/calendar";
+
+import { format } from "date-fns";
 import Swal from "sweetalert2";
 
 export default function BuyerSignUp() {
   const [userData, setUserData] = useState<User>({
     userId: "",
     userName: "",
+    userBirthDate: "",
     userEmailId: "",
     userEmailDomain: "",
     userPassword: "",
@@ -21,6 +25,7 @@ export default function BuyerSignUp() {
   const [email, setEmail] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [passwordMessage, setPasswordMessage] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 
   const navigate = useNavigate();
 
@@ -30,7 +35,6 @@ export default function BuyerSignUp() {
       const next = value.charCodeAt(i + 1);
       const nextNext = value.charCodeAt(i + 2);
 
-      // 연속적으로 증가하거나 감소하는 문자 또는 숫자를 확인
       if (
         (current + 1 === next && next + 1 === nextNext) ||
         (current - 1 === next && next - 1 === nextNext)
@@ -50,7 +54,7 @@ export default function BuyerSignUp() {
     const upperCasePattern = /[A-Z]/;
     const lowerCasePattern = /[a-z]/;
     const numberPattern = /[0-9]/;
-    const spacePattern = /\s/; // 공백 검사를 위한 패턴 추가
+    const spacePattern = /\s/;
     const easyPasswords = ["123", "abc", "password", "qwerty", "1111"];
 
     let isValid = true;
@@ -70,10 +74,10 @@ export default function BuyerSignUp() {
     } else if (userData.userPassword.length >= 16) {
       setPasswordMessage("비밀번호는 최대 16자리 이하이어야 합니다.");
       isValid = false;
-    } else if (userData.userPassword === email) {
+    } else if (userData.userPassword.includes(emailPrefix)) {
       setPasswordMessage("비밀번호에 이메일을 사용할 수 없습니다.");
       isValid = false;
-    } else if (userData.userPassword.includes(emailPrefix)) {
+    } else if (userData.userPassword.includes(userData.userId)) {
       setPasswordMessage("비밀번호에 아이디값을 사용할 수 없습니다.");
       isValid = false;
     } else if (userData.userPassword.match(spacePattern)) {
@@ -116,6 +120,7 @@ export default function BuyerSignUp() {
 
     const submitData = {
       ...userData,
+      userBirthDate: selectedDate ? format(selectedDate, "yyyy-MM-dd") : "",
       emailId,
       userEmailId: emailId,
       userEmailDomain: emailDomain,
@@ -138,7 +143,7 @@ export default function BuyerSignUp() {
           description="구매자 회원가입 페이지입니다."
         />
       </header>
-      <main className="flex flex-col items-center justify-center h-screen">
+      <main className="flex flex-col items-center justify-center h-screen some-element">
         <h2 className="mt-5 mb-2 text-3xl font-bold text-gray-700">
           구매자 회원가입
         </h2>
@@ -162,6 +167,19 @@ export default function BuyerSignUp() {
               setUserData({ ...userData, userName: e.target.value })
             }
             className="w-full px-3 py-2 mb-4 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+          />
+
+          <label
+            className="block mb-2 text-sm font-bold text-gray-700 text-left"
+            htmlFor="birthDate"
+          >
+            생년월일
+          </label>
+          <Calendar
+            mode="single"
+            selected={selectedDate}
+            onSelect={(date) => setSelectedDate(date)}
+            className="rounded-md border mb-4"
           />
 
           <label
