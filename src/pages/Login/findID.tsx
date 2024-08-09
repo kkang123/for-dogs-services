@@ -47,8 +47,14 @@ export default function FindID() {
 
       <main className="flex flex-col items-center justify-center h-screen some-element">
         <div>
-          <h1 className="flex justify-center mb-10">아이디 찾기</h1>
-          <form className="" onSubmit={handleSubmit}>
+          <h1 className="flex justify-center mb-10 text-3xl font-bold text-gray-700">
+            아이디 찾기
+          </h1>
+          <form
+            className="p-5 bg-white rounded shadow-lg"
+            onSubmit={handleSubmit}
+            noValidate
+          >
             <label
               className="block mb-2 text-sm font-bold text-gray-700 text-left"
               htmlFor="nickname"
@@ -94,12 +100,14 @@ export default function FindID() {
               className="w-full px-3 py-2 mb-4 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
             />
 
-            <button
-              type="submit"
-              className="w-full px-4 py-2 mt-4 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline"
-            >
-              완료
-            </button>
+            <div className="flex justify-center">
+              <button
+                type="submit"
+                className="w-[100px] px-4 py-2 mt-4 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline"
+              >
+                완료
+              </button>
+            </div>
           </form>
         </div>
       </main>
