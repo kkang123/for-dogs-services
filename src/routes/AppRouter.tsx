@@ -7,6 +7,7 @@ import SellerSignUp from "@/pages/SignUp/SellerSignUp";
 import Login from "@/pages/Login/Login";
 import FindID from "@/pages/Login/FindID";
 import FindPassword from "@/pages/Login/FindPassword";
+
 import BuyerProfile from "@/pages/Profile/MyProfile";
 import SellerProfile from "@/pages/Profile/SellerProfile";
 
@@ -58,7 +59,7 @@ const AppRouter = () => {
           element={<ProtectRoute element={<FindID />} isPublic={true} />}
         />
         <Route
-          path="/findpw"
+          path="/findPassword"
           element={<ProtectRoute element={<FindPassword />} isPublic={true} />}
         />
 
