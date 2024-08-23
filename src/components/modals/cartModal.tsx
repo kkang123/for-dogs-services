@@ -13,7 +13,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, toggleModal }) => {
 
   // 총 가격
   const total = cart.reduce((sum, cartItem) => {
-    const price = cartItem.product.productPrice || 0;
+    const price = cartItem.product.cartProductPrice || 0;
     return sum + price * cartItem.quantity;
   }, 0);
 
@@ -34,17 +34,17 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, toggleModal }) => {
       >
         {cart.map((cartItem) => (
           <div
-            key={cartItem.product.productId}
+            key={cartItem.product.cartProductId}
             className="bg-white border-b-2 w-full flex flex-col items-center mt-4"
           >
             <img
               className="w-48 h-48"
-              src={cartItem.product.productImages[0]}
-              alt={cartItem.product.productName}
+              src={cartItem.product.cartProductImages[0]}
+              alt={cartItem.product.cartProductName}
             />
 
-            <h2>상품 이름 : {cartItem.product.productName}</h2>
-            <p>개당 가격 : {cartItem.product.productPrice}</p>
+            <h2>상품 이름 : {cartItem.product.cartProductName}</h2>
+            <p>개당 가격 : {cartItem.product.cartProductPrice}</p>
             <p>수량 : {cartItem.quantity}</p>
           </div>
         ))}
