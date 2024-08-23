@@ -139,11 +139,12 @@ const Payment: React.FC = () => {
     IMP?.init(import.meta.env.VITE_APP_IMP_KEY);
 
     const amount = cart.reduce(
-      (total, item) => total + (item.product.productPrice || 0) * item.quantity,
+      (total, item) =>
+        total + (item.product.cartProductPrice || 0) * item.quantity,
       0
     );
 
-    const name = cart.map((item) => item.product.productName).join(", ");
+    const name = cart.map((item) => item.product.cartProductName).join(", ");
 
     const data = {
       pg: "nice",
@@ -169,7 +170,7 @@ const Payment: React.FC = () => {
             await setDoc(docRef, {
               uid,
               buyer_name: buyerInfo.name,
-              amount: (item.product.productPrice || 0) * item.quantity,
+              amount: (item.product.cartProductPrice || 0) * item.quantity,
               item,
               timestamp: Timestamp.fromDate(new Date()),
               status: "결제 완료",

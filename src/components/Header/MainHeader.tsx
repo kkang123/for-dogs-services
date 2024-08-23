@@ -34,8 +34,9 @@ function MainHeader() {
     }
   }, [setCart]);
 
-  const uniqueProductCount = new Set(cart.map((item) => item.product.productId))
-    .size;
+  const uniqueProductCount = new Set(
+    cart.map((item) => item.product.cartProductId)
+  ).size;
 
   const handleLogout = (event: React.FormEvent) => {
     event.preventDefault();
