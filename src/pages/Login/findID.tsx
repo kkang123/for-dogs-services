@@ -83,6 +83,9 @@ export default function FindID() {
               selected={selectedDate}
               onSelect={(date) => setSelectedDate(date)}
               className="rounded-md border mb-4"
+              captionLayout="dropdown-buttons"
+              fromYear={1940}
+              toYear={2030}
             />
 
             <label
