@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -45,21 +45,21 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   onBackspaceClick,
   onSellerProfile,
 }) => {
-  const user = useRecoilValue(userState);
-  const isLoggedIn = useRecoilValue(isLoggedInState);
   const { logout } = useLogout();
 
   const navigate = useNavigate();
-  const userId = useState<string | null>(null);
+
+  const user = useRecoilValue(userState);
+  const isLoggedIn = useRecoilValue(isLoggedInState);
   const { isLoggedIn: authIsLoggedIn } = useAuth();
+  // const userId = user?.userId ?? null;
 
   const goToProductListPage = () => {
-    if (userId) navigate(`/productlist/${userId}`);
+    if (user.userId) navigate(`/productlist/${user.userId}`);
   };
 
   const [cart, setCart] = useRecoilState(cartState);
 
-  // localStorage에서 장바구니 정보를 호출
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
     if (savedCart) {
@@ -158,7 +158,9 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
           {showProductCart && (
             <div>
               {user.userRole === "BUYER" && (
-                <Link to={isLoggedIn && userId ? `/cart/${userId}` : "#"}>
+                <Link
+                  to={isLoggedIn && user.userId ? `/cart/${user.userId}` : "#"}
+                >
                   <button className="">
                     <div className="relative">
                       <img src={basket} alt="Basket" className="w-9 pb-3 " />

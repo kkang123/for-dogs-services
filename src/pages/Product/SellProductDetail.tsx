@@ -5,8 +5,10 @@ import { basicAxios } from "@/api/axios";
 
 import { Product } from "@/interface/product";
 
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { userState, isLoggedInState } from "@/recoil/userState";
+import { cartState } from "@/recoil/cartState";
+import { CartItem } from "@/interface/cart";
 
 import SEOMetaTag from "@/components/SEOMetaTag";
 
@@ -31,9 +33,10 @@ function SellProductDetail() {
   const [count, setCount] = useState<number>(0);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
-  const isLoggedIn = useRecoilValue(isLoggedInState);
-
   const user = useRecoilValue(userState);
+
+  const [cart, setCart] = useRecoilState(cartState);
+  const isLoggedIn = useRecoilValue(isLoggedInState);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -122,32 +125,68 @@ function SellProductDetail() {
         return;
       }
 
-      const cartItem = { productId: product.productId, productQuantity: count };
+      const existingItemIndex = cart.findIndex(
+        (item) => item.product.cartProductId === product.productId
+      );
 
-      try {
-        const response = await basicAxios.post(`/carts`, cartItem);
+      if (existingItemIndex > -1) {
+        Swal.fire({
+          icon: "error",
+          title: "장바구니 등록 불가",
+          text: "장바구니에 존재하는 상품입니다. 장바구니 페이지에서 수량을 수정해주세요!",
+          confirmButtonText: "장바구니 보기",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = `/cart/${user.userId}`;
+          }
+        });
+      } else {
+        const newCartItem: CartItem = {
+          product: {
+            cartId: "",
+            cartProductId: product.productId ?? "",
+            cartProductName: product.productName,
+            cartProductPrice: product.productPrice,
+            cartProductQuantity: product.productQuantity,
+            cartProductImages: product.productImages,
+            available: true,
+          },
+          quantity: count,
+        };
 
-        if (response.status === 201) {
-          Swal.fire({
-            icon: "success",
-            title: "상품 추가",
-            text: "장바구니에 상품이 추가되었습니다.",
-          });
-        } else {
-          console.error("Error response from /carts API:", response);
+        // 상태 업데이트
+        setCart([...cart, newCartItem]);
+
+        const cartItem = {
+          productId: product.productId,
+          productQuantity: count,
+        };
+
+        try {
+          const response = await basicAxios.post(`/carts`, cartItem);
+
+          if (response.status === 201) {
+            Swal.fire({
+              icon: "success",
+              title: "상품 추가",
+              text: "장바구니에 상품이 추가되었습니다.",
+            });
+          } else {
+            console.error("Error response from /carts API:", response);
+            Swal.fire({
+              icon: "error",
+              title: "오류",
+              text: "장바구니 등록 중 오류가 발생했습니다.",
+            });
+          }
+        } catch (error) {
+          console.error("Error updating cart:", error);
           Swal.fire({
             icon: "error",
             title: "오류",
-            text: "장바구니 등록 중 오류가 발생했습니다.",
+            text: "장바구니를 업데이트하는 도중 오류가 발생했습니다.",
           });
         }
-      } catch (error) {
-        console.error("Error updating cart:", error);
-        Swal.fire({
-          icon: "error",
-          title: "오류",
-          text: "장바구니를 업데이트하는 도중 오류가 발생했습니다.",
-        });
       }
     }
   };

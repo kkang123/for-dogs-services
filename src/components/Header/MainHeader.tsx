@@ -17,11 +17,11 @@ import basket from "@/assets/basket-buy-cart.svg";
 function MainHeader() {
   const user = useRecoilValue(userState);
   const isLoggedIn = useRecoilValue(isLoggedInState);
+  const { isLoggedIn: authIsLoggedIn } = useAuth();
   const { logout } = useLogout();
   const [cart, setCart] = useRecoilState(cartState);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const { isLoggedIn: authIsLoggedIn } = useAuth();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
