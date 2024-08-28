@@ -11,6 +11,7 @@ export const useLogout = () => {
     localStorage.removeItem("AccessToken");
     localStorage.removeItem("AccessTokenExpiration");
     localStorage.removeItem("user");
+    localStorage.removeItem("cart");
     setIsLoggedIn(false);
     setUser({ isLoggedIn: false, userId: "", role: "" });
   };
