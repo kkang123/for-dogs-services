@@ -1,17 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { db } from "@/firebase";
-import { setDoc, doc, Timestamp, deleteDoc } from "firebase/firestore";
+import { basicAxios } from "./axios";
+import { isLoggedInState, userState } from "@/recoil/userState";
 
-import { useAuth } from "@/contexts/AuthContext";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { cartState } from "@/recoil/cartState";
 
+import { CartItem } from "@/interface/cart";
 import SEOMetaTag from "@/components/SEOMetaTag";
-
 import { Button } from "@/components/ui/button";
-
 import Swal from "sweetalert2";
 
 interface PaymentData {
@@ -27,6 +25,8 @@ interface PaymentData {
 
 interface PaymentResponse {
   success: boolean;
+  imp_uid?: string;
+  merchant_uid?: string;
   error_msg?: string;
 }
 
@@ -65,15 +65,17 @@ declare global {
 
 const Payment: React.FC = () => {
   const navigate = useNavigate();
-  const { uid, nickname } = useAuth();
-  const [cart, setCart] = useRecoilState(cartState);
+  const isLoggedIn = useRecoilValue(isLoggedInState);
+  const user = useRecoilValue(userState);
 
-  const resetCart = () => {
+  const [cart, setCart] = useRecoilState<CartItem[]>(cartState);
+
+  const resetCart = useCallback(() => {
     setCart([]);
-  };
+  }, [setCart]);
 
   const [buyerInfo, setBuyerInfo] = useState({
-    name: nickname || "",
+    name: user.userId || "",
     tel: "",
     email: "",
     addr: "",
@@ -81,8 +83,8 @@ const Payment: React.FC = () => {
   });
 
   useEffect(() => {
-    setBuyerInfo((prev) => ({ ...prev, name: nickname || "" }));
-  }, [nickname]);
+    setBuyerInfo((prev) => ({ ...prev, name: user.userId || "" }));
+  }, [user.userId]);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -129,74 +131,132 @@ const Payment: React.FC = () => {
     [buyerInfo]
   );
 
-  const onClickPayment = useCallback(() => {
-    if (!uid || nickname === null) {
-      alert("로그인이 필요합니다.");
+  // 주문 등록 API 호출 후, orderId를 결제에 사용
+  const createOrder = useCallback(async () => {
+    try {
+      const orderData = {
+        orderItems: cart.map((item) => ({
+          orderProductId: item.product.cartProductId,
+          orderQuantity: item.quantity,
+          orderUnitPrice: item.product.cartProductPrice,
+        })),
+      };
+
+      console.log("Order request body:", orderData);
+
+      const response = await basicAxios.post("/orders", orderData);
+
+      // 상품 재고 부족 시 오류 처리
+      if (!response.data.ok) {
+        const errorMessage = response.data.error.message;
+        if (errorMessage === "상품 재고가 부족합니다.") {
+          Swal.fire("재고 부족", "선택한 상품의 재고가 부족합니다.", "error");
+          return null; // 주문이 실패했으므로 더 이상 진행하지 않음
+        }
+      }
+
+      // 응답에서 orderId 반환
+      return response.data.result.orderId;
+    } catch (error) {
+      console.error("주문 등록 중 오류 발생:", error);
+      Swal.fire("주문 등록 실패", "다시 시도해주세요.", "error");
+      throw error;
+    }
+  }, [cart]);
+
+  // 결제 등록 API 호출 함수
+  const registerPayment = useCallback(
+    async (impUid: string, merchantUid: string) => {
+      try {
+        console.log("Registering payment with:", { impUid, merchantUid });
+        const response = await basicAxios.post("/payments", {
+          impUid: impUid,
+          merchantUid: merchantUid,
+        });
+        return response.data;
+      } catch (error) {
+        console.error("결제 등록 중 오류 발생:", error);
+        Swal.fire(
+          "결제 등록 실패",
+          "결제 정보를 저장하는데 실패했습니다.",
+          "error"
+        );
+        throw error;
+      }
+    },
+    []
+  );
+
+  // 결제 처리 로직
+  const onClickPayment = useCallback(async () => {
+    if (!isLoggedIn) {
+      Swal.fire({
+        icon: "warning",
+        title: "로그인이 필요합니다.",
+        text: "결제를 진행하려면 먼저 로그인하세요.",
+      });
       return;
     }
 
-    const { IMP } = window;
-    IMP?.init(import.meta.env.VITE_APP_IMP_KEY);
+    try {
+      const orderId = await createOrder(); // 주문 등록 후 orderId를 받아옴
+      if (!orderId) return; // 주문 등록 실패 시 결제 진행 안 함
 
-    const amount = cart.reduce(
-      (total, item) =>
-        total + (item.product.cartProductPrice || 0) * item.quantity,
-      0
-    );
+      const { IMP } = window;
+      IMP?.init(import.meta.env.VITE_APP_IMP_KEY);
 
-    const name = cart.map((item) => item.product.cartProductName).join(", ");
+      const amount = cart.reduce(
+        (total, item) => total + item.product.cartProductPrice * item.quantity,
+        0
+      );
 
-    const data = {
-      pg: "nice",
-      pay_method: "card",
-      merchant_uid: `mid_${new Date().getTime()}`,
-      amount,
-      name,
-      buyer_name: buyerInfo.name,
-      buyer_tel: buyerInfo.tel,
-      buyer_email: buyerInfo.email,
-      buyer_addr: buyerInfo.addr,
-      buyer_postcode: buyerInfo.postcode,
-    };
+      const name = cart.map((item) => item.product.cartProductName).join(", ");
 
-    IMP?.request_pay(data, async (response) => {
-      if (response.success) {
-        try {
-          const groupid = `group_${new Date().getTime()}`;
+      const data = {
+        pg: "nice",
+        pay_method: "card",
+        merchant_uid: orderId, // 주문 등록 API에서 받은 orderId를 merchant_uid로 사용
+        amount,
+        name,
+        buyer_name: buyerInfo.name,
+        buyer_tel: buyerInfo.tel,
+        buyer_email: buyerInfo.email,
+        buyer_addr: buyerInfo.addr,
+        buyer_postcode: buyerInfo.postcode,
+      };
 
-          for (const item of cart) {
-            const docId = `order_${new Date().getTime()}`;
-            const docRef = doc(db, "orders", docId);
-            await setDoc(docRef, {
-              uid,
-              buyer_name: buyerInfo.name,
-              amount: (item.product.cartProductPrice || 0) * item.quantity,
-              item,
-              timestamp: Timestamp.fromDate(new Date()),
-              status: "결제 완료",
-              groupid,
-            });
+      IMP?.request_pay(data, async (response: PaymentResponse) => {
+        console.log("Payment response:", response); // 결제 응답 값 확인
+        if (response.success) {
+          try {
+            // 결제 등록 API 호출
+            await registerPayment(response.imp_uid!, response.merchant_uid!);
+            Swal.fire("결제 성공", "주문이 완료되었습니다.", "success").then(
+              () => {
+                resetCart();
+                console.log("장바구니 초기화", resetCart);
+                navigate("/");
+              }
+            );
+          } catch (error) {
+            console.error("결제 정보 저장 실패:", error);
           }
-
-          if (uid) {
-            const cartRef = doc(db, "carts", uid);
-            await deleteDoc(cartRef);
-          }
-
-          Swal.fire("결제 성공", "주문이 완료되었습니다.", "success").then(
-            () => {
-              resetCart();
-              navigate("/");
-            }
-          );
-        } catch (error) {
-          console.error("주문 정보 저장 실패:", error);
+        } else {
+          Swal.fire("결제 실패", `오류 메시지: ${response.error_msg}`, "error");
         }
-      } else {
-        Swal.fire("결제 실패", `오류 메시지: ${response.error_msg}`, "error");
-      }
-    });
-  }, [buyerInfo, cart, navigate, uid]);
+      });
+    } catch (error) {
+      console.error("결제 진행 중 오류 발생:", error);
+    }
+  }, [
+    buyerInfo,
+    cart,
+    createOrder,
+    registerPayment,
+    navigate,
+    isLoggedIn,
+    resetCart,
+  ]);
 
   return (
     <>
