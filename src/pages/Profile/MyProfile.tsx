@@ -1,25 +1,31 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 import { basicAxios } from "@/api/axios";
-
-import useDeleteUser from "@/hooks/useDeleteUser";
-import useChangePassword from "@/hooks/useChangePassword";
-
-import { UserDetails } from "@/interface/userDetail";
 import SEOMetaTag from "@/components/SEOMetaTag";
 import ProductHeader from "@/components/Header/ProductHeader";
 import { Button } from "@/components/ui/button";
+import useChangePassword from "@/hooks/useChangePassword";
+import useDeleteUser from "@/hooks/useDeleteUser";
+
+import { Order } from "@/interface/order";
+import { UserDetails } from "@/interface/userDetail";
+
 import Swal from "sweetalert2";
 
 function MyProfile() {
   const [user, setUser] = useState<UserDetails | null>(null);
+  const [orderHistory, setOrderHistory] = useState<Order[]>([]);
   const [currentPassword, setCurrentPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
-  const [isPasswordFieldVisible, setIsPasswordFieldVisible] =
-    useState<boolean>(false);
+  const [selectedMenu, setSelectedMenu] = useState<string>("My Information");
+
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [endDate, setEndDate] = useState<Date | null>(new Date());
 
   const { userId } = useParams<{ userId: string }>();
-
   const deleteUser = useDeleteUser();
   const { changePassword, isLoading, error, success } = useChangePassword();
 
@@ -33,8 +39,27 @@ function MyProfile() {
       }
     };
 
+    const fetchOrders = async () => {
+      if (startDate && endDate) {
+        try {
+          const formattedStartDate = startDate.toISOString().split("T")[0];
+          const formattedEndDate = endDate.toISOString().split("T")[0];
+
+          const response = await basicAxios.get(
+            `/orders/buyer?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
+          );
+          setOrderHistory(response.data.result);
+        } catch (error) {
+          console.error("Failed to fetch order history:", error);
+        }
+      }
+    };
+
     fetchUser();
-  }, [userId]);
+    if (selectedMenu === "Purchase History") {
+      fetchOrders();
+    }
+  }, [userId, selectedMenu, startDate, endDate]);
 
   const handlePasswordChange = async () => {
     if (!currentPassword || !newPassword) {
@@ -49,8 +74,135 @@ function MyProfile() {
     await changePassword({ currentPassword, newPassword });
   };
 
-  const togglePasswordFields = () => {
-    setIsPasswordFieldVisible((prev) => !prev);
+  const renderOrderHistory = () => {
+    return (
+      <div>
+        <h2 className="text-4xl pb-4">구매 내역</h2>
+
+        <div className="flex space-x-4 pb-4">
+          <div>
+            <label>시작 날짜: </label>
+            <DatePicker
+              selected={startDate}
+              onChange={(date: Date | null) => setStartDate(date)}
+              dateFormat="yyyy-MM-dd"
+            />
+          </div>
+          <div>
+            <label>종료 날짜: </label>
+            <DatePicker
+              selected={endDate}
+              onChange={(date: Date | null) => setEndDate(date)}
+              dateFormat="yyyy-MM-dd"
+            />
+          </div>
+          <Button onClick={() => setSelectedMenu("Purchase History")}>
+            구매 내역 조회
+          </Button>
+        </div>
+
+        {orderHistory.length === 0 ? (
+          <p>구매 내역이 없습니다.</p>
+        ) : (
+          orderHistory.map((order) => (
+            <div key={order.orderId} className="border p-4 mb-4">
+              <p>
+                <strong>주문 번호</strong>: {order.orderId}
+              </p>
+              <p>
+                <strong>주문 상태</strong>: {order.orderStatus}
+              </p>
+              <p>
+                <strong>총 금액</strong>: {order.orderTotalPrice} 원
+              </p>
+              <p>
+                <strong>결제 내역</strong> : {order.paymentId}
+              </p>
+              <div className="ml-4">
+                <h4>주문 상품 목록:</h4>
+                {order.orderItems.map((item, index) => (
+                  <div key={item.orderItemId} className="mb-2">
+                    <p>
+                      <strong>{index + 1}. 상품명</strong>:{" "}
+                      {item.orderProductName}
+                    </p>
+                    <p>
+                      <strong>수량</strong>: {item.orderProductQuantity}
+                    </p>
+                    <p>
+                      <strong>가격</strong>: {item.orderProductUnitPrice} 원
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    );
+  };
+
+  const renderContent = () => {
+    switch (selectedMenu) {
+      case "My Information":
+        return (
+          <div>
+            <h1 className="text-4xl pb-4">나의 정보</h1>
+            {user ? (
+              <div className="space-y-4 m-4">
+                <p>
+                  <strong>성함</strong>: {user.userName}
+                </p>
+                <p>
+                  <strong>생년월일</strong>: {user.userBirthDate}
+                </p>
+                <p>
+                  <strong>아이디</strong>: {user.userId}
+                </p>
+                <p>
+                  <strong>이메일</strong>: {user.userEmail}
+                </p>
+                <p>
+                  <strong>권한</strong>: {user.userRole}
+                </p>
+              </div>
+            ) : (
+              <p>회원 정보를 불러오고 있는 중입니다.</p>
+            )}
+          </div>
+        );
+      case "Purchase History":
+        return renderOrderHistory();
+      case "Change Password":
+        return (
+          <div>
+            <h2 className="text-4xl">비밀번호 수정</h2>
+            <input
+              type="password"
+              placeholder="현재 비밀번호"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              className="border p-2 mt-2"
+            />
+            <input
+              type="password"
+              placeholder="새 비밀번호"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className="border p-2 m-2"
+            />
+            <Button onClick={handlePasswordChange} disabled={isLoading}>
+              비밀번호 변경하기
+            </Button>
+            {error && <p className="text-red-500">{error}</p>}
+            {success && (
+              <p className="text-green-500">비밀번호가 변경되었습니다.</p>
+            )}
+          </div>
+        );
+      default:
+        return null;
+    }
   };
 
   return (
@@ -62,52 +214,43 @@ function MyProfile() {
           description="구매자 프로필 페이지입니다."
         />
       </header>
-      <main className="mt-16 ">
-        <h1 className="text-4xl">안녕하세요. {user?.userName}님</h1>
-        <hr />
-        <h2 className="text-3xl p-2 mt-4">구매 내역</h2>
-        {/* 구매 내역 섹션 */}
-        {/* 이곳에 구매 내역 표시 코드 추가 */}
-      </main>
-      <footer>
-        <div className="flex gap-2">
-          <div className="flex-col">
-            <Button onClick={togglePasswordFields}>
-              {isPasswordFieldVisible
-                ? "비밀번호 수정 취소"
-                : "비밀번호 수정하기"}
-            </Button>
 
-            {isPasswordFieldVisible && (
-              <div>
-                <h2 className="text-2xl">비밀번호 수정</h2>
-                <input
-                  type="password"
-                  placeholder="현재 비밀번호"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="border p-2 m-2"
-                />
-                <input
-                  type="password"
-                  placeholder="새 비밀번호"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  className="border p-2 m-2"
-                />
-                <Button onClick={handlePasswordChange} disabled={isLoading}>
-                  비밀번호 수정하기
-                </Button>
-                {error && <p className="text-red-500">{error}</p>}
-                {success && (
-                  <p className="text-green-500">비밀번호가 변경되었습니다.</p>
-                )}
-              </div>
-            )}
-          </div>
-          <Button onClick={deleteUser}>탈퇴하기</Button>
-        </div>
-      </footer>
+      <main className="flex more-element mt-10">
+        <nav className="fixed top-56 left-10 right-10 w-64 p-4 h-full ">
+          <ul className="space-y-4">
+            <li>
+              <Button
+                size={"lg"}
+                onClick={() => setSelectedMenu("My Information")}
+              >
+                나의 정보
+              </Button>
+            </li>
+            <li>
+              <Button
+                size={"lg"}
+                onClick={() => setSelectedMenu("Purchase History")}
+              >
+                구매 내역
+              </Button>
+            </li>
+            <li>
+              <Button
+                size={"lg"}
+                onClick={() => setSelectedMenu("Change Password")}
+              >
+                비밀번호 변경
+              </Button>
+            </li>
+            <li>
+              <Button size={"lg"} className="lx" onClick={deleteUser}>
+                탈퇴하기
+              </Button>
+            </li>
+          </ul>
+        </nav>
+        <div className="flex-grow p-4 ml-64">{renderContent()}</div>
+      </main>
     </>
   );
 }
