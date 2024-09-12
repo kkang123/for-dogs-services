@@ -1,113 +1,113 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+// import { useEffect, useState } from "react";
+// import { useParams } from "react-router-dom";
 
-import { db } from "@/firebase";
-import {
-  collection,
-  getDocs,
-  Timestamp,
-  updateDoc,
-  doc,
-} from "firebase/firestore";
+// import { db } from "@/firebase";
+// import {
+//   collection,
+//   getDocs,
+//   Timestamp,
+//   updateDoc,
+//   doc,
+// } from "firebase/firestore";
 
-import { useAuth } from "@/contexts/AuthContext";
+// import { useAuth } from "@/contexts/AuthContext";
 
-import { Order } from "@/interface/order";
+// import { Order } from "@/interface/order";
 
 import SEOMetaTag from "@/components/SEOMetaTag";
 
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import ProductHeader from "@/components/Header/ProductHeader";
 
-interface UserType {
-  uid: string;
-  email: string;
-  isSeller: boolean;
-  nickname: string;
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
-}
+// interface UserType {
+//   uid: string;
+//   email: string;
+//   isSeller: boolean;
+//   nickname: string;
+//   createdAt: Timestamp;
+//   updatedAt: Timestamp;
+// }
 
 function ProductManagement() {
-  const { uid } = useAuth() as { uid: string };
-  const { uid: urlUid } = useParams<{ uid: string }>();
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [users, setUsers] = useState<UserType[]>([]);
-  const [selectedStatus, setSelectedStatus] = useState<Record<string, string>>(
-    {}
-  );
+  // const { uid } = useAuth() as { uid: string };
+  // const { uid: urlUid } = useParams<{ uid: string }>();
+  // const [orders, setOrders] = useState<Order[]>([]);
+  // const [users, setUsers] = useState<UserType[]>([]);
+  // const [selectedStatus, setSelectedStatus] = useState<Record<string, string>>(
+  //   {}
+  // );
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const usersRef = collection(db, "users");
-      const usersSnapshot = await getDocs(usersRef);
-      const usersData: UserType[] = [];
-      for (const doc of usersSnapshot.docs) {
-        const user = doc.data() as UserType;
-        user.uid = doc.id;
-        usersData.push(user);
-      }
-      setUsers(usersData);
-    };
+  // useEffect(() => {
+  //   const fetchUsers = async () => {
+  //     const usersRef = collection(db, "users");
+  //     const usersSnapshot = await getDocs(usersRef);
+  //     const usersData: UserType[] = [];
+  //     for (const doc of usersSnapshot.docs) {
+  //       const user = doc.data() as UserType;
+  //       user.uid = doc.id;
+  //       usersData.push(user);
+  //     }
+  //     setUsers(usersData);
+  //   };
 
-    fetchUsers();
+  //   fetchUsers();
 
-    const fetchOrders = async () => {
-      const ordersRef = collection(db, "orders");
-      const querySnapshot = await getDocs(ordersRef);
-      const fetchedOrders = querySnapshot.docs.map(
-        (doc) => ({ id: doc.id, ...doc.data() } as Order)
-      );
-      const sellerOrders = fetchedOrders.filter((order) => {
-        return order.item.product.sellerId === uid;
-      });
-      const sortedSellerOrders = sellerOrders.sort((a, b) => {
-        return b.timestamp.seconds - a.timestamp.seconds;
-      });
-      setOrders(sortedSellerOrders);
-    };
+  // const fetchOrders = async () => {
+  //   const ordersRef = collection(db, "orders");
+  //   const querySnapshot = await getDocs(ordersRef);
+  //   const fetchedOrders = querySnapshot.docs.map(
+  //     (doc) => ({ id: doc.id, ...doc.data() } as Order)
+  //   );
+  //   const sellerOrders = fetchedOrders.filter((order) => {
+  //     return order.item.product.sellerId === uid;
+  //   });
+  //   const sortedSellerOrders = sellerOrders.sort((a, b) => {
+  //     return b.timestamp.seconds - a.timestamp.seconds;
+  //   });
+  //   setOrders(sortedSellerOrders);
+  // };
 
-    fetchOrders();
-  }, [uid, urlUid]);
+  // fetchOrders();
+  // }, [uid, urlUid]);
 
-  const orderStatusOptions = [
-    "구매 확인",
-    "발송 대기",
-    "발송 시작",
-    "주문 취소",
-    "판매 완료",
-  ];
+  // const orderStatusOptions = [
+  //   "구매 확인",
+  //   "발송 대기",
+  //   "발송 시작",
+  //   "주문 취소",
+  //   "판매 완료",
+  // ];
 
-  const updateOrderStatus = async (orderId: string, status: string) => {
-    const orderRef = doc(db, "orders", orderId);
-    await updateDoc(orderRef, { status });
-    setOrders(
-      orders.map((order) =>
-        order.id === orderId ? { ...order, status } : order
-      )
-    );
-  };
+  // const updateOrderStatus = async (orderId: string, status: string) => {
+  //   const orderRef = doc(db, "orders", orderId);
+  //   await updateDoc(orderRef, { status });
+  //   setOrders(
+  //     orders.map((order) =>
+  //       order.id === orderId ? { ...order, status } : order
+  //     )
+  //   );
+  // };
 
-  const handleStatusChange = (orderId: string, status: string) => {
-    setSelectedStatus((prevStatus) => {
-      const updatedStatus = { ...prevStatus, [orderId]: status };
-      return updatedStatus;
-    });
-  };
+  // const handleStatusChange = (orderId: string, status: string) => {
+  //   setSelectedStatus((prevStatus) => {
+  //     const updatedStatus = { ...prevStatus, [orderId]: status };
+  //     return updatedStatus;
+  //   });
+  // };
 
-  const applyStatusChange = async (orderId: string) => {
-    if (selectedStatus[orderId]) {
-      try {
-        console.log("Updating status in Firestore...");
-        await updateOrderStatus(orderId, selectedStatus[orderId]);
-        console.log("Updated status in Firestore.");
-      } catch (error) {
-        console.error("Failed to update order status:", error);
-      }
-    } else {
-      console.log("No selected status for this order.");
-    }
-  };
+  // const applyStatusChange = async (orderId: string) => {
+  //   if (selectedStatus[orderId]) {
+  //     try {
+  //       console.log("Updating status in Firestore...");
+  //       await updateOrderStatus(orderId, selectedStatus[orderId]);
+  //       console.log("Updated status in Firestore.");
+  //     } catch (error) {
+  //       console.error("Failed to update order status:", error);
+  //     }
+  //   } else {
+  //     console.log("No selected status for this order.");
+  //   }
+  // };
 
   return (
     <>
@@ -118,9 +118,9 @@ function ProductManagement() {
           description="결제 진행 중인 상품을 관리하는 페이지입니다."
         />
       </header>
-      <main className="mt-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4  ">
-          {orders.length > 0 ? (
+      {/* <main className="mt-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4  "> */}
+      {/* {orders.length > 0 ? (
             orders.map((order) => (
               <div key={order.id} className="border p-4">
                 <div>
@@ -170,7 +170,7 @@ function ProductManagement() {
             <div>주문이 없습니다.</div>
           )}
         </div>
-      </main>
+      </main> */}
     </>
   );
 }
