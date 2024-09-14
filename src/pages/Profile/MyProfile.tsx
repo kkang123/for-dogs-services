@@ -7,6 +7,7 @@ import { basicAxios } from "@/api/axios";
 import SEOMetaTag from "@/components/SEOMetaTag";
 import ProductHeader from "@/components/Header/ProductHeader";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import useChangePassword from "@/hooks/useChangePassword";
 import useDeleteUser from "@/hooks/useDeleteUser";
 
@@ -80,7 +81,7 @@ function MyProfile() {
         <h2 className="text-4xl pb-4">구매 내역</h2>
 
         <div className="flex space-x-4 pb-4">
-          <div>
+          <div className="border border-gray-300 rounded-lg p-2 shadow-lg">
             <label>시작 날짜: </label>
             <DatePicker
               selected={startDate}
@@ -88,7 +89,7 @@ function MyProfile() {
               dateFormat="yyyy-MM-dd"
             />
           </div>
-          <div>
+          <div className="border border-gray-300 rounded-lg p-2 shadow-lg">
             <label>종료 날짜: </label>
             <DatePicker
               selected={endDate}
@@ -146,27 +147,31 @@ function MyProfile() {
         return (
           <div>
             <h1 className="text-4xl pb-4">나의 정보</h1>
-            {user ? (
-              <div className="space-y-4 m-4">
-                <p>
-                  <strong>성함</strong>: {user.userName}
-                </p>
-                <p>
-                  <strong>생년월일</strong>: {user.userBirthDate}
-                </p>
-                <p>
-                  <strong>아이디</strong>: {user.userId}
-                </p>
-                <p>
-                  <strong>이메일</strong>: {user.userEmail}
-                </p>
-                <p>
-                  <strong>권한</strong>: {user.userRole}
-                </p>
-              </div>
-            ) : (
-              <p>회원 정보를 불러오고 있는 중입니다.</p>
-            )}
+            <Card className="m-10 border rounded-lg shadow-lg w-[500px]">
+              <CardContent>
+                {user ? (
+                  <div className="space-y-4 m-4 ">
+                    <p>
+                      <strong>성함</strong>: {user.userName}
+                    </p>
+                    <p>
+                      <strong>생년월일</strong>: {user.userBirthDate}
+                    </p>
+                    <p>
+                      <strong>아이디</strong>: {user.userId}
+                    </p>
+                    <p>
+                      <strong>이메일</strong>: {user.userEmail}
+                    </p>
+                    <p>
+                      <strong>권한</strong>: {user.userRole}
+                    </p>
+                  </div>
+                ) : (
+                  <p>회원 정보를 불러오고 있는 중입니다.</p>
+                )}
+              </CardContent>
+            </Card>
           </div>
         );
       case "Purchase History":
