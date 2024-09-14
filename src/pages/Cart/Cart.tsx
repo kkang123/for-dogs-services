@@ -58,7 +58,7 @@ const Cart = () => {
 
       fetchCartItemsData();
     }
-  }, [userId]);
+  }, [userId, setCart]);
 
   const updateQuantity = (
     productId: string | undefined,
