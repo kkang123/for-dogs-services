@@ -96,12 +96,12 @@ function Category() {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
-  }, [inView, hasNextPage, isFetchingNextPage]);
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   useEffect(() => {
     remove();
     refetch();
-  }, [sortType]);
+  }, [sortType, refetch, remove]);
 
   const uniqueProducts = useMemo(() => {
     const allProducts = data?.pages.flatMap((page) => page.data) || [];

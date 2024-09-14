@@ -67,7 +67,7 @@ function ProductList() {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
-  }, [inView, hasNextPage, isFetchingNextPage]);
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const uniqueProducts = useMemo(() => {
     const allProducts = data?.pages.flatMap((page) => page.data) || [];
