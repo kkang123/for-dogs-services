@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -29,37 +29,37 @@ function MyProfile() {
   const deleteUser = useDeleteUser();
   const { changePassword, isLoading, error, success } = useChangePassword();
 
+  const hasFetchedProfile = useRef(false);
+
   useEffect(() => {
     const fetchUser = async () => {
+      if (hasFetchedProfile.current) return;
       try {
         const response = await basicAxios.get("/users/profile");
         setUser(response.data.result);
+        hasFetchedProfile.current = true;
       } catch (error) {
         console.error("Failed to fetch user:", error);
       }
     };
-
-    const fetchOrders = async () => {
-      if (startDate && endDate) {
-        try {
-          const formattedStartDate = startDate.toISOString().split("T")[0];
-          const formattedEndDate = endDate.toISOString().split("T")[0];
-
-          const response = await basicAxios.get(
-            `/orders/buyer?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
-          );
-          setOrderHistory(response.data.result);
-        } catch (error) {
-          console.error("Failed to fetch order history:", error);
-        }
-      }
-    };
-
     fetchUser();
-    if (selectedMenu === "Purchase History") {
-      fetchOrders();
+  }, [userId]);
+
+  const fetchOrders = async () => {
+    if (startDate && endDate) {
+      try {
+        const formattedStartDate = startDate.toISOString().split("T")[0];
+        const formattedEndDate = endDate.toISOString().split("T")[0];
+
+        const response = await basicAxios.get(
+          `/orders/buyer?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
+        );
+        setOrderHistory(response.data.result);
+      } catch (error) {
+        console.error("Failed to fetch order history:", error);
+      }
     }
-  }, [userId, selectedMenu, startDate, endDate]);
+  };
 
   const handlePasswordChange = async () => {
     if (!currentPassword || !newPassword) {
@@ -96,9 +96,7 @@ function MyProfile() {
               dateFormat="yyyy-MM-dd"
             />
           </div>
-          <Button onClick={() => setSelectedMenu("Purchase History")}>
-            구매 내역 조회
-          </Button>
+          <Button onClick={fetchOrders}>구매 내역 조회</Button>
         </div>
 
         {orderHistory.length === 0 ? (
