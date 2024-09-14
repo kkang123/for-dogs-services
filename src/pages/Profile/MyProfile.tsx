@@ -147,10 +147,10 @@ function MyProfile() {
         return (
           <div>
             <h1 className="text-4xl pb-4">나의 정보</h1>
-            <Card className="m-10 border rounded-lg shadow-lg w-[500px]">
+            <Card className="m-10 border rounded-lg shadow-lg w-[500px] ">
               <CardContent>
                 {user ? (
-                  <div className="space-y-4 m-4 ">
+                  <div className="space-y-4 m-4 p-4 ">
                     <p>
                       <strong>성함</strong>: {user.userName}
                     </p>
