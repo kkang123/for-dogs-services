@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Swal from "sweetalert2";
 
 import { basicAxios } from "@/api/axios";
 import SEOMetaTag from "@/components/SEOMetaTag";
@@ -13,8 +14,6 @@ import useDeleteUser from "@/hooks/useDeleteUser";
 
 import { Order } from "@/interface/order";
 import { UserDetails } from "@/interface/userDetail";
-
-import Swal from "sweetalert2";
 
 function MyProfile() {
   const [user, setUser] = useState<UserDetails | null>(null);
@@ -55,6 +54,8 @@ function MyProfile() {
         const response = await basicAxios.get(
           `/orders/buyer?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
         );
+
+        console.log("Fetched orders:", response.data.result);
         setOrderHistory(response.data.result);
       } catch (error) {
         console.error("Failed to fetch order history:", error);
@@ -112,9 +113,6 @@ function MyProfile() {
                 <strong>주문 상태</strong>: {order.orderStatus}
               </p>
               <p>
-                <strong>총 금액</strong>: {order.orderTotalPrice} 원
-              </p>
-              <p>
                 <strong>결제 내역</strong> : {order.paymentId}
               </p>
               <div className="ml-4">
@@ -133,6 +131,9 @@ function MyProfile() {
                     </p>
                   </div>
                 ))}
+                <p className="mt-4 text-2xl">
+                  <strong>총 금액</strong>: {order.orderTotalPrice} 원
+                </p>
               </div>
             </div>
           ))
