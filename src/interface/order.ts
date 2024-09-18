@@ -10,5 +10,6 @@ export interface Order {
   orderStatus: string;
   orderTotalPrice: number;
   paymentId: string;
+  orderDate: Date;
   orderItems: OrderItem[];
 }
