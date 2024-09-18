@@ -6,7 +6,7 @@ const useRemoveCart = () => {
     try {
       await basicAxios.delete(`/carts/${cartId}`);
     } catch (error) {
-      console.error("Failed to remove item from cart:", error);
+      console.error("장바구니에서 항목을 제거하는 데 실패했습니다.:", error);
     }
   }, []);
 
