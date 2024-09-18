@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { basicAxios } from "@/api/axios";
-import { CartItem as CartItemType } from "@/interface/cart";
+
+import useUpdateCartQuantity from "@/hooks/useUpdateCart";
+import useRemoveCart from "@/hooks/useRemoveCart";
 import { Button } from "@/components/ui/button";
+import { CartItem as CartItemType } from "@/interface/cart";
 
 interface CartItemProps {
   item: CartItemType;
@@ -26,6 +28,8 @@ const CartItem: React.FC<CartItemProps> = ({
   const [currentQuantity, setCurrentQuantity] = useState<number>(
     product.cartProductQuantity
   );
+  const updateCartHook = useUpdateCartQuantity();
+  const removeCartHook = useRemoveCart();
 
   useEffect(() => {
     setCurrentQuantity(product.cartProductQuantity);
@@ -35,10 +39,7 @@ const CartItem: React.FC<CartItemProps> = ({
     if (newQuantity < 0) return;
 
     try {
-      await basicAxios.patch(`/carts/${cartId}`, {
-        productId: product.cartProductId,
-        productQuantity: newQuantity,
-      });
+      await updateCartHook(cartId, product.cartProductId, newQuantity);
       if (updateQuantity) {
         updateQuantity(product.cartProductId, newQuantity, cartId);
       }
@@ -50,7 +51,7 @@ const CartItem: React.FC<CartItemProps> = ({
 
   const handleRemoveFromCart = async () => {
     try {
-      await basicAxios.delete(`/carts/${cartId}`);
+      await removeCartHook(cartId);
       if (removeFromCart) {
         removeFromCart(product.cartProductId, cartId);
       }
