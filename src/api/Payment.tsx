@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 import { basicAxios } from "./axios";
+import useRemoveCart from "@/hooks/useRemoveCart";
 import { isLoggedInState, userState } from "@/recoil/userState";
-
 import { useRecoilState, useRecoilValue } from "recoil";
 import { cartState } from "@/recoil/cartState";
-
-import { CartItem } from "@/interface/cart";
 import SEOMetaTag from "@/components/SEOMetaTag";
 import { Button } from "@/components/ui/button";
-import Swal from "sweetalert2";
+import { CartItem } from "@/interface/cart";
 
 interface PaymentData {
   pg: string;
@@ -21,6 +20,8 @@ interface PaymentData {
   buyer_name: string;
   buyer_tel: string;
   buyer_email: string;
+  buyer_addr: string;
+  buyer_postcode: string;
 }
 
 interface PaymentResponse {
@@ -69,6 +70,7 @@ const Payment: React.FC = () => {
   const user = useRecoilValue(userState);
 
   const [cart, setCart] = useRecoilState<CartItem[]>(cartState);
+  const removeFromCart = useRemoveCart();
 
   const resetCart = useCallback(() => {
     setCart([]);
@@ -146,16 +148,14 @@ const Payment: React.FC = () => {
 
       const response = await basicAxios.post("/orders", orderData);
 
-      // 상품 재고 부족 시 오류 처리
       if (!response.data.ok) {
         const errorMessage = response.data.error.message;
         if (errorMessage === "상품 재고가 부족합니다.") {
           Swal.fire("재고 부족", "선택한 상품의 재고가 부족합니다.", "error");
-          return null; // 주문이 실패했으므로 더 이상 진행하지 않음
+          return null;
         }
       }
 
-      // 응답에서 orderId 반환
       return response.data.result.orderId;
     } catch (error) {
       console.error("주문 등록 중 오류 발생:", error);
@@ -199,8 +199,8 @@ const Payment: React.FC = () => {
     }
 
     try {
-      const orderId = await createOrder(); // 주문 등록 후 orderId를 받아옴
-      if (!orderId) return; // 주문 등록 실패 시 결제 진행 안 함
+      const orderId = await createOrder();
+      if (!orderId) return;
 
       const { IMP } = window;
       IMP?.init(import.meta.env.VITE_APP_IMP_KEY);
@@ -226,11 +226,18 @@ const Payment: React.FC = () => {
       };
 
       IMP?.request_pay(data, async (response: PaymentResponse) => {
-        console.log("Payment response:", response); // 결제 응답 값 확인
+        console.log("Payment response:", response);
         if (response.success) {
           try {
             // 결제 등록 API 호출
             await registerPayment(response.imp_uid!, response.merchant_uid!);
+
+            await Promise.all(
+              cart.map(async (item) => {
+                await removeFromCart(item.product.cartId); // cartId로 삭제 호출
+              })
+            );
+
             Swal.fire("결제 성공", "주문이 완료되었습니다.", "success").then(
               () => {
                 resetCart();
@@ -256,6 +263,7 @@ const Payment: React.FC = () => {
     navigate,
     isLoggedIn,
     resetCart,
+    removeFromCart,
   ]);
 
   return (
