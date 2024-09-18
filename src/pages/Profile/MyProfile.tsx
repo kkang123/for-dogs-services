@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import useChangePassword from "@/hooks/useChangePassword";
 import useDeleteUser from "@/hooks/useDeleteUser";
+import usePaymentDetails from "@/hooks/usePaymentDetails";
 
 import { Order } from "@/interface/order";
 import { UserDetails } from "@/interface/userDetail";
@@ -27,10 +28,12 @@ function MyProfile() {
 
   const { userId } = useParams<{ userId: string }>();
   const deleteUser = useDeleteUser();
+  const { fetchPaymentDetails } = usePaymentDetails();
   const { changePassword, isLoading, error, success } = useChangePassword();
 
   const hasFetchedProfile = useRef(false);
 
+  // 나의 정보 api
   useEffect(() => {
     const fetchUser = async () => {
       if (hasFetchedProfile.current) return;
@@ -45,6 +48,7 @@ function MyProfile() {
     fetchUser();
   }, [userId]);
 
+  // 주문 내역 조회 api
   const fetchOrders = async () => {
     if (startDate && endDate) {
       try {
@@ -63,6 +67,68 @@ function MyProfile() {
     }
   };
 
+  // 주문 취소 api
+  const cancelOrders = async (orderId: string) => {
+    // 취소 사유
+    const cancelReasons = [
+      "단순변심으로 인한 환불입니다.",
+      "사이즈가 오류로 인한 환불입니다.",
+      "상품 불량으로 인한 환불입니다.",
+      "오배송으로 인한 환불입니다.",
+      "사이즈 불량으로 인한 환불입니다.",
+    ];
+
+    try {
+      const { value: selectedReason } = await Swal.fire({
+        title: "주문 취소 사유 선택",
+        input: "select",
+        inputOptions: cancelReasons,
+        inputValidator: (value) => {
+          if (!value) {
+            return "취소 사유를 선택해주세요!";
+          }
+        },
+        showCancelButton: true,
+        confirmButtonText: "주문 취소",
+        cancelButtonText: "취소",
+      });
+
+      if (selectedReason !== undefined) {
+        const cancelRequestBody = {
+          cancelReason: cancelReasons[selectedReason],
+        };
+
+        const response = await basicAxios.post(
+          `/orders/${orderId}/cancel`,
+          cancelRequestBody
+        );
+
+        if (response.status === 204) {
+          Swal.fire({
+            icon: "success",
+            title: "주문 취소 완료",
+            text: "주문이 성공적으로 취소되었습니다.",
+          });
+          fetchOrders(); // 주문 취소 후 목록을 갱신
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "취소 실패",
+            text: "주문을 취소하는 중 문제가 발생했습니다.",
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Failed to cancel order:", error);
+      Swal.fire({
+        icon: "error",
+        title: "취소 실패",
+        text: "주문을 취소할 수 없습니다.",
+      });
+    }
+  };
+
+  // 비밀번호 수정
   const handlePasswordChange = async () => {
     if (!currentPassword || !newPassword) {
       Swal.fire({
@@ -76,44 +142,19 @@ function MyProfile() {
     await changePassword({ currentPassword, newPassword });
   };
 
-  const fetchPaymentDetails = async (paymentId: string) => {
-    try {
-      const response = await basicAxios.get(`/payments/${paymentId}`);
-      const { result } = response.data;
-
-      Swal.fire({
-        title: "결제 상세 내역",
-        html: `
-          <p><strong>결제 ID</strong>: ${result.paymentId}</p>
-          <p><strong>주문 ID</strong>: ${result.orderId}</p>
-          <p><strong>결제 방법</strong>: ${result.payMethod}</p>
-          <p><strong>상태</strong>: ${result.status}</p>
-          <p><strong>결제 금액</strong>: ${result.amount} ${result.currency}</p>
-          <p><strong>결제 완료 시간</strong>: ${new Date(
-            result.paidAt * 1000
-          ).toLocaleString()}</p>
-          ${
-            result.failReason
-              ? `<p><strong>실패 이유</strong>: ${result.failReason}</p>`
-              : ""
-          }
-          ${
-            result.cancellationDetails
-              ? `<p><strong>취소 내역</strong>: ${result.cancellationDetails}</p>`
-              : ""
-          }
-        `,
-        icon: "info",
-      });
-    } catch (error) {
-      console.error("Failed to fetch payment details:", error);
-      Swal.fire({
-        icon: "error",
-        title: "에러",
-        text: "결제 상세 내역을 불러오는데 실패했습니다.",
-      });
-    }
+  // 결제 상태
+  const orderStatusMap: { [key: string]: string } = {
+    AWAITING_PAYMENT: "결제 대기 중",
+    PAID: "결제 완료",
+    PAYMENT_FAILED: "결제 오류",
+    CONFIRMED: "구매 확인",
+    AWAITING_SHIPMENT: "배송 대기 중",
+    SHIPPED: "배송 중",
+    DELIVERED: "배송 완료",
+    CANCELLED: "주문 취소",
   };
+
+  // 결제 상세 내역
 
   const renderOrderHistory = () => {
     return (
@@ -143,45 +184,74 @@ function MyProfile() {
         {orderHistory.length === 0 ? (
           <p>구매 내역이 없습니다.</p>
         ) : (
-          orderHistory.map((order) => (
-            <div key={order.orderId} className="border p-4 mb-4">
-              <p>
-                <strong>주문 번호</strong>: {order.orderId}
-              </p>
-              <p>
-                <strong>주문 상태</strong>: {order.orderStatus}
-              </p>
-              <p>
-                <strong>결제 내역</strong> :{" "}
-                <button
-                  className="text-blue-500 underline"
-                  onClick={() => fetchPaymentDetails(order.paymentId)}
-                >
-                  {order.paymentId}
-                </button>
-              </p>
-              <div className="ml-4">
-                <h4>주문 상품 목록:</h4>
-                {order.orderItems.map((item, index) => (
-                  <div key={item.orderItemId} className="mb-2">
-                    <p>
-                      <strong>{index + 1}. 상품명</strong>:{" "}
-                      {item.orderProductName}
-                    </p>
-                    <p>
-                      <strong>수량</strong>: {item.orderProductQuantity}
-                    </p>
-                    <p>
-                      <strong>가격</strong>: {item.orderProductUnitPrice} 원
-                    </p>
-                  </div>
-                ))}
-                <p className="mt-4 text-2xl">
-                  <strong>총 금액</strong>: {order.orderTotalPrice} 원
+          orderHistory.map((order) => {
+            const showCancelButton = !(
+              order.orderStatus === "CANCELLED" ||
+              order.orderStatus === "AWAITING_PAYMENT"
+            );
+
+            return (
+              <div key={order.orderId} className="border p-4 mb-4">
+                <p>
+                  <strong>주문 날짜</strong> :{" "}
+                  {new Date(order.orderDate).toLocaleString("ko-KR", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                    second: "numeric",
+                    hour12: true,
+                  })}
                 </p>
+
+                <p>
+                  <strong>주문 번호</strong> : {order.orderId}
+                </p>
+                <p>
+                  <strong>주문 상태</strong> :{" "}
+                  {orderStatusMap[order.orderStatus]}
+                </p>
+                <p>
+                  <strong>결제 내역</strong> :{" "}
+                  <button
+                    className="text-blue-500 underline"
+                    onClick={() => fetchPaymentDetails(order.paymentId)}
+                  >
+                    {order.paymentId}
+                  </button>
+                </p>
+                <div className="ml-4">
+                  <h4>주문 상품 목록:</h4>
+                  {order.orderItems.map((item, index) => (
+                    <div key={item.orderItemId} className="mb-2">
+                      <p>
+                        <strong>{index + 1}. 상품명</strong> :{" "}
+                        {item.orderProductName}
+                      </p>
+                      <p>
+                        <strong>수량</strong> : {item.orderProductQuantity}
+                      </p>
+                      <p>
+                        <strong>가격</strong> : {item.orderProductUnitPrice} 원
+                      </p>
+                    </div>
+                  ))}
+                  <p className="mt-4 text-2xl">
+                    <strong>총 금액</strong> : {order.orderTotalPrice} 원
+                  </p>
+                  {showCancelButton && (
+                    <Button
+                      className="mt-4"
+                      onClick={() => cancelOrders(order.orderId)}
+                    >
+                      주문 취소
+                    </Button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
     );
