@@ -199,7 +199,11 @@ function MyProfile() {
                   <strong>결제 내역</strong> :{" "}
                   <button
                     className="text-blue-500 underline"
-                    onClick={() => fetchPaymentDetails(order.paymentId)}
+                    onClick={() => {
+                      if (order.paymentId) {
+                        fetchPaymentDetails(order.paymentId);
+                      }
+                    }}
                   >
                     {order.paymentId}
                   </button>
