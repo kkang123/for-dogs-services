@@ -9,7 +9,7 @@ export interface Order {
   orderId: string;
   orderStatus: string;
   orderTotalPrice: number;
-  paymentId: string;
+  paymentId?: string;
   orderDate: Date;
   orderItems: OrderItem[];
   buyerAccount?: string;
