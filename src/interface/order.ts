@@ -12,4 +12,5 @@ export interface Order {
   paymentId: string;
   orderDate: Date;
   orderItems: OrderItem[];
+  buyerAccount?: string;
 }
