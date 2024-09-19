@@ -26,14 +26,14 @@
   }
 }
 
-@media (max-width: 1026px) {
+@media (max-width: 1040px) {
   #root {
     max-width: 100%;
     overflow-x: auto;
   }
 
   .more-element {
-    min-width: 1026px;
+    min-width: 1040px;
   }
 }
 
