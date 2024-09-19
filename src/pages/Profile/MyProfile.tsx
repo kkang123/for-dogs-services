@@ -323,8 +323,8 @@ function MyProfile() {
         />
       </header>
 
-      <main className="flex more-element mt-10">
-        <nav className="fixed top-56 left-10 right-10 w-64 p-4 h-full ">
+      <main className="flex mt-10 more-element">
+        <nav className="fixed top-56 left-6 w-64 h-[calc(100vh-14rem)] p-4 z-10">
           <ul className="space-y-4">
             <li>
               <Button
@@ -357,7 +357,9 @@ function MyProfile() {
             </li>
           </ul>
         </nav>
-        <div className="flex-grow p-4 ml-64">{renderContent()}</div>
+        <div className="flex-grow ml-64 p-4 overflow-x-auto">
+          {renderContent()}
+        </div>
       </main>
     </>
   );
