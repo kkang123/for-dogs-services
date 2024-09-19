@@ -115,7 +115,7 @@ export default function Home() {
       setProducts(products);
     };
 
-    fetchProducts("사료", setSirials);
+    fetchProducts("음식", setSirials);
     fetchProducts("간식", setSnackProducts);
     fetchProducts("의류", setClothingProducts);
     fetchProducts("장난감", setToyProducts);
@@ -151,7 +151,7 @@ export default function Home() {
         <main className="mt-36 w-full">
           <div>
             <ul className="flex space-x-2 justify-around">
-              {["사료", "의류", "간식", "장난감", "용품", "영양제"].map(
+              {["음식", "의류", "간식", "장난감", "용품", "영양제"].map(
                 (category, index) => (
                   <li
                     key={index}
@@ -183,9 +183,9 @@ export default function Home() {
 
           <div className="flex flex-col justify-start mt-12">
             <div className="flex">
-              <h2 className="text-3xl">사료</h2>
+              <h2 className="text-3xl">음식</h2>
               <Button size="sm" className="ml-3">
-                <Link to={`/category/사료`}>더보기</Link>
+                <Link to={`/category/음식`}>더보기</Link>
               </Button>
             </div>
             <Carousel
