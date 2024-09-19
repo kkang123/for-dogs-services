@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Swal from "sweetalert2";
@@ -9,44 +8,25 @@ import SEOMetaTag from "@/components/SEOMetaTag";
 import ProductHeader from "@/components/Header/ProductHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import useUserProfile from "@/hooks/useUserProfile";
 import useChangePassword from "@/hooks/useChangePassword";
 import useDeleteUser from "@/hooks/useDeleteUser";
 import usePaymentDetails from "@/hooks/usePaymentDetails";
 
 import { Order } from "@/interface/order";
-import { UserDetails } from "@/interface/userDetail";
 
 function MyProfile() {
-  const [user, setUser] = useState<UserDetails | null>(null);
-  const [orderHistory, setOrderHistory] = useState<Order[]>([]);
-  const [currentPassword, setCurrentPassword] = useState<string>("");
-  const [newPassword, setNewPassword] = useState<string>("");
   const [selectedMenu, setSelectedMenu] = useState<string>("My Information");
-
+  const { user, error: userProfileError } = useUserProfile();
+  const [orderHistory, setOrderHistory] = useState<Order[]>([]);
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [endDate, setEndDate] = useState<Date | null>(new Date());
+  const [currentPassword, setCurrentPassword] = useState<string>("");
+  const [newPassword, setNewPassword] = useState<string>("");
 
-  const { userId } = useParams<{ userId: string }>();
   const deleteUser = useDeleteUser();
   const { fetchPaymentDetails } = usePaymentDetails();
   const { changePassword, isLoading, error, success } = useChangePassword();
-
-  const hasFetchedProfile = useRef(false);
-
-  // 나의 정보 api
-  useEffect(() => {
-    const fetchUser = async () => {
-      if (hasFetchedProfile.current) return;
-      try {
-        const response = await basicAxios.get("/users/profile");
-        setUser(response.data.result);
-        hasFetchedProfile.current = true;
-      } catch (error) {
-        console.error("Failed to fetch user:", error);
-      }
-    };
-    fetchUser();
-  }, [userId]);
 
   // 주문 내역 조회 api
   const fetchOrders = async () => {
@@ -271,21 +251,23 @@ function MyProfile() {
                 {user ? (
                   <div className="space-y-4 m-4 p-4 ">
                     <p>
-                      <strong>성함</strong>: {user.userName}
+                      <strong>성함</strong> : {user.userName}
                     </p>
                     <p>
-                      <strong>생년월일</strong>: {user.userBirthDate}
+                      <strong>생년월일</strong> : {user.userBirthDate}
                     </p>
                     <p>
-                      <strong>아이디</strong>: {user.userId}
+                      <strong>아이디</strong> : {user.userId}
                     </p>
                     <p>
-                      <strong>이메일</strong>: {user.userEmail}
+                      <strong>이메일</strong> : {user.userEmail}
                     </p>
                     <p>
-                      <strong>권한</strong>: {user.userRole}
+                      <strong>권한</strong> : {user.userRole}
                     </p>
                   </div>
+                ) : userProfileError ? (
+                  <p>{userProfileError}</p>
                 ) : (
                   <p>회원 정보를 불러오고 있는 중입니다.</p>
                 )}
