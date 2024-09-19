@@ -53,6 +53,9 @@ function MyProfile() {
     if (startDate && endDate) {
       try {
         const formattedStartDate = startDate.toISOString().split("T")[0];
+
+        const endOfDay = new Date(endDate);
+        endOfDay.setHours(23, 59, 59, 999);
         const formattedEndDate = endDate.toISOString().split("T")[0];
 
         const response = await basicAxios.get(
