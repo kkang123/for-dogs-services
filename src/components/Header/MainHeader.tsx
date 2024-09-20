@@ -75,7 +75,7 @@ function MainHeader() {
           )}
 
           {user.userRole === "SELLER" && (
-            <Link to={`/productlist/${user.userId}`}>
+            <Link to={`/sellerprofile/${user.userId}`}>
               <Button size="sm">판매자 센터</Button>
             </Link>
           )}

@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useInfiniteQuery } from "react-query";
 import { useInView } from "react-intersection-observer";
 
@@ -17,7 +17,6 @@ function ProductList() {
   const userInfo = useRecoilValue(userState);
   const { userId } = userInfo;
   const [currentImageIndex] = useState(0);
-  const navigate = useNavigate();
 
   const fetchProducts = async ({ pageParam = 0 }) => {
     try {
@@ -78,9 +77,6 @@ function ProductList() {
     return Array.from(productMap.values());
   }, [data]);
 
-  const handleSellerProfile = () =>
-    navigate(`/sellerprofile/${userInfo.userId}`);
-
   if (isLoading) {
     return <div className="flex justify-center mt-10">Loading...</div>;
   }
@@ -92,13 +88,7 @@ function ProductList() {
   return (
     <>
       <header className="h-20">
-        <ProductHeader
-          showProductManagement={true}
-          showHomeButton={true}
-          showUploadButton={true}
-          showSellerProfileButton={true}
-          onSellerProfile={() => handleSellerProfile()}
-        />
+        <ProductHeader showPageBackSpaceButton={true} showUploadButton={true} />
         <SEOMetaTag
           title="For Dogs - ProductList"
           description="판매 중인 상품 리스트 페이지입니다."

@@ -34,7 +34,6 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   showEditButton = false,
   showDeleteButton = false,
   showHomeButton = false,
-  showBackspaseButton = false,
   showUploadButton = false,
   showPageBackSpaceButton = false,
   showProductManagement = false,
@@ -42,7 +41,6 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   showSellerProfileButton = false,
   onDelete,
   onEdit,
-  onBackspaceClick,
   onSellerProfile,
 }) => {
   const { logout } = useLogout();
@@ -52,11 +50,6 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   const user = useRecoilValue(userState);
   const isLoggedIn = useRecoilValue(isLoggedInState);
   const { isLoggedIn: authIsLoggedIn } = useAuth();
-  // const userId = user?.userId ?? null;
-
-  const goToProductListPage = () => {
-    if (user.userId) navigate(`/productlist/${user.userId}`);
-  };
 
   const [cart, setCart] = useRecoilState(cartState);
 
@@ -65,7 +58,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
     if (savedCart) {
       setCart(JSON.parse(savedCart));
     }
-  }, []);
+  }, [setCart]);
 
   const uniqueProductCount = new Set(
     cart.map((item) => item.product.cartProductId)
@@ -87,21 +80,13 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
     navigate("/");
   };
 
-  const Backspace = (event: FormEvent) => {
-    event.preventDefault();
-    if (onBackspaceClick) {
-      onBackspaceClick();
-    }
-    goToProductListPage();
-  };
-
   const Upload = (event: FormEvent) => {
     event.preventDefault();
     navigate("/productupload");
   };
   const Management = (event: FormEvent) => {
     event.preventDefault();
-    navigate("/productmanagement/${uid}");
+    navigate("/productlist/${uid}");
   };
 
   const PageBackSpaceButton = (event: FormEvent) => {
@@ -117,11 +102,6 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
             <img src={mainlogo} alt="main-logo" className="w-9  " />
           </button>
         )}
-        {showBackspaseButton && (
-          <button className="" onClick={Backspace}>
-            <img src={backspace} alt="" />
-          </button>
-        )}
         {showPageBackSpaceButton && (
           <button className="" onClick={PageBackSpaceButton}>
             <img src={backspace} alt="" />
@@ -131,7 +111,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
         <div className="flex">
           {showProductManagement && (
             <Button variant="ghost" size="sm" onClick={Management}>
-              판매 내역 관리
+              판매 상품 관리
             </Button>
           )}
           {showUploadButton && (

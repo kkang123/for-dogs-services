@@ -316,7 +316,7 @@ function MyProfile() {
   return (
     <>
       <header className="h-20">
-        <ProductHeader showBackspaseButton={true} showProductCart={true} />
+        <ProductHeader showHomeButton={true} showProductCart={true} />
         <SEOMetaTag
           title="For Dogs - MyProfile"
           description="구매자 프로필 페이지입니다."
