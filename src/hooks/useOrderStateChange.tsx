@@ -6,7 +6,7 @@ import { basicAxios } from "@/api/axios";
 const useChangeOrderStatus = () => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const changeOrderStatus = async (orderId: number, newStatus: string) => {
+  const changeOrderStatus = async (orderId: string, newStatus: string) => {
     setIsLoading(true);
     try {
       await basicAxios.patch(`/orders/${orderId}/status`, {
