@@ -19,7 +19,6 @@ import ProductUpload from "@/pages/Product/ProductUpload";
 import ProductList from "@/pages/Product/ProductList";
 import ProductDetail from "@/pages/Product/ProductDetail";
 import ProductEdit from "@/pages/Product/ProductEdit";
-import ProductManagement from "@/pages/Product/ProductManagement";
 
 // 카테고리
 import Category from "@/pages/Category/Category";
@@ -106,16 +105,7 @@ const AppRouter = () => {
             />
           }
         />
-        <Route
-          path="/productmanagement/:uid"
-          element={
-            <ProtectRoute
-              element={<ProductManagement />}
-              isPrivate={true}
-              isProtected={true}
-            />
-          }
-        />
+
         <Route
           path="/productdetail/:productId"
           element={
