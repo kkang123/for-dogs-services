@@ -4,11 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { userState, isLoggedInState } from "@/recoil/userState";
 import { cartState } from "@/recoil/cartState";
-
+import { Button } from "@/components/ui/button";
 import { useLogout } from "@/hooks/useLogout";
 import useAuth from "@/hooks/useAuth";
-
-import { Button } from "@/components/ui/button";
 
 import mainlogo from "@/assets/main-logo.svg";
 import basket from "@/assets/basket-buy-cart.svg";
@@ -18,7 +16,6 @@ interface ProductHeaderProps {
   showEditButton?: boolean;
   showDeleteButton?: boolean;
   showHomeButton?: boolean;
-  showBackspaseButton?: boolean;
   showUploadButton?: boolean;
   showPageBackSpaceButton?: boolean;
   showProductManagement?: boolean;

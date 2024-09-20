@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
+
 import { basicAxios } from "@/api/axios";
-
-import { Product } from "@/interface/product";
-
+import { useRecoilValue } from "recoil";
+import { userState } from "@/recoil/userState";
 import SEOMetaTag from "@/components/SEOMetaTag";
 import ProductHeader from "@/components/Header/ProductHeader";
 import {
@@ -14,9 +15,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-import Swal from "sweetalert2";
-import { useRecoilValue } from "recoil";
-import { userState } from "@/recoil/userState";
+import { Product } from "@/interface/product";
 
 function ProductDetail() {
   const { productId } = useParams<{ productId: string }>();
@@ -131,7 +130,7 @@ function ProductDetail() {
     <>
       <header className="h-20">
         <ProductHeader
-          showBackspaseButton={true}
+          showPageBackSpaceButton={true}
           showEditButton={true}
           showDeleteButton={true}
           onDelete={handleDelete}
