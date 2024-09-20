@@ -4,11 +4,9 @@ import { useNavigate, Link } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { userState, isLoggedInState } from "@/recoil/userState";
 import { cartState } from "@/recoil/cartState";
-
+import { Button } from "@/components/ui/button";
 import { useLogout } from "@/hooks/useLogout";
 import useAuth from "@/hooks/useAuth";
-
-import { Button } from "@/components/ui/button";
 
 import mainlogo from "@/assets/main-logo.svg";
 import mainother from "@/assets/mainother.svg";
@@ -80,7 +78,7 @@ function MainHeader() {
             </Link>
           )}
 
-          {user.userRole !== "SELLER" && (
+          {user.userRole !== "SELLER" && isLoggedIn && user.userId && (
             <Link to={isLoggedIn && user.userId ? `/cart/${user.userId}` : "#"}>
               <button>
                 <div className="relative">
