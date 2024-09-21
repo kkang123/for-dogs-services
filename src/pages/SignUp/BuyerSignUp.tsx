@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import { registerUser } from "@/api/signupAPI";
-import { User } from "@/interface/user";
-
-import SEOMetaTag from "@/components/SEOMetaTag";
-
-import { Calendar } from "@/components/ui/calendar";
-
+import { AxiosError } from "axios";
 import { format } from "date-fns";
 import Swal from "sweetalert2";
+
+import { registerUser } from "@/hooks/useSignUp";
+import SEOMetaTag from "@/components/SEOMetaTag";
+import { Calendar } from "@/components/ui/calendar";
+
+import { User } from "@/interface/user";
 
 export default function BuyerSignUp() {
   const [userData, setUserData] = useState<User>({
@@ -26,6 +25,7 @@ export default function BuyerSignUp() {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [passwordMessage, setPasswordMessage] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [showPasswordRules, setShowPasswordRules] = useState(false);
 
   const navigate = useNavigate();
 
@@ -114,6 +114,7 @@ export default function BuyerSignUp() {
     }
 
     if (!isValid) {
+      setShowPasswordRules(true);
       Swal.fire("비밀번호 조건을 지켜주세요.", passwordMessage, "error");
       return;
     }
@@ -132,6 +133,15 @@ export default function BuyerSignUp() {
       navigate("/login");
     } catch (error) {
       console.error("회원가입 중 에러 발생:", error);
+
+      if (error instanceof AxiosError) {
+        const errorMessage =
+          error.response?.data?.error?.message ||
+          "회원가입 중 오류가 발생했습니다.";
+        Swal.fire("에러", errorMessage, "error");
+      } else {
+        Swal.fire("에러", "알 수 없는 오류가 발생했습니다.", "error");
+      }
     }
   };
 
@@ -143,7 +153,7 @@ export default function BuyerSignUp() {
           description="구매자 회원가입 페이지입니다."
         />
       </header>
-      <main className="flex flex-col items-center justify-center h-screen some-element">
+      <main className="flex flex-col items-center justify-center overflow-y-auto min-h-screen some-element">
         <h2 className="mt-5 mb-2 text-3xl font-bold text-gray-700">
           구매자 회원가입
         </h2>
@@ -249,6 +259,26 @@ export default function BuyerSignUp() {
             className="w-full px-3 py-2 mb-4 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
             placeholder="비밀번호를 다시 입력해주세요."
           />
+
+          {showPasswordRules && (
+            <div className="mb-4 text-red-500">
+              <p>비밀번호 조건:</p>
+              <ul className="list-none pl-4">
+                {[
+                  "최소 10자 이상, 최대 16자 이하",
+                  "연속된 3자리 이상의 문자(ex: 123, abc)나 쉬운 문자열(예: 123, abc, password 등)을 포함할 수 없습니다.",
+                  "이메일 주소 또는 아이디 사용 금지",
+                  "공백 포함 금지",
+                  "영어 대문자/소문자, 숫자, 특수문자 중 3종류 이상 조합",
+                ].map((rule, index) => (
+                  <li key={index} className="flex items-start">
+                    <span className="mr-2">-</span>
+                    {rule}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <div className="flex justify-center">
             <button

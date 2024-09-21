@@ -1,11 +1,10 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
-import { useLogin } from "@/api/loginAPI";
+import Swal from "sweetalert2";
 
 import SEOMetaTag from "@/components/SEOMetaTag";
+import { useLogin } from "@/hooks/useLogin";
 import GoogleLogin from "@/api/GoogleLogin";
-import Swal from "sweetalert2";
 
 export default function SignIn() {
   const [userId, setUserId] = useState<string>("");
