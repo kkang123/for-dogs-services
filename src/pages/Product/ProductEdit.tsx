@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 
 import { basicAxios } from "@/api/axios";
-import { Product } from "@/interface/product";
-
 import useAuth from "@/hooks/useAuth";
 import ProductHeader from "@/components/Header/ProductHeader";
 import SEOMetaTag from "@/components/SEOMetaTag";
-
-import photo from "@/assets/icon-photo.svg";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import photo from "@/assets/icon-photo.svg";
 
-import Swal from "sweetalert2";
+import { Product } from "@/interface/product";
 
 const isValidCategory = (
   category: string
@@ -267,7 +265,7 @@ function ProductEdit() {
   return (
     <>
       <header className="h-20">
-        <ProductHeader showBackspaseButton={true} showEditButton={false} />
+        <ProductHeader showPageBackSpaceButton={true} showEditButton={false} />
         <SEOMetaTag
           title="For Dogs - ProductEdit"
           description="상품 수정 페이지입니다."

@@ -1,18 +1,20 @@
 import React, { useState } from "react";
-import { useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
-import { basicAxios } from "@/api/axios";
-import { userState } from "@/recoil/userState";
-import { Product } from "@/interface/product";
-import SEOMetaTag from "@/components/SEOMetaTag";
+import { useRecoilValue } from "recoil";
+import Swal from "sweetalert2";
+
 import ProductHeader from "@/components/Header/ProductHeader";
+import SEOMetaTag from "@/components/SEOMetaTag";
+import { basicAxios } from "@/api/axios";
+import useAuth from "@/hooks/useAuth";
+import { userState } from "@/recoil/userState";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import photo from "@/assets/icon-photo.svg";
-import Swal from "sweetalert2";
-import useAuth from "@/hooks/useAuth";
+
+import { Product } from "@/interface/product";
 
 function ProductUpload() {
   const navigate = useNavigate();
@@ -236,7 +238,7 @@ function ProductUpload() {
     <>
       <header>
         <ProductHeader
-          showBackspaseButton={true}
+          showPageBackSpaceButton={true}
           onBackspaceClick={deleteUploadedImages}
         />
         <SEOMetaTag
