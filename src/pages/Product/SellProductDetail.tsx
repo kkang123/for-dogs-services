@@ -1,18 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 
 import { basicAxios } from "@/api/axios";
 
-import { Product } from "@/interface/product";
-
+import ProductHeader from "@/components/Header/ProductHeader";
+import SEOMetaTag from "@/components/SEOMetaTag";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { userState, isLoggedInState } from "@/recoil/userState";
 import { cartState } from "@/recoil/cartState";
-import { CartItem } from "@/interface/cart";
-
-import SEOMetaTag from "@/components/SEOMetaTag";
-
-import ProductHeader from "@/components/Header/ProductHeader";
 import CartModal from "@/components/modals/cartModal";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +19,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-import Swal from "sweetalert2";
+import { Product } from "@/interface/product";
+import { CartItem } from "@/interface/cart";
 
 function SellProductDetail() {
   const { productId } = useParams<{ productId: string }>();
@@ -283,13 +280,23 @@ function SellProductDetail() {
                 <Button
                   onClick={addToCart}
                   size={"customsize"}
-                  className="w-[250px] hover:bg-LightBlue-500 text-white bg-LightBlue-200 text-2xl"
+                  className={`w-[250px] hover:bg-LightBlue-500 text-white ${
+                    user.userRole === "SELLER"
+                      ? "bg-gray-400"
+                      : "bg-LightBlue-200"
+                  } text-2xl`}
+                  disabled={user.userRole === "SELLER"}
                 >
                   장바구니 추가
                 </Button>
                 <Button
                   size={"customsize"}
-                  className="w-[250px] hover:bg-LightBlue-500 text-white bg-LightBlue-200 text-2xl"
+                  className={`w-[250px] hover:bg-LightBlue-500 text-white ${
+                    user.userRole === "SELLER"
+                      ? "bg-gray-400"
+                      : "bg-LightBlue-200"
+                  } text-2xl`}
+                  disabled={user.userRole === "SELLER"}
                 >
                   구매하기
                 </Button>
@@ -318,6 +325,7 @@ function SellProductDetail() {
           </div>
         )}
       </main>
+
       <footer className="pt-[100px]">
         <div className="">
           <h2 className="text-2xl font-bold mb-4">이 카테고리의 다른 상품들</h2>
