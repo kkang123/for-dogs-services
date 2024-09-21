@@ -4,17 +4,14 @@ import { useInfiniteQuery } from "react-query";
 import { useInView } from "react-intersection-observer";
 
 import { basicAxios } from "@/api/axios";
-
-import { Product } from "@/interface/product";
-
 import { useRecoilValue } from "recoil";
 import { userState } from "@/recoil/userState";
-
-import ProductHeader from "@/components/Header/ProductHeader";
-import CartModal from "@/components/modals/cartModal";
-import SEOMetaTag from "@/components/SEOMetaTag";
-
 import { Button } from "@/components/ui/button";
+import ProductHeader from "@/components/Header/ProductHeader";
+import SEOMetaTag from "@/components/SEOMetaTag";
+import CartModal from "@/components/modals/cartModal";
+
+import { Product } from "@/interface/product";
 
 function Category() {
   const user = useRecoilValue(userState);
@@ -212,7 +209,7 @@ function Category() {
           )}
         </div>
 
-        {user.Rule === "BUYER" && (
+        {user.userRole === "BUYER" && (
           <div>
             <Button
               onClick={toggleModal}
