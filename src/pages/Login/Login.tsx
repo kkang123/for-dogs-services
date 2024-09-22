@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 
 import SEOMetaTag from "@/components/SEOMetaTag";
 import { useLogin } from "@/hooks/useLogin";
-import GoogleLogin from "@/api/GoogleLogin";
+import useGoogleLogin from "@//hooks/useGoogleLogin";
 
 export default function SignIn() {
   const [userId, setUserId] = useState<string>("");
@@ -13,6 +13,7 @@ export default function SignIn() {
   const location = useLocation();
 
   const { login } = useLogin();
+  const { signInWithGoogle, loading, error } = useGoogleLogin();
 
   const [passwordShown, setPasswordShown] = useState<boolean>(false);
 
@@ -253,7 +254,18 @@ export default function SignIn() {
             </form>
           )}
 
-          <GoogleLogin aria-label="Google로 로그인" />
+          <div>
+            {" "}
+            <button
+              onClick={signInWithGoogle}
+              className="mt-8 p-2 w-full flex justify-center border-2 border-blue-300 rounded-lg hover:bg-blue-300"
+              aria-label="Google로 로그인"
+              disabled={loading}
+            >
+              {loading ? "로그인 중..." : "Google Login"}
+            </button>
+            {error && <p className="text-red-500 mt-2">{error}</p>}
+          </div>
 
           <div className="flex justify-around mt-3">
             <button
