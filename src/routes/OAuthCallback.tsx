@@ -13,10 +13,7 @@ function OAuthCallback() {
     const provider = urlParams.get("provider"); // 'google' 또는 'kakao'
 
     if (code && provider) {
-      const url =
-        provider === "google"
-          ? "https://api.fordogs.store/oauth/callback/google"
-          : "https://api.fordogs.store/oauth/callback/kakao"; // 카카오 처리 엔드포인트
+      const url = `https://api.fordogs.store/login/oauth2/code/${provider}`; // Spring Security 기본 엔드포인트 사용
 
       basicAxios
         .post(url, { code, state })
