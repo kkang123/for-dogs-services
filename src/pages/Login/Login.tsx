@@ -292,7 +292,7 @@ export default function SignIn() {
               (window.location.href =
                 "https://api.fordogs.store/oauth2/authorization/kakao?redirect_uri=https://www.fordogs.store/login/callback")
             }
-            className="mt-8 p-2 w-full flex justify-center border-2 border-yellow-300 rounded-lg hover:bg-yellow-300"
+            className="mt-4 p-2 w-full flex justify-center border-2 border-yellow-300 rounded-lg hover:bg-yellow-300"
             aria-label="Kakao로 로그인"
           >
             Kakao로 로그인
