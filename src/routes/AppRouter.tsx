@@ -1,9 +1,11 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ProtectRoute } from "./ProtectRoute";
+import OAuthCallback from "./OAuthCallback";
 
 import Home from "../pages/home/home";
 import BuyerSignUp from "@/pages/SignUp/BuyerSignUp";
 import SellerSignUp from "@/pages/SignUp/SellerSignUp";
+
 import Login from "@/pages/Login/Login";
 import UserIdSearch from "@/pages/Login/UserIdSearch";
 import UserPasswordSearch from "@/pages/Login/UserPasswordSearch";
@@ -63,6 +65,9 @@ const AppRouter = () => {
             <ProtectRoute element={<UserPasswordSearch />} isPublic={true} />
           }
         />
+
+        {/* OAuth Callback */}
+        <Route path="/oauth/callback" element={<OAuthCallback />} />
 
         {/* 카테고리 */}
         <Route
