@@ -252,7 +252,7 @@ export default function SignIn() {
             </form>
           )}
 
-          {/* 리다이렉션 */}
+          {/* 리다이렉션
           <button
             onClick={() =>
               (window.location.href =
@@ -268,6 +268,29 @@ export default function SignIn() {
             onClick={() =>
               (window.location.href =
                 "https://api.fordogs.store/oauth2/authorization/kakao")
+            }
+            className="mt-8 p-2 w-full flex justify-center border-2 border-yellow-300 rounded-lg hover:bg-yellow-300"
+            aria-label="Kakao로 로그인"
+          >
+            Kakao로 로그인
+          </button> */}
+
+          {/* 리다이렉션 */}
+          <button
+            onClick={() =>
+              (window.location.href =
+                "https://api.fordogs.store/oauth2/authorization/google?redirect_uri=https://www.fordogs.store/login/callback")
+            }
+            className="mt-8 p-2 w-full flex justify-center border-2 border-blue-300 rounded-lg hover:bg-blue-300"
+            aria-label="Google로 로그인"
+          >
+            Google로 로그인
+          </button>
+
+          <button
+            onClick={() =>
+              (window.location.href =
+                "https://api.fordogs.store/oauth2/authorization/kakao?redirect_uri=https://www.fordogs.store/login/callback")
             }
             className="mt-8 p-2 w-full flex justify-center border-2 border-yellow-300 rounded-lg hover:bg-yellow-300"
             aria-label="Kakao로 로그인"

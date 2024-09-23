@@ -8,6 +8,7 @@ import SellerSignUp from "@/pages/SignUp/SellerSignUp";
 import Login from "@/pages/Login/Login";
 import UserIdSearch from "@/pages/Login/UserIdSearch";
 import UserPasswordSearch from "@/pages/Login/UserPasswordSearch";
+import LoginCallback from "@/hooks/useOAuthLogin";
 
 import BuyerProfile from "@/pages/Profile/MyProfile";
 import SellerProfile from "@/pages/Profile/SellerProfile";
@@ -64,6 +65,8 @@ const AppRouter = () => {
             <ProtectRoute element={<UserPasswordSearch />} isPublic={true} />
           }
         />
+
+        <Route path="/login/callback" element={<LoginCallback />} />
 
         {/* 카테고리 */}
         <Route
