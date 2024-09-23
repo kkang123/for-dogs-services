@@ -106,7 +106,9 @@ function Category() {
     allProducts.forEach((product) => {
       productMap.set(product.productId, product);
     });
-    return Array.from(productMap.values());
+    return Array.from(productMap.values()).filter(
+      (product) => product.productQuantity > 0
+    );
   }, [data]);
 
   if (isLoading) {
