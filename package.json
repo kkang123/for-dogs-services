@@ -9,7 +9,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "generate-sitemap": "node sitemap.js",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
@@ -57,8 +57,10 @@
     "@babel/preset-env": "^7.25.4",
     "@babel/preset-react": "^7.24.7",
     "@babel/preset-typescript": "^7.24.7",
+    "@svgr/rollup": "^8.1.0",
     "@testing-library/jest-dom": "^6.5.0",
     "@types/crypto-js": "^4.2.2",
+    "@types/jest": "^29.5.13",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20.11.6",
     "@types/react": "^18.2.43",
@@ -72,9 +74,11 @@
     "eslint-plugin-react-refresh": "^0.4.5",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
+    "jest-transformer-svg": "^2.0.2",
     "postcss": "^8.4.33",
     "tailwindcss": "^3.4.1",
     "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
     "typescript": "^5.2.2",
     "vite": "^5.0.8"
   }

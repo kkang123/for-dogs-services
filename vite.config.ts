@@ -30,7 +30,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { visualizer } from "rollup-plugin-visualizer";
 import fs from "fs";
-import type { ServerOptions } from "https"; // 추가
+import type { ServerOptions } from "https";
+import svgr from "@svgr/rollup";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -52,7 +53,7 @@ export default ({ mode }: { mode: string }) => {
   };
 
   return defineConfig({
-    plugins: [react()],
+    plugins: [react(), svgr()],
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "src/"),
