@@ -1,4 +1,5 @@
 import { useRecoilValue } from "recoil";
+
 import { cartState } from "@/recoil/cartState";
 
 interface CartModalProps {

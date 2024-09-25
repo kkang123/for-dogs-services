@@ -1,5 +1,4 @@
 import { QueryClient, QueryClientProvider } from "react-query";
-
 import { HelmetProvider } from "react-helmet-async";
 import { RecoilRoot } from "recoil";
 

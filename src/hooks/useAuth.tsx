@@ -1,9 +1,10 @@
 import { useEffect, useCallback, useRef } from "react";
+import axios, { AxiosError } from "axios";
 import { useRecoilValue } from "recoil";
+
+import { basicAxios } from "@/api/axios";
 import { userState, isLoggedInState } from "@/recoil/userState";
 import { useLogout } from "@/hooks/useLogout";
-import { basicAxios } from "@/api/axios";
-import axios, { AxiosError } from "axios";
 
 const useAuth = () => {
   const user = useRecoilValue(userState);

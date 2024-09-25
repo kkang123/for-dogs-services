@@ -3,13 +3,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 
 import { basicAxios } from "@/api/axios";
-import useAuth from "@/hooks/useAuth";
 import ProductHeader from "@/components/Header/ProductHeader";
 import SEOMetaTag from "@/components/SEOMetaTag";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import useAuth from "@/hooks/useAuth";
+
 import photo from "@/assets/icon-photo.svg";
 
 import { Product } from "@/interface/product";

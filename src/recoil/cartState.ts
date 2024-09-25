@@ -1,4 +1,5 @@
 import { atom } from "recoil";
+
 import { CartItem as CartItemType } from "@/interface/cart";
 
 const loadCartFromLocalStorage = (): CartItemType[] => {

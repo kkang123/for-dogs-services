@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useSetRecoilState } from "recoil";
 import Swal, { SweetAlertIcon } from "sweetalert2";
 
 import { basicAxios } from "@/api/axios";
-import { useSetRecoilState } from "recoil";
 import { userState, isLoggedInState } from "@/recoil/userState";
 
 import { Login, ServerError } from "@/interface/login";

@@ -1,7 +1,8 @@
-import { basicAxios } from "@/api/axios";
 import { useState, useCallback } from "react";
 import { AxiosError } from "axios";
 import Swal from "sweetalert2";
+
+import { basicAxios } from "@/api/axios";
 
 interface ChangePasswordProps {
   currentPassword: string;

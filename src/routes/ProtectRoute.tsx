@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
+
 import { isLoggedInState, userState } from "@/recoil/userState";
 
 interface ProtectRouteProps {

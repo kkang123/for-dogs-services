@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { basicAxios } from "@/api/axios";
-
-import CartItem from "@/pages/Cart/CartItem";
-import { CartItem as CartItemType } from "@/interface/cart";
-import { CartProduct } from "@/interface/cartproduct";
 import { useRecoilState } from "recoil";
-import { cartState } from "@/recoil/cartState";
+
+import { basicAxios } from "@/api/axios";
 import SEOMetaTag from "@/components/SEOMetaTag";
 import MainHeader from "@/components/Header/MainHeader";
 import { Button } from "@/components/ui/button";
+import CartItem from "@/pages/Cart/CartItem";
+import { cartState } from "@/recoil/cartState";
+
+import { CartItem as CartItemType } from "@/interface/cart";
+import { CartProduct } from "@/interface/cartproduct";
 
 const Cart = () => {
   const [cart, setCart] = useRecoilState<CartItemType[]>(cartState);

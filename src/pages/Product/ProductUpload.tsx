@@ -3,15 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import Swal from "sweetalert2";
 
-import ProductHeader from "@/components/Header/ProductHeader";
-import SEOMetaTag from "@/components/SEOMetaTag";
 import { basicAxios } from "@/api/axios";
-import useAuth from "@/hooks/useAuth";
-import { userState } from "@/recoil/userState";
+import SEOMetaTag from "@/components/SEOMetaTag";
+import ProductHeader from "@/components/Header/ProductHeader";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { userState } from "@/recoil/userState";
+import useAuth from "@/hooks/useAuth";
+
 import photo from "@/assets/icon-photo.svg";
 
 import { Product } from "@/interface/product";

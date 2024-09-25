@@ -2,14 +2,12 @@ import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useInfiniteQuery } from "react-query";
 import { useInView } from "react-intersection-observer";
+import { useRecoilValue } from "recoil";
 
 import { basicAxios } from "@/api/axios";
-
-import { useRecoilValue } from "recoil";
-import { userState } from "@/recoil/userState";
-
-import ProductHeader from "@/components/Header/ProductHeader";
 import SEOMetaTag from "@/components/SEOMetaTag";
+import ProductHeader from "@/components/Header/ProductHeader";
+import { userState } from "@/recoil/userState";
 
 import { Product } from "@/interface/product";
 

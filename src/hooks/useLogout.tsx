@@ -1,5 +1,6 @@
-import { basicAxios } from "@/api/axios";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+
+import { basicAxios } from "@/api/axios";
 import { userState, isLoggedInState } from "@/recoil/userState";
 
 export const useLogout = () => {

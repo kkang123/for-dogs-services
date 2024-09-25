@@ -1,15 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useRecoilState, useRecoilValue } from "recoil";
 import Swal from "sweetalert2";
 
 import { basicAxios } from "@/api/axios";
-
-import ProductHeader from "@/components/Header/ProductHeader";
 import SEOMetaTag from "@/components/SEOMetaTag";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { userState, isLoggedInState } from "@/recoil/userState";
-import { cartState } from "@/recoil/cartState";
-import CartModal from "@/components/modals/cartModal";
+import ProductHeader from "@/components/Header/ProductHeader";
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -18,6 +14,9 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { userState, isLoggedInState } from "@/recoil/userState";
+import { cartState } from "@/recoil/cartState";
+import CartModal from "@/components/modals/cartModal";
 
 import { Product } from "@/interface/product";
 import { CartItem } from "@/interface/cart";

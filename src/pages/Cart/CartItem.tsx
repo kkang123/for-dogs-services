@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { Button } from "@/components/ui/button";
 import useUpdateCartQuantity from "@/hooks/useUpdateCart";
 import useRemoveCart from "@/hooks/useRemoveCart";
-import { Button } from "@/components/ui/button";
+
 import { CartItem as CartItemType } from "@/interface/cart";
 
 interface CartItemProps {

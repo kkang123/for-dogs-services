@@ -1,9 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { basicAxios } from "@/api/axios";
-
-import { useLogout } from "@/hooks/useLogout";
-
 import Swal from "sweetalert2";
+
+import { basicAxios } from "@/api/axios";
+import { useLogout } from "@/hooks/useLogout";
 
 const useDeleteUser = () => {
   const navigate = useNavigate();
