@@ -15,11 +15,11 @@ const useOAuth2 = (provider: string) => {
     let oauth2Url = "";
 
     if (provider === "google") {
-      // Google OAuth2 인증 URL
-      oauth2Url = `https://localhost/oauth2/authorization/google?redirect_uri=${redirectUri}`;
+      // 수정된 Google OAuth2 인증 URL
+      oauth2Url = `https://api.fordogs.store/oauth2/authorization/google?redirect_uri=${redirectUri}`;
     } else if (provider === "kakao") {
       // Kakao OAuth2 인증 URL
-      oauth2Url = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.KAKAO_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code`;
+      oauth2Url = `https://api.fordogs.store/oauth/authorize/kakao?redirect_uri=${redirectUri}`;
     }
 
     if (oauth2Url) {
