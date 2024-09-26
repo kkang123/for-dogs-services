@@ -70,9 +70,10 @@
 // };
 
 // export default useOAuth2;
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
+
 import { basicAxios } from "@/api/axios";
 
 const useOAuth2 = (provider: string) => {
@@ -99,7 +100,12 @@ const useOAuth2 = (provider: string) => {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const authCode = urlParams.get("code");
+    const rawAuthCode = urlParams.get("code");
+
+    // 공백 처리 및 URL 디코딩
+    const authCode = rawAuthCode
+      ? decodeURIComponent(rawAuthCode.replace(/\+/g, " "))
+      : null;
 
     const getJwtWithCode = async (code: string) => {
       try {
@@ -111,22 +117,17 @@ const useOAuth2 = (provider: string) => {
         });
 
         if (response.status === 201) {
-          // 201로 성공값 확인
-          // 서버 응답에서 직접 필요한 값 추출
           const { userId, accessToken, expirationTime } = response.data.result;
 
-          // 서버로부터 받은 값 출력
           console.log("서버 응답 데이터:", response.data);
           console.log("사용자 ID:", userId);
           console.log("액세스 토큰:", accessToken.value);
           console.log("토큰 만료 시간:", expirationTime);
 
-          // 로컬스토리지에 데이터 저장
           localStorage.setItem("accessToken", accessToken.value);
           localStorage.setItem("userId", userId);
           localStorage.setItem("expirationTime", expirationTime);
 
-          // 로컬스토리지에 저장된 값 출력
           console.log(
             "로컬스토리지에 저장된 액세스 토큰:",
             localStorage.getItem("accessToken")
@@ -140,10 +141,14 @@ const useOAuth2 = (provider: string) => {
             localStorage.getItem("expirationTime")
           );
 
-          navigate("/"); // 인증 완료 후 메인 페이지로 이동
+          navigate("/");
         }
       } catch (err) {
-        console.error(err);
+        const error = err as AxiosError; // err를 AxiosError로 타입 단언
+        console.error("요청 오류:", error);
+        if (error.response) {
+          console.error("서버 응답 데이터:", error.response.data);
+        }
         setError("로그인에 실패했습니다. 다시 시도해주세요.");
       } finally {
         setLoading(false);
