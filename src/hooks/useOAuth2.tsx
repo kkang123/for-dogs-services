@@ -103,17 +103,17 @@ const useOAuth2 = (provider: string) => {
     const urlParams = new URLSearchParams(window.location.search);
     const rawAuthCode = urlParams.get("code");
 
-    const authCode = rawAuthCode ? rawAuthCode.replace(/ /g, "") : null;
+    // Replace spaces with + before URL decoding
+    const authCode = rawAuthCode ? rawAuthCode.replace(/ /g, "+") : null;
 
-    // +를 %2B로 대체하여 서버에 전송할 수 있도록 함
-    const formattedAuthCode = authCode ? authCode.replace(/\+/g, "%2B") : null;
+    // Decode the authorization code, replacing %2B back to +
+    const formattedAuthCode = authCode ? decodeURIComponent(authCode) : null;
 
     const getJwtWithCode = async (code: string) => {
       try {
         setLoading(true);
         console.log("Auth Code:", code);
 
-        // 공백이 제거된 인증 코드를 서버로 전송
         const response = await basicAxios.post("/users/login-with-code", {
           authCode: formattedAuthCode,
         });
@@ -157,8 +157,8 @@ const useOAuth2 = (provider: string) => {
       }
     };
 
-    if (authCode) {
-      getJwtWithCode(authCode);
+    if (formattedAuthCode) {
+      getJwtWithCode(formattedAuthCode);
     }
   }, [navigate, provider]);
 
