@@ -110,14 +110,35 @@ const useOAuth2 = (provider: string) => {
           authCode: code,
         });
 
-        if (response.status === 200) {
-          const { result } = response.data; // 서버로부터 결과를 받음
-          const { userId, accessToken, expirationTime } = result; // 결과에서 필요한 데이터 추출
+        if (response.status === 201) {
+          // 201로 성공값 확인
+          // 서버 응답에서 직접 필요한 값 추출
+          const { userId, accessToken, expirationTime } = response.data.result;
+
+          // 서버로부터 받은 값 출력
+          console.log("서버 응답 데이터:", response.data);
+          console.log("사용자 ID:", userId);
+          console.log("액세스 토큰:", accessToken.value);
+          console.log("토큰 만료 시간:", expirationTime);
 
           // 로컬스토리지에 데이터 저장
           localStorage.setItem("accessToken", accessToken.value);
           localStorage.setItem("userId", userId);
           localStorage.setItem("expirationTime", expirationTime);
+
+          // 로컬스토리지에 저장된 값 출력
+          console.log(
+            "로컬스토리지에 저장된 액세스 토큰:",
+            localStorage.getItem("accessToken")
+          );
+          console.log(
+            "로컬스토리지에 저장된 사용자 ID:",
+            localStorage.getItem("userId")
+          );
+          console.log(
+            "로컬스토리지에 저장된 만료 시간:",
+            localStorage.getItem("expirationTime")
+          );
 
           navigate("/"); // 인증 완료 후 메인 페이지로 이동
         }
