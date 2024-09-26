@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 import { useLogout } from "@/hooks/useLogout";
 import useAuth from "@/hooks/useAuth";
 
-import mainlogo from "@/assets/main-logo.svg";
-import mainother from "@/assets/mainother.svg";
-import basket from "@/assets/basket-buy-cart.svg";
+import { ReactComponent as MainLogo } from "@/assets/main-logo.svg";
+import { ReactComponent as MainOther } from "@/assets/mainother.svg";
+import { ReactComponent as BasketIcon } from "@/assets/basket-buy-cart.svg";
 
 function MainHeader() {
   const user = useRecoilValue(userState);
@@ -60,7 +60,7 @@ function MainHeader() {
     <>
       <div className="fixed px-5 py-5 top-0 left-0 right-0 flex w-full justify-between shadow-lg bg-white z-40 h-20">
         <button onClick={handleHome}>
-          <img src={mainlogo} alt="main-logo" className="w-9 h-9" />
+          <MainLogo className="w-9 h-9" />
         </button>
 
         <div className="hidden sm:flex">
@@ -82,7 +82,7 @@ function MainHeader() {
             <Link to={isLoggedIn && user.userId ? `/cart/${user.userId}` : "#"}>
               <button>
                 <div className="relative">
-                  <img src={basket} alt="Basket" className="w-9 pb-3" />
+                  <BasketIcon className="w-9 pb-3" />
                   {uniqueProductCount > 0 && (
                     <span
                       className={`text-sm text-white absolute bottom-3.5 right-${
@@ -110,7 +110,7 @@ function MainHeader() {
         </div>
 
         <button className="sm:hidden" onClick={toggleDropdown}>
-          <img src={mainother} alt="menu" className="w-10 h-10" />
+          <MainOther className="w-10 h-10" />
         </button>
 
         {isOpen && (
