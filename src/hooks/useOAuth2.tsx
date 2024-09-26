@@ -38,9 +38,10 @@ const useOAuth2 = (provider: string) => {
       try {
         setLoading(true);
 
-        // POST 요청으로 서버에 인증 코드 전송 (API 스펙에 맞게 body 수정)
+        console.log("Auth Code:", code);
+
         const response = await basicAxios.post("/users/login-with-code", {
-          authCode: code, // API 스펙에 맞게 key를 "authCode"로 수정
+          authCode: code,
         });
 
         if (response.status === 200) {
