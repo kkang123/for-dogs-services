@@ -37,3 +37,5 @@ fordogs.store-key.pem
 fordogs.store.pem
 .env.development
 .env.production
+
+coverage/
