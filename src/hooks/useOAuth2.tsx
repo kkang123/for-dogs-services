@@ -80,7 +80,7 @@ const useOAuth2 = (provider: string) => {
     if (formattedAuthCode) {
       getJwtWithCode(formattedAuthCode);
     }
-  }, [navigate, provider]);
+  }, [navigate, provider, setIsLoggedIn, setUser]);
 
   return {
     startOAuth2Flow,
