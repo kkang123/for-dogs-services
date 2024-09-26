@@ -104,7 +104,7 @@ const useOAuth2 = (provider: string) => {
     const rawAuthCode = urlParams.get("code");
 
     const authCode = rawAuthCode
-      ? decodeURIComponent(rawAuthCode.replace(/\s/g, ""))
+      ? decodeURIComponent(rawAuthCode).replace(/\s/g, "")
       : null;
 
     const getJwtWithCode = async (code: string) => {
