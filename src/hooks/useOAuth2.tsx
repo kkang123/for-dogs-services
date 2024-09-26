@@ -70,10 +70,12 @@
 // };
 
 // export default useOAuth2;
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
+
 import { basicAxios } from "@/api/axios";
-import { AxiosError } from "axios"; // AxiosError 타입 import
 
 const useOAuth2 = (provider: string) => {
   const navigate = useNavigate();
@@ -101,9 +103,8 @@ const useOAuth2 = (provider: string) => {
     const urlParams = new URLSearchParams(window.location.search);
     const rawAuthCode = urlParams.get("code");
 
-    // 공백 처리 및 URL 디코딩
     const authCode = rawAuthCode
-      ? decodeURIComponent(rawAuthCode.replace(/\+/g, "%2B").replace(/\s/g, ""))
+      ? decodeURIComponent(rawAuthCode.replace(/\s/g, ""))
       : null;
 
     const getJwtWithCode = async (code: string) => {
