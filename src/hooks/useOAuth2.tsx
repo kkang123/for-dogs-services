@@ -20,7 +20,7 @@ const useOAuth2 = (provider: string) => {
     if (provider === "google") {
       oauth2Url = `https://api.fordogs.store/oauth2/authorization/google?redirect_uri=${redirectUri}`;
     } else if (provider === "kakao") {
-      oauth2Url = `https://api.fordogs.store/oauth/authorize/kakao?redirect_uri=${redirectUri}`;
+      oauth2Url = `https://api.fordogs.store/oauth2/authorization/kakao?redirect_uri=${redirectUri}`;
     }
 
     if (oauth2Url) {
