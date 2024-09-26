@@ -76,9 +76,9 @@ export default function SignIn() {
 
     if (sessionExpired) {
       Swal.fire({
+        icon: "warning",
         title: "세션 만료",
         text: "로그인 시간이 만료되었습니다. 다시 로그인해주세요.",
-        icon: "warning",
         confirmButtonColor: "#3085d6",
         confirmButtonText: "확인",
       });

@@ -44,9 +44,10 @@ export default function PasswordReset() {
       await verifyAuthCode({ authCode });
       if (responseVerify?.result.temporaryPassword) {
         Swal.fire({
+          icon: "success",
           title: "임시 비밀번호가 발급되었습니다!",
           text: `임시 비밀번호 : ${responseVerify.result.temporaryPassword}`,
-          icon: "success",
+          confirmButtonColor: "#3085d6",
           confirmButtonText: "로그인 페이지로 이동",
         }).then(() => {
           navigate("/login");

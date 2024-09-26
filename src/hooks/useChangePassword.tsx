@@ -45,6 +45,8 @@ const useChangePassword = (): UseChangePasswordReturn => {
             icon: "error",
             title: "실패",
             text: errorMessage,
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "확인",
           });
           return;
         }
@@ -54,6 +56,8 @@ const useChangePassword = (): UseChangePasswordReturn => {
           icon: "success",
           title: "성공",
           text: "비밀번호가 성공적으로 변경되었습니다.",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "확인",
         });
       } catch (err: unknown) {
         const axiosError = err as AxiosError<ErrorResponse>;
@@ -72,6 +76,8 @@ const useChangePassword = (): UseChangePasswordReturn => {
           icon: "error",
           title: "실패",
           text: errorMessage,
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "확인",
         });
       } finally {
         setIsLoading(false);

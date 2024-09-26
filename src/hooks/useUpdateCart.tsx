@@ -17,6 +17,7 @@ const useUpdateCart = () => {
             icon: "warning",
             title: " 수량 오류",
             text: "수량은 1 이하로 내려갈 수 없습니다.",
+            confirmButtonColor: "#3085d6",
             confirmButtonText: "확인",
           });
         }

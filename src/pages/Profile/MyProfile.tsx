@@ -91,6 +91,8 @@ function MyProfile() {
             icon: "success",
             title: "주문 취소 완료",
             text: "주문이 성공적으로 취소되었습니다.",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "확인",
           });
           fetchOrders(); // 주문 취소 후 목록을 갱신
         } else {
@@ -98,6 +100,8 @@ function MyProfile() {
             icon: "error",
             title: "취소 실패",
             text: "주문을 취소하는 중 문제가 발생했습니다.",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "확인",
           });
         }
       }
@@ -107,6 +111,8 @@ function MyProfile() {
         icon: "error",
         title: "취소 실패",
         text: "주문을 취소할 수 없습니다.",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "확인",
       });
     }
   };
@@ -118,6 +124,8 @@ function MyProfile() {
         icon: "warning",
         title: "입력 필요",
         text: "현재 비밀번호와 새 비밀번호를 모두 입력해주세요.",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "확인",
       });
       return;
     }

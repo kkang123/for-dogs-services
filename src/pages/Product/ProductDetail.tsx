@@ -63,6 +63,8 @@ function ProductDetail() {
             icon: "error",
             title: "상품 불러오기 실패",
             text: "상품 정보를 불러오는데 실패했습니다.",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "확인",
           }).then(() => {
             navigate("/");
           });
@@ -73,6 +75,8 @@ function ProductDetail() {
           icon: "error",
           title: "상품 불러오기 실패",
           text: "상품 정보를 불러오는데 실패했습니다.",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "확인",
         }).then(() => {
           navigate("/");
         });
@@ -90,6 +94,8 @@ function ProductDetail() {
           icon: "success",
           title: "상품 삭제 완료",
           text: "상품이 성공적으로 삭제되었습니다.",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "확인",
         }).then(() => {
           goToProductPage();
         });
@@ -98,6 +104,8 @@ function ProductDetail() {
           icon: "error",
           title: "상품 삭제 실패",
           text: "상품 삭제 중 문제가 발생했습니다.",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "확인",
         });
       }
     } catch (error) {
@@ -106,11 +114,12 @@ function ProductDetail() {
         icon: "error",
         title: "상품 삭제 실패",
         text: "상품 삭제 중 문제가 발생했습니다.",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "확인",
       });
     }
   };
 
-  // 수정 함수(추후 api 추가 시 적용)
   const handleEdit = () => {
     navigate(`/productedit/${productId}`);
   };

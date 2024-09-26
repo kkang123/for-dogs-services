@@ -60,11 +60,13 @@ export default function BuyerSignUp() {
     let isValid = true;
 
     if (userData.userPassword !== passwordConfirm) {
-      Swal.fire(
-        "비밀번호 불일치",
-        "비밀번호가 일치하지 않습니다. 다시 확인해주세요.",
-        "error"
-      );
+      Swal.fire({
+        icon: "error",
+        title: "비밀번호 불일치",
+        text: "비밀번호가 일치하지 않습니다. 다시 확인해주세요.",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "확인",
+      });
       return;
     }
 
@@ -115,7 +117,13 @@ export default function BuyerSignUp() {
 
     if (!isValid) {
       setShowPasswordRules(true);
-      Swal.fire("비밀번호 조건을 지켜주세요.", passwordMessage, "error");
+      Swal.fire({
+        icon: "error",
+        title: "비밀번호 조건을 지켜주세요.",
+        text: passwordMessage,
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "확인",
+      });
       return;
     }
 
@@ -130,9 +138,9 @@ export default function BuyerSignUp() {
     try {
       await registerUser(submitData);
       Swal.fire({
+        icon: "success",
         title: "성공",
         text: "회원가입 성공!",
-        icon: "success",
         confirmButtonColor: "#3085d6",
         confirmButtonText: "확인",
       });
@@ -144,9 +152,21 @@ export default function BuyerSignUp() {
         const errorMessage =
           error.response?.data?.error?.message ||
           "회원가입 중 오류가 발생했습니다.";
-        Swal.fire("에러", errorMessage, "error");
+        Swal.fire({
+          icon: "error",
+          title: "에러",
+          text: errorMessage,
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "확인",
+        });
       } else {
-        Swal.fire("에러", "알 수 없는 오류가 발생했습니다.", "error");
+        Swal.fire({
+          icon: "error",
+          title: "에러",
+          text: "알 수 없는 오류가 발생했습니다.",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "확인",
+        });
       }
     }
   };

@@ -88,12 +88,18 @@ export const useLogin = () => {
           const errorData = serverResponse.data as ServerError;
           if (serverResponse.status === 401 || serverResponse.status === 403) {
             if (errorData.error && errorMessages[errorData.error.message]) {
-              Swal.fire(errorMessages[errorData.error.message]);
+              Swal.fire({
+                ...errorMessages[errorData.error.message],
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "확인",
+              });
             } else {
               Swal.fire({
                 icon: "error",
                 title: "오류 발생",
                 text: "인증되지 않은 접근입니다. 자격 증명을 확인해주세요.",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "확인",
               });
             }
           } else if (
@@ -101,12 +107,18 @@ export const useLogin = () => {
             serverResponse.status === 404
           ) {
             if (errorData.error && errorMessages[errorData.error.message]) {
-              Swal.fire(errorMessages[errorData.error.message]);
+              Swal.fire({
+                ...errorMessages[errorData.error.message],
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "확인",
+              });
             } else {
               Swal.fire({
                 icon: "error",
                 title: "오류 발생",
                 text: "알 수 없는 오류가 발생했습니다. 나중에 다시 시도해주세요.",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "확인",
               });
             }
           } else {
@@ -114,6 +126,8 @@ export const useLogin = () => {
               icon: "error",
               title: "axios 오류 발생",
               text: "서버 연결 실패. 나중에 다시 시도해주세요.",
+              confirmButtonColor: "#3085d6",
+              confirmButtonText: "확인",
             });
             console.log("무슨 오류?", error);
           }
@@ -122,6 +136,8 @@ export const useLogin = () => {
             icon: "error",
             title: "axios 오류 발생",
             text: "서버 연결 실패. 나중에 다시 시도해주세요.",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "확인",
           });
           console.log("무슨 오류?", error);
         }
@@ -130,6 +146,8 @@ export const useLogin = () => {
           icon: "error",
           title: "클라이언트 오류 발생",
           text: "알 수 없는 오류가 발생했습니다. 나중에 다시 시도해주세요.",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "확인",
         });
         console.log("Non-Axios error:", error);
       }

@@ -117,6 +117,8 @@ function SellProductDetail() {
           icon: "error",
           title: "수량 오류",
           text: "한 개 이상의 상품을 선택해주세요.",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "확인",
         });
         return;
       }
@@ -130,6 +132,7 @@ function SellProductDetail() {
           icon: "error",
           title: "장바구니 등록 불가",
           text: "장바구니에 존재하는 상품입니다. 장바구니 페이지에서 수량을 수정해주세요!",
+          confirmButtonColor: "#3085d6",
           confirmButtonText: "장바구니 보기",
         }).then((result) => {
           if (result.isConfirmed) {
@@ -166,6 +169,8 @@ function SellProductDetail() {
               icon: "success",
               title: "상품 추가",
               text: "장바구니에 상품이 추가되었습니다.",
+              confirmButtonColor: "#3085d6",
+              confirmButtonText: "확인",
             });
           } else {
             console.error("Error response from /carts API:", response);
@@ -173,6 +178,8 @@ function SellProductDetail() {
               icon: "error",
               title: "오류",
               text: "장바구니 등록 중 오류가 발생했습니다.",
+              confirmButtonColor: "#3085d6",
+              confirmButtonText: "확인",
             });
           }
         } catch (error) {
@@ -181,6 +188,8 @@ function SellProductDetail() {
             icon: "error",
             title: "오류",
             text: "장바구니를 업데이트하는 도중 오류가 발생했습니다.",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "확인",
           });
         }
       }

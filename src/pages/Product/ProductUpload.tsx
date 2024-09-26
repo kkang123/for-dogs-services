@@ -81,6 +81,8 @@ function ProductUpload() {
         icon: "error",
         title: "제품 업로드 실패",
         text: "비어있는 상품 정보를 작성해주세요.",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "확인",
       });
       return;
     }
@@ -95,6 +97,8 @@ function ProductUpload() {
             icon: "success",
             title: "제품 업로드 완료",
             text: "제품이 성공적으로 업로드되었습니다.",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "확인",
           }).then((result) => {
             if (result.isConfirmed) {
               goToProductPage();
@@ -113,6 +117,8 @@ function ProductUpload() {
         icon: "error",
         title: "제품 업로드 실패",
         text: "제품 업로드 중 문제가 발생했습니다. 다시 시도해주세요.",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "확인",
       });
       console.error("제품 추가 중 에러: ", error);
     }
@@ -160,6 +166,8 @@ function ProductUpload() {
         icon: "error",
         title: "이미지 초과",
         text: "3장만 업로드해주세요.",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "확인",
       });
     }
   };

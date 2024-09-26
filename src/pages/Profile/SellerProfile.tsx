@@ -42,6 +42,8 @@ function SellerProfile() {
         icon: "warning",
         title: "입력 필요",
         text: "현재 비밀번호와 새 비밀번호를 모두 입력해주세요.",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "확인",
       });
       return;
     }
@@ -69,6 +71,8 @@ function SellerProfile() {
       text: `상태를 "${translatedStatus}"로 변경하시겠습니까?`,
       icon: "warning",
       showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#767d83",
       confirmButtonText: "예",
       cancelButtonText: "아니오",
     });

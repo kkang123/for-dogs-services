@@ -151,7 +151,13 @@ const Payment: React.FC = () => {
       if (!response.data.ok) {
         const errorMessage = response.data.error.message;
         if (errorMessage === "상품 재고가 부족합니다.") {
-          Swal.fire("재고 부족", "선택한 상품의 재고가 부족합니다.", "error");
+          Swal.fire({
+            icon: "error",
+            title: "재고 부족",
+            text: "선택한 상품의 재고가 부족합니다.",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "확인",
+          });
           return null;
         }
       }
@@ -159,7 +165,13 @@ const Payment: React.FC = () => {
       return response.data.result.orderId;
     } catch (error) {
       console.error("주문 등록 중 오류 발생:", error);
-      Swal.fire("주문 등록 실패", "다시 시도해주세요.", "error");
+      Swal.fire({
+        icon: "error",
+        title: "주문 등록 실패",
+        text: "다시 시도해주세요.",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "확인",
+      });
       throw error;
     }
   }, [cart]);
@@ -176,11 +188,13 @@ const Payment: React.FC = () => {
         return response.data;
       } catch (error) {
         console.error("결제 등록 중 오류 발생:", error);
-        Swal.fire(
-          "결제 등록 실패",
-          "결제 정보를 저장하는데 실패했습니다.",
-          "error"
-        );
+        Swal.fire({
+          icon: "error",
+          title: "결제 등록 실패",
+          text: "결제 정보를 저장하는데 실패했습니다.",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "확인",
+        });
         throw error;
       }
     },
@@ -194,6 +208,8 @@ const Payment: React.FC = () => {
         icon: "warning",
         title: "로그인이 필요합니다.",
         text: "결제를 진행하려면 먼저 로그인하세요.",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "확인",
       });
       return;
     }
@@ -238,18 +254,28 @@ const Payment: React.FC = () => {
               })
             );
 
-            Swal.fire("결제 성공", "주문이 완료되었습니다.", "success").then(
-              () => {
-                resetCart();
-                console.log("장바구니 초기화", resetCart);
-                navigate("/");
-              }
-            );
+            Swal.fire({
+              icon: "success",
+              title: "결제 성공",
+              text: "주문이 완료되었습니다.",
+              confirmButtonColor: "#3085d6",
+              confirmButtonText: "확인",
+            }).then(() => {
+              resetCart();
+              console.log("장바구니 초기화", resetCart);
+              navigate("/");
+            });
           } catch (error) {
             console.error("결제 정보 저장 실패:", error);
           }
         } else {
-          Swal.fire("결제 실패", `오류 메시지: ${response.error_msg}`, "error");
+          Swal.fire({
+            icon: "error",
+            title: "결제 실패",
+            text: `오류 메시지: ${response.error_msg}`,
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "확인",
+          });
         }
       });
     } catch (error) {
