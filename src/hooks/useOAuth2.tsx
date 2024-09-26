@@ -72,9 +72,8 @@
 // export default useOAuth2;
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AxiosError } from "axios";
-
 import { basicAxios } from "@/api/axios";
+import { AxiosError } from "axios"; // AxiosError 타입 import
 
 const useOAuth2 = (provider: string) => {
   const navigate = useNavigate();
@@ -104,7 +103,7 @@ const useOAuth2 = (provider: string) => {
 
     // 공백 처리 및 URL 디코딩
     const authCode = rawAuthCode
-      ? decodeURIComponent(rawAuthCode.replace(/\+/g, " "))
+      ? decodeURIComponent(rawAuthCode.replace(/\+/g, "%2B").replace(/\s/g, ""))
       : null;
 
     const getJwtWithCode = async (code: string) => {
@@ -112,6 +111,7 @@ const useOAuth2 = (provider: string) => {
         setLoading(true);
         console.log("Auth Code:", code);
 
+        // 공백이 제거된 인증 코드를 서버로 전송
         const response = await basicAxios.post("/users/login-with-code", {
           authCode: code,
         });
@@ -144,7 +144,7 @@ const useOAuth2 = (provider: string) => {
           navigate("/");
         }
       } catch (err) {
-        const error = err as AxiosError; // err를 AxiosError로 타입 단언
+        const error = err as AxiosError;
         console.error("요청 오류:", error);
         if (error.response) {
           console.error("서버 응답 데이터:", error.response.data);
