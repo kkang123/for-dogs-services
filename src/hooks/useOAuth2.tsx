@@ -54,7 +54,7 @@ const useOAuth2 = (provider: string) => {
 
           const accessTokenExpiration = accessToken.expirationTime;
 
-          localStorage.setItem("accessToken", accessToken.value);
+          localStorage.setItem("AccessToken", accessToken.value);
           localStorage.setItem("AccessTokenExpiration", accessTokenExpiration);
 
           const user = { isLoggedIn: true, userId, userRole: "BUYER" };
