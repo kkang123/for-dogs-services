@@ -103,8 +103,8 @@ const useOAuth2 = (provider: string) => {
     const urlParams = new URLSearchParams(window.location.search);
     const rawAuthCode = urlParams.get("code");
 
-    // decodeURIComponent를 제거하고 공백만 제거하는 방식으로 수정
-    const authCode = rawAuthCode ? rawAuthCode.replace(/\s/g, "") : null;
+    // 공백만 제거하고 + 기호는 그대로 유지
+    const authCode = rawAuthCode ? rawAuthCode.replace(/ /g, "") : null;
 
     const getJwtWithCode = async (code: string) => {
       try {
