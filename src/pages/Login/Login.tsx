@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 
 import SEOMetaTag from "@/components/SEOMetaTag";
 import { useLogin } from "@/hooks/useLogin";
+import useOAuth2 from "@/hooks/useOAuth2";
 
 export default function SignIn() {
   const [userId, setUserId] = useState<string>("");
@@ -14,6 +15,17 @@ export default function SignIn() {
   const { login } = useLogin();
 
   const [passwordShown, setPasswordShown] = useState<boolean>(false);
+
+  const {
+    startOAuth2Flow: startGoogleLogin,
+    loading: googleLoading,
+    error: googleError,
+  } = useOAuth2("google");
+  const {
+    startOAuth2Flow: startKakaoLogin,
+    loading: kakaoLoading,
+    error: kakaoError,
+  } = useOAuth2("kakao");
 
   const navigate = useNavigate();
 
@@ -252,51 +264,31 @@ export default function SignIn() {
             </form>
           )}
 
-          {/* 리다이렉션
-          <button
-            onClick={() =>
-              (window.location.href =
-                "https://api.fordogs.store/oauth2/authorization/google")
-            }
-            className="mt-8 p-2 w-full flex justify-center border-2 border-blue-300 rounded-lg hover:bg-blue-300"
-            aria-label="Google로 로그인"
-          >
-            Google로 로그인
-          </button>
+          {/* 구글 로그인 */}
+          <div>
+            <button
+              onClick={startGoogleLogin}
+              className="mt-8 p-2 w-full flex justify-center border-2 border-blue-300 rounded-lg hover:bg-blue-300"
+              aria-label="Google로 로그인"
+              disabled={googleLoading}
+            >
+              {googleLoading ? "Google 계정으로 로그인 중..." : "Google 로그인"}
+            </button>
+            {googleError && <p style={{ color: "red" }}>{googleError}</p>}
+          </div>
 
-          <button
-            onClick={() =>
-              (window.location.href =
-                "https://api.fordogs.store/oauth2/authorization/kakao")
-            }
-            className="mt-8 p-2 w-full flex justify-center border-2 border-yellow-300 rounded-lg hover:bg-yellow-300"
-            aria-label="Kakao로 로그인"
-          >
-            Kakao로 로그인
-          </button> */}
-
-          {/* 리다이렉션 */}
-          <button
-            onClick={() =>
-              (window.location.href =
-                "https://api.fordogs.store/oauth2/authorization/google?redirect_uri=https://www.fordogs.store/login/callback")
-            }
-            className="mt-8 p-2 w-full flex justify-center border-2 border-blue-300 rounded-lg hover:bg-blue-300"
-            aria-label="Google로 로그인"
-          >
-            Google로 로그인
-          </button>
-
-          <button
-            onClick={() =>
-              (window.location.href =
-                "https://api.fordogs.store/oauth2/authorization/kakao?redirect_uri=https://www.fordogs.store/login/callback")
-            }
-            className="mt-4 p-2 w-full flex justify-center border-2 border-yellow-300 rounded-lg hover:bg-yellow-300"
-            aria-label="Kakao로 로그인"
-          >
-            Kakao로 로그인
-          </button>
+          {/* 카카오 로그인 */}
+          <div>
+            <button
+              onClick={startKakaoLogin}
+              className="mt-4 p-2 w-full flex justify-center border-2 border-yellow-300 rounded-lg hover:bg-yellow-300"
+              aria-label="Kakao로 로그인"
+              disabled={kakaoLoading}
+            >
+              {kakaoLoading ? "KaKao 계정으로 로그인 중..." : "Kakao 로그인"}
+            </button>
+            {kakaoError && <p style={{ color: "red" }}>{kakaoError}</p>}
+          </div>
 
           <div className="flex justify-around mt-3">
             <button
