@@ -52,14 +52,10 @@ const useOAuth2 = (provider: string) => {
         if (response.status === 201) {
           const { userId, accessToken } = response.data.result;
 
-          console.log("서버 응답 데이터:", response.data);
-          console.log("사용자 ID:", userId);
-          console.log("액세스 토큰:", accessToken.value);
-          console.log("토큰 만료 시간:", accessToken.expirationTime);
+          const accessTokenExpiration = accessToken.expirationTime;
 
           localStorage.setItem("accessToken", accessToken.value);
-          localStorage.setItem("expirationTime", accessToken.expirationTime);
-          localStorage.setItem("userId", userId);
+          localStorage.setItem("AccessTokenExpiration", accessTokenExpiration);
 
           const user = { isLoggedIn: true, userId, userRole: "BUYER" };
           localStorage.setItem("user", JSON.stringify(user));
