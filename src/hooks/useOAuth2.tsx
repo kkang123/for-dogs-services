@@ -103,8 +103,10 @@ const useOAuth2 = (provider: string) => {
     const urlParams = new URLSearchParams(window.location.search);
     const rawAuthCode = urlParams.get("code");
 
-    // 공백만 제거하고 + 기호는 그대로 유지
     const authCode = rawAuthCode ? rawAuthCode.replace(/ /g, "") : null;
+
+    // +를 %2B로 대체하여 서버에 전송할 수 있도록 함
+    const formattedAuthCode = authCode ? authCode.replace(/\+/g, "%2B") : null;
 
     const getJwtWithCode = async (code: string) => {
       try {
@@ -113,7 +115,7 @@ const useOAuth2 = (provider: string) => {
 
         // 공백이 제거된 인증 코드를 서버로 전송
         const response = await basicAxios.post("/users/login-with-code", {
-          authCode: code,
+          authCode: formattedAuthCode,
         });
 
         if (response.status === 201) {
