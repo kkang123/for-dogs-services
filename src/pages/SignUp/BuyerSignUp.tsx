@@ -129,7 +129,13 @@ export default function BuyerSignUp() {
 
     try {
       await registerUser(submitData);
-      Swal.fire("성공", "회원가입 성공!", "success");
+      Swal.fire({
+        title: "성공",
+        text: "회원가입 성공!",
+        icon: "success",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "확인",
+      });
       navigate("/login");
     } catch (error) {
       console.error("회원가입 중 에러 발생:", error);
