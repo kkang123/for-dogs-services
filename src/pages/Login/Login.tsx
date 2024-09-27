@@ -265,47 +265,59 @@ export default function SignIn() {
             </form>
           )}
 
-          {/* 구글 로그인 */}
-          <div>
-            <button
-              onClick={startGoogleLogin}
-              className="mt-8 p-2 w-full flex justify-center border-2 border-blue-300 rounded-lg hover:bg-blue-300"
-              aria-label="Google로 로그인"
-              disabled={googleLoading}
-            >
-              {googleLoading ? "Google 계정으로 로그인 중..." : "Google 로그인"}
-            </button>
-            {googleError && <p style={{ color: "red" }}>{googleError}</p>}
-          </div>
+          {tab === "BUYER" && (
+            <>
+              {/* 구글 로그인 */}
+              <div>
+                <button
+                  onClick={startGoogleLogin}
+                  className="mt-6 p-2 w-full flex justify-center border-2 border-blue-300 rounded-lg hover:bg-blue-300"
+                  aria-label="Google로 로그인"
+                  disabled={googleLoading}
+                >
+                  {googleLoading
+                    ? "Google 계정으로 로그인 중..."
+                    : "Google 로그인"}
+                </button>
+                {googleError && <p style={{ color: "red" }}>{googleError}</p>}
+              </div>
 
-          {/* 카카오 로그인 */}
-          <div>
-            <button
-              onClick={startKakaoLogin}
-              className="mt-4 p-2 w-full flex justify-center border-2 border-yellow-300 rounded-lg hover:bg-yellow-300"
-              aria-label="Kakao로 로그인"
-              disabled={kakaoLoading}
-            >
-              {kakaoLoading ? "KaKao 계정으로 로그인 중..." : "Kakao 로그인"}
-            </button>
-            {kakaoError && <p style={{ color: "red" }}>{kakaoError}</p>}
-          </div>
+              {/* 카카오 로그인 */}
+              <div>
+                <button
+                  onClick={startKakaoLogin}
+                  className="mt-2 p-2 w-full flex justify-center border-2 border-yellow-300 rounded-lg hover:bg-yellow-300"
+                  aria-label="Kakao로 로그인"
+                  disabled={kakaoLoading}
+                >
+                  {kakaoLoading
+                    ? "KaKao 계정으로 로그인 중..."
+                    : "Kakao 로그인"}
+                </button>
+                {kakaoError && <p style={{ color: "red" }}>{kakaoError}</p>}
+              </div>
+            </>
+          )}
 
-          <div className="flex justify-around mt-3">
+          <div className="flex items-center justify-around mt-4">
             <button
-              className="text-base hover:scale-110 transform transition-transform duration-150"
+              className="relative text-base hover:scale-110 transform transition-transform duration-150 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:bg-transparent after:h-1 after:w-full after:scale-x-0 hover:after:scale-x-100 after:transition-all after:duration-200  after:border-b after:border-gray-800"
               onClick={findId}
             >
               아이디 찾기
             </button>
+
+            <div className="relative after:content-[''] after:absolute after:left-0 after:top-1/2 after:-translate-y-1/2 after:bg-gray-300 after:h-6 after:w-[0.5px]"></div>
+
             <button
-              className="text-base hover:scale-110 transform transition-transform duration-150"
+              className="relative text-base hover:scale-110 transform transition-transform duration-150 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:bg-transparent after:h-1 after:w-full after:scale-x-0 hover:after:scale-x-100 after:transition-all after:duration-200  after:border-b after:border-gray-800"
               onClick={findPw}
             >
               비밀번호 찾기
             </button>
           </div>
-          <p className="mt-2 text-sm">
+
+          <p className="mt-4 text-sm text-center">
             - 로그인과 회원가입 시 권한에 맞는 역할을 선택해주세요.
           </p>
         </div>
