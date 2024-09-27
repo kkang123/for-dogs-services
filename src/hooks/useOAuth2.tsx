@@ -33,19 +33,12 @@ const useOAuth2 = (provider: string) => {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const rawAuthCode = urlParams.get("code");
-    console.log("초기 파라미터값", rawAuthCode);
 
-    // Replace spaces with + before URL decoding
     const authCode = rawAuthCode ? rawAuthCode.replace(/ /g, "+") : null;
-    console.log("인코딩된 값을 공백을 +로", authCode);
 
-    // // Decode the authorization code, replacing %2B back to +
-    // const formattedAuthCode = authCode ? decodeURIComponent(authCode) : null;
-
-    const getJwtWithCode = async (code: string) => {
+    const getJwtWithCode = async (authCode: string) => {
       try {
         setLoading(true);
-        console.log("Auth Code:", code);
 
         const response = await basicAxios.post("/users/login-with-code", {
           authCode,
