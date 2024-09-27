@@ -39,8 +39,8 @@ const useOAuth2 = (provider: string) => {
     const authCode = rawAuthCode ? rawAuthCode.replace(/ /g, "+") : null;
     console.log("인코딩된 값을 공백을 +로", authCode);
 
-    // Decode the authorization code, replacing %2B back to +
-    const formattedAuthCode = authCode ? decodeURIComponent(authCode) : null;
+    // // Decode the authorization code, replacing %2B back to +
+    // const formattedAuthCode = authCode ? decodeURIComponent(authCode) : null;
 
     const getJwtWithCode = async (code: string) => {
       try {
@@ -48,7 +48,7 @@ const useOAuth2 = (provider: string) => {
         console.log("Auth Code:", code);
 
         const response = await basicAxios.post("/users/login-with-code", {
-          authCode: formattedAuthCode,
+          authCode,
         });
 
         if (response.status === 201) {
@@ -79,8 +79,8 @@ const useOAuth2 = (provider: string) => {
       }
     };
 
-    if (formattedAuthCode) {
-      getJwtWithCode(formattedAuthCode);
+    if (authCode) {
+      getJwtWithCode(authCode);
     }
   }, [navigate, provider, setIsLoggedIn, setUser]);
 
