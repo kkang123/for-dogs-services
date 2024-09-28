@@ -4,7 +4,7 @@ const getInitialUserState = () => {
   const savedUser = localStorage.getItem("user");
   return savedUser
     ? JSON.parse(savedUser)
-    : { isLoggedIn: false, userId: "", role: "" };
+    : { isLoggedIn: false, userId: "", role: "", provider: "" };
 };
 
 const getInitialIsLoggedInState = () => {

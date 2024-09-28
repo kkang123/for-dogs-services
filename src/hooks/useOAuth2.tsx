@@ -52,7 +52,12 @@ const useOAuth2 = (provider: string) => {
           localStorage.setItem("AccessToken", accessToken.value);
           localStorage.setItem("AccessTokenExpiration", accessTokenExpiration);
 
-          const user = { isLoggedIn: true, userId, userRole: "BUYER" };
+          const user = {
+            isLoggedIn: true,
+            userId,
+            userRole: "BUYER",
+            provider,
+          };
           localStorage.setItem("user", JSON.stringify(user));
 
           setUser(user);

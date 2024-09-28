@@ -22,13 +22,13 @@ export const useLogin = () => {
       });
       console.log("로그인 응답 데이터:", response.data);
 
-      const { accessToken } = response.data.result || {};
+      const { accessToken, provider } = response.data.result || {};
 
       const accessTokenExpiration = accessToken.expirationTime;
       localStorage.setItem("AccessToken", accessToken.value);
       localStorage.setItem("AccessTokenExpiration", accessTokenExpiration);
 
-      const user = { isLoggedIn: true, userId, userRole };
+      const user = { isLoggedIn: true, userId, userRole, provider };
       localStorage.setItem("user", JSON.stringify(user));
 
       setUser(user);

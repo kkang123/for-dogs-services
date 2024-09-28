@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Swal from "sweetalert2";
@@ -18,6 +18,7 @@ import { Order } from "@/interface/order";
 function MyProfile() {
   const [selectedMenu, setSelectedMenu] = useState<string>("My Information");
   const { user, error: userProfileError } = useUserProfile();
+  const [provider, setProvider] = useState<string | null>(null);
   const [orderHistory, setOrderHistory] = useState<Order[]>([]);
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [endDate, setEndDate] = useState<Date | null>(new Date());
@@ -27,6 +28,15 @@ function MyProfile() {
   const deleteUser = useDeleteUser();
   const { fetchPaymentDetails } = usePaymentDetails();
   const { changePassword, isLoading, error, success } = useChangePassword();
+
+  // 로컬 스토리지에서 로그인 값 가져와서 상태로 관리
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setProvider(user.provider);
+    }
+  }, []);
 
   // 주문 내역 조회 api
   const fetchOrders = async () => {
@@ -265,9 +275,13 @@ function MyProfile() {
                     <p>
                       <strong>성함</strong> : {user.userName}
                     </p>
-                    <p>
-                      <strong>생년월일</strong> : {user.userBirthDate}
-                    </p>
+
+                    {provider === "LOCAL" && (
+                      <p>
+                        <strong>생년월일</strong> : {user.userBirthDate}
+                      </p>
+                    )}
+
                     <p>
                       <strong>아이디</strong> : {user.userId}
                     </p>
