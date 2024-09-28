@@ -45,7 +45,7 @@ const useOAuth2 = (provider: string) => {
         });
 
         if (response.status === 201) {
-          const { userId, accessToken } = response.data.result;
+          const { userId, accessToken, provider } = response.data.result;
 
           const accessTokenExpiration = accessToken.expirationTime;
 
