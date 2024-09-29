@@ -83,7 +83,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   };
   const Management = (event: FormEvent) => {
     event.preventDefault();
-    navigate("/productlist/${uid}");
+    navigate(`/productlist/${user.userId}`);
   };
 
   const PageBackSpaceButton = (event: FormEvent) => {

@@ -74,7 +74,7 @@ const AppRouter = () => {
 
         {/* 장바구니 */}
         <Route
-          path="/cart/:uid"
+          path="/cart/:userId"
           element={<ProtectRoute element={<Cart />} isPrivate={true} />}
         />
 
@@ -98,7 +98,7 @@ const AppRouter = () => {
 
         {/* 판매자 페이지 */}
         <Route
-          path="/productlist/:uid"
+          path="/productlist/:userId"
           element={
             <ProtectRoute
               element={<ProductList />}
@@ -140,7 +140,7 @@ const AppRouter = () => {
         />
 
         <Route
-          path="/sellerprofile/:uid"
+          path="/sellerprofile/:userId"
           element={
             <ProtectRoute
               element={<SellerProfile />}
