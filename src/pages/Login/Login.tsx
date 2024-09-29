@@ -97,7 +97,7 @@ export default function SignIn() {
       <main className="flex flex-col items-center justify-center h-screen some-element">
         <h2 className="mt-56 mb-0 text-3xl font-bold text-gray-700">Login</h2>
 
-        <div className=" md:w-1/2 lg:w-1/3 m-auto mt-10 ">
+        <div className="m-auto mt-10">
           <div
             role="tablist"
             className="w-full"
