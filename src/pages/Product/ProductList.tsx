@@ -93,15 +93,15 @@ function ProductList() {
         />
       </header>
       <main className="mt-16 h-screen overflow-y-scroll">
-        <div>
-          <div className="flex flex-wrap justify-start">
+        <div className="overflow-x-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 auto-rows-max gap-4">
             {uniqueProducts.map((product: Product, index: number) => (
               <Link
                 key={index}
                 to={`/productdetail/${product.productId}`}
-                className="w-full lg:w-1/3 md:w-1/2 sm:w-full p-4"
+                className="flex justify-center items-center"
               >
-                <div className="shadow border-2 rounded h-[380px]">
+                <div className="shadow border-2 rounded w-[380px] h-[380px] flex-shrink-0">
                   {product.productImages[currentImageIndex] ? (
                     <img
                       className="w-full h-[300px] rounded"
@@ -123,10 +123,14 @@ function ProductList() {
                 </div>
               </Link>
             ))}
-
+            {/* Infinite Scroll Trigger */}
             <div ref={ref}></div>
           </div>
-          {isFetchingNextPage && <div>Loading more...</div>}
+          {isFetchingNextPage && (
+            <div className="text-center">
+              상품을 불러오는 중입니다. 잠시만 기다려주세요!
+            </div>
+          )}
         </div>
       </main>
     </>
