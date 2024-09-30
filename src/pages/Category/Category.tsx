@@ -159,7 +159,34 @@ function Category() {
         <div>
           <h1 className="text-4xl px-4">{productCategory}</h1>
 
-          <div className="flex-col">
+          <div className="flex justify-between mt-4">
+            <div className="flex justify-end gap-2 pr-7 ml-7 mb-4">
+              <Button
+                variant={sortType.includes("updatedAt") ? "default" : "ghost"}
+                size={"sm"}
+                onClick={() =>
+                  setSortType(
+                    sortType === "updatedAtDesc"
+                      ? "updatedAtAsc"
+                      : "updatedAtDesc"
+                  )
+                }
+              >
+                날짜순 {sortType === "updatedAtDesc" ? "▼" : "▲"}
+              </Button>
+              <Button
+                variant={sortType.includes("price") ? "default" : "ghost"}
+                size={"sm"}
+                onClick={() =>
+                  setSortType(
+                    sortType === "priceAsc" ? "priceDesc" : "priceAsc"
+                  )
+                }
+              >
+                가격순 {sortType === "priceAsc" ? "▲" : "▼"}
+              </Button>
+            </div>
+
             <div className="flex justify-end mr-7 mb-2">
               <select
                 value={searchType}
@@ -185,32 +212,6 @@ function Category() {
               />
               <Button onClick={handleSearch} size="sm">
                 확인
-              </Button>
-            </div>
-            <div className="flex justify-end gap-2 pr-7 mb-4">
-              <Button
-                variant={sortType.includes("updatedAt") ? "default" : "ghost"}
-                size={"sm"}
-                onClick={() =>
-                  setSortType(
-                    sortType === "updatedAtDesc"
-                      ? "updatedAtAsc"
-                      : "updatedAtDesc"
-                  )
-                }
-              >
-                날짜순 {sortType === "updatedAtDesc" ? "▼" : "▲"}
-              </Button>
-              <Button
-                variant={sortType.includes("price") ? "default" : "ghost"}
-                size={"sm"}
-                onClick={() =>
-                  setSortType(
-                    sortType === "priceAsc" ? "priceDesc" : "priceAsc"
-                  )
-                }
-              >
-                가격순 {sortType === "priceAsc" ? "▲" : "▼"}
               </Button>
             </div>
           </div>
