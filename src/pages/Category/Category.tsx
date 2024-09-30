@@ -17,6 +17,11 @@ function Category() {
   const user = useRecoilValue(userState);
   const { productCategory } = useParams<{ productCategory: string }>();
 
+  const [searchType, setSearchType] = useState<"seller" | "product">("seller");
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchedSellerName, setSearchedSellerName] = useState<string>("");
+  const [searchedProductName, setSearchedProductName] = useState<string>("");
+
   const categoryMap: { [key: string]: string } = {
     음식: "FOOD",
     의류: "CLOTHING",
@@ -58,6 +63,8 @@ function Category() {
           page: pageParam,
           size: pageSize,
           sort: sortField,
+          seller: searchedSellerName || undefined,
+          name: searchedProductName || undefined,
         },
       });
 
@@ -79,7 +86,7 @@ function Category() {
     hasNextPage,
     isError,
     isLoading,
-    remove, // 이전 데이터 삭제
+    remove,
     refetch,
   } = useInfiniteQuery("products", fetchProducts, {
     getNextPageParam: (lastPage) => lastPage.nextStart,
@@ -98,7 +105,17 @@ function Category() {
   useEffect(() => {
     remove();
     refetch();
-  }, [sortType, refetch, remove]);
+  }, [sortType, searchedSellerName, searchedProductName, refetch, remove]);
+
+  const handleSearch = () => {
+    if (searchType === "seller") {
+      setSearchedSellerName(searchTerm);
+      setSearchedProductName(""); // 상품 이름 초기화
+    } else {
+      setSearchedProductName(searchTerm);
+      setSearchedSellerName(""); // 판매자 이름 초기화
+    }
+  };
 
   const uniqueProducts = useMemo(() => {
     const allProducts = data?.pages.flatMap((page) => page.data) || [];
@@ -141,29 +158,61 @@ function Category() {
       <main className="mt-16">
         <div>
           <h1 className="text-4xl px-4">{productCategory}</h1>
-          <div className="flex justify-end gap-2 pr-7 mb-4">
-            <Button
-              variant={sortType.includes("updatedAt") ? "default" : "ghost"}
-              size={"sm"}
-              onClick={() =>
-                setSortType(
-                  sortType === "updatedAtDesc"
-                    ? "updatedAtAsc"
-                    : "updatedAtDesc"
-                )
-              }
-            >
-              날짜순 {sortType === "updatedAtDesc" ? "▼" : "▲"}
-            </Button>
-            <Button
-              variant={sortType.includes("price") ? "default" : "ghost"}
-              size={"sm"}
-              onClick={() =>
-                setSortType(sortType === "priceAsc" ? "priceDesc" : "priceAsc")
-              }
-            >
-              가격순 {sortType === "priceAsc" ? "▲" : "▼"}
-            </Button>
+
+          <div className="flex-col">
+            <div className="flex justify-end mr-7 mb-2">
+              <select
+                value={searchType}
+                onChange={(e) =>
+                  setSearchType(e.target.value as "seller" | "product")
+                }
+                className="border p-1 mr-2 rounded"
+              >
+                <option value="seller">판매자 이름</option>
+                <option value="product">상품 이름</option>
+              </select>
+              <input
+                type="text"
+                placeholder="검색어를 입력해주세요."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="border p-1 mr-2 rounded"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSearch();
+                  }
+                }}
+              />
+              <Button onClick={handleSearch} size="sm">
+                확인
+              </Button>
+            </div>
+            <div className="flex justify-end gap-2 pr-7 mb-4">
+              <Button
+                variant={sortType.includes("updatedAt") ? "default" : "ghost"}
+                size={"sm"}
+                onClick={() =>
+                  setSortType(
+                    sortType === "updatedAtDesc"
+                      ? "updatedAtAsc"
+                      : "updatedAtDesc"
+                  )
+                }
+              >
+                날짜순 {sortType === "updatedAtDesc" ? "▼" : "▲"}
+              </Button>
+              <Button
+                variant={sortType.includes("price") ? "default" : "ghost"}
+                size={"sm"}
+                onClick={() =>
+                  setSortType(
+                    sortType === "priceAsc" ? "priceDesc" : "priceAsc"
+                  )
+                }
+              >
+                가격순 {sortType === "priceAsc" ? "▲" : "▼"}
+              </Button>
+            </div>
           </div>
 
           <div className="overflow-x-auto">
@@ -198,7 +247,7 @@ function Category() {
                   </Link>
                 ))
               ) : (
-                <div>데이터가 없습니다.</div>
+                <div>상품이 없습니다.</div>
               )}
               <div ref={ref}></div>
             </div>
