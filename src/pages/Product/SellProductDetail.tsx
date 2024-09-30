@@ -36,6 +36,16 @@ function SellProductDetail() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const categoryMapping: { [key: string]: string } = {
+    FOOD: "음식",
+    CLOTHING: "의류",
+    SNACK: "간식",
+    TOY: "장난감",
+    ACCESSORY: "액세서리",
+    SUPPLEMENT: "보충제",
+    NONE: "기타",
+  };
+
   const toggleModal = () => {
     setIsModalOpen((prevState) => !prevState);
   };
@@ -279,8 +289,10 @@ function SellProductDetail() {
 
             <div className="flex flex-col">
               <button className="text-2xl text-gray-500 flex justify-end mr-2">
-                <Link to={`/category/${product.productCategory}`}>
-                  #{product.productCategory}
+                <Link
+                  to={`/category/${categoryMapping[product.productCategory]}`}
+                >
+                  #{categoryMapping[product.productCategory]}
                 </Link>
               </button>
 
