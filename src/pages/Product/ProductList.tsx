@@ -86,7 +86,10 @@ function ProductList() {
   return (
     <>
       <header className="h-20">
-        <ProductHeader showPageBackSpaceButton={true} showUploadButton={true} />
+        <ProductHeader
+          showBackSellerProfileButton={true}
+          showUploadButton={true}
+        />
         <SEOMetaTag
           title="For Dogs - ProductList"
           description="판매 중인 상품 리스트 페이지입니다."

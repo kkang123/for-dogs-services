@@ -21,6 +21,7 @@ interface ProductHeaderProps {
   showProductManagement?: boolean;
   showProductCart?: boolean;
   showSellerProfileButton?: boolean;
+  showBackSellerProfileButton?: boolean;
   onDelete?: () => void;
   onEdit?: () => void;
   onBackspaceClick?: () => void;
@@ -36,6 +37,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   showProductManagement = false,
   showProductCart = false,
   showSellerProfileButton = false,
+  showBackSellerProfileButton = false,
   onDelete,
   onEdit,
   onSellerProfile,
@@ -81,9 +83,15 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
     event.preventDefault();
     navigate("/productupload");
   };
+
   const Management = (event: FormEvent) => {
     event.preventDefault();
     navigate(`/productlist/${user.userId}`);
+  };
+
+  const BackSellerProfileButton = (event: FormEvent) => {
+    event.preventDefault();
+    navigate(`/sellerprofile/${user.userId}`);
   };
 
   const PageBackSpaceButton = (event: FormEvent) => {
@@ -95,13 +103,20 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
     <>
       <div className="fixed px-5 py-5 top-0 left-0 right-0 flex  w-full justify-between shadow-lg  bg-white z-50 h-20">
         {showHomeButton && (
-          <button className="" onClick={Home}>
+          <button onClick={Home}>
             <img src={mainlogo} alt="main-logo" className="w-9  " />
           </button>
         )}
+
+        {showBackSellerProfileButton && (
+          <button onClick={BackSellerProfileButton}>
+            <img src={backspace} alt="판매자 프로필로 이동하는 뒤로가기 버튼" />
+          </button>
+        )}
+
         {showPageBackSpaceButton && (
-          <button className="" onClick={PageBackSpaceButton}>
-            <img src={backspace} alt="" />
+          <button onClick={PageBackSpaceButton}>
+            <img src={backspace} alt="페이지 뒤로가기 버튼" />
           </button>
         )}
 
