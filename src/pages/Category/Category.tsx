@@ -23,7 +23,7 @@ function Category() {
   const [searchedProductName, setSearchedProductName] = useState<string>("");
 
   const categoryMap: { [key: string]: string } = {
-    음식: "FOOD",
+    사료: "FOOD",
     의류: "CLOTHING",
     간식: "SNACK",
     장난감: "TOY",

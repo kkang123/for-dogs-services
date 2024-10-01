@@ -30,7 +30,7 @@ function ProductDetail() {
   };
 
   const categoryMap: { [key: string]: string } = {
-    FOOD: "음식",
+    FOOD: "사료",
     CLOTHING: "의류",
     SNACK: "간식",
     TOY: "장난감",
