@@ -136,7 +136,7 @@ function SellerProfile() {
         </div>
 
         {orderHistory.length === 0 ? (
-          <p>구매 내역이 없습니다.</p>
+          <p>판매 내역이 없습니다.</p>
         ) : (
           orderHistory.map((order) => {
             const statusOptions = [
