@@ -147,7 +147,7 @@ export default function Home() {
 
           {sirials.length > 0 && (
             <div className="flex flex-col justify-start mt-12">
-              <div className="flex items-center mb-4">
+              <div className="flex ml-2 ">
                 <h2 className="text-3xl">사료</h2>
                 <Button size="sm" className="ml-3">
                   <Link to={`/category/사료`}>더보기</Link>
@@ -228,7 +228,7 @@ export default function Home() {
 
           {clothingProducts.length > 0 && (
             <div className="flex flex-col justify-start">
-              <div className="flex">
+              <div className="flex ml-2">
                 <h2 className="text-3xl">의류</h2>
                 <Button size="sm" className="ml-3">
                   <Link to={`/category/의류`}>더보기</Link>
@@ -308,7 +308,7 @@ export default function Home() {
 
           {snackProducts.length > 0 && (
             <div className="flex flex-col justify-start">
-              <div className="flex">
+              <div className="flex ml-2">
                 <h2 className="text-3xl">간식</h2>
                 <Button size="sm" className="ml-3">
                   <Link to={`/category/간식`}>더보기</Link>
@@ -389,7 +389,7 @@ export default function Home() {
 
           {toyProducts.length > 0 && (
             <div className="flex flex-col justify-start">
-              <div className="flex">
+              <div className="flex ml-2">
                 <h2 className="text-3xl">장난감</h2>
                 <Button size="sm" className="ml-3">
                   <Link to={`/category/장난감`}>더보기</Link>
@@ -470,7 +470,7 @@ export default function Home() {
 
           {accessory.length > 0 && (
             <div className="flex flex-col justify-start">
-              <div className="flex">
+              <div className="flex ml-2">
                 <h2 className="text-3xl">용품</h2>
                 <Button size="sm" className="ml-3">
                   <Link to={`/category/용품`}>더보기</Link>
@@ -550,7 +550,7 @@ export default function Home() {
 
           {supplements.length > 0 && (
             <div className="flex flex-col justify-start">
-              <div className="flex">
+              <div className="flex ml-2">
                 <h2 className="text-3xl">영양제</h2>
                 <Button size="sm" className="ml-3">
                   <Link to={`/category/영양제`}>더보기</Link>
