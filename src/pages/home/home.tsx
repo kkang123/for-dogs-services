@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 
-import { storage } from "@/firebase";
-import { ref, getDownloadURL } from "firebase/storage";
+import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 
 import { basicAxios } from "@/api/axios";
 import SEOMetaTag from "@/components/SEOMetaTag";
@@ -40,21 +39,52 @@ export default function Home() {
 
   const [imageURLs, setImageURLs] = useState<string[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const imageNames = ["찌비.webp", "찌비001.webp", "찌비003.webp"];
+  const imageNames = useMemo(
+    () => [
+      "goodsno_maintopnew_202309051403431.jpg",
+      "goodsno_maintopnew_202309141930171.jpg",
+    ],
+    []
+  );
 
-  useEffect(() => {
-    imageNames.forEach((imageName) => {
-      const imageRef = ref(storage, `folder/${imageName}`);
-
-      getDownloadURL(imageRef)
-        .then((url: string) => {
-          setImageURLs((prevURLs: string[]) => [...prevURLs, url]);
-        })
-        .catch((error: Error) => {
-          console.log(error);
-        });
+  const s3 = useMemo(() => {
+    return new S3Client({
+      region: "ap-northeast-2",
+      credentials: {
+        accessKeyId: import.meta.env.VITE_APP_AWS_ACCESS_KEY_ID,
+        secretAccessKey: import.meta.env.VITE_APP_AWS_SECRET_ACCESS_KEY,
+      },
     });
   }, []);
+
+  useEffect(() => {
+    const fetchImagesFromS3 = async () => {
+      const imageUrls: string[] = await Promise.all(
+        imageNames.map(async (imageName) => {
+          try {
+            const params = {
+              Bucket: "fe-fordogs-image-bucket",
+              Key: imageName,
+            };
+
+            const command = new GetObjectCommand(params);
+            await s3.send(command);
+
+            const imageUrl = `https://${params.Bucket}.s3.ap-northeast-2.amazonaws.com/${params.Key}`;
+
+            return imageUrl;
+          } catch (error) {
+            console.error("S3에서 이미지 가져오기 오류:", error);
+            return "";
+          }
+        })
+      );
+
+      setImageURLs(imageUrls);
+    };
+
+    fetchImagesFromS3();
+  }, [imageNames, s3]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -64,34 +94,40 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [imageURLs]);
 
-  const categoryMapping: { [key: string]: string } = {
-    사료: "FOOD",
-    의류: "CLOTHING",
-    간식: "SNACK",
-    장난감: "TOY",
-    용품: "ACCESSORY",
-    영양제: "SUPPLEMENT",
-  };
+  const categoryMapping = useMemo(
+    () => ({
+      사료: "FOOD",
+      의류: "CLOTHING",
+      간식: "SNACK",
+      장난감: "TOY",
+      용품: "ACCESSORY",
+      영양제: "SUPPLEMENT",
+    }),
+    []
+  );
 
-  const fetchProducts = async (
-    category: string,
-    setProducts: React.Dispatch<React.SetStateAction<Product[]>>
-  ) => {
-    try {
-      const response = await basicAxios.get("/products", {
-        params: {
-          category: categoryMapping[category],
-          size: 5,
-        },
-      });
+  const fetchProducts = useCallback(
+    async (
+      category: keyof typeof categoryMapping,
+      setProducts: React.Dispatch<React.SetStateAction<Product[]>>
+    ) => {
+      try {
+        const response = await basicAxios.get("/products", {
+          params: {
+            category: categoryMapping[category],
+            size: 5,
+          },
+        });
 
-      const products: Product[] = response.data.result.content; // 페이징된 제품 목록
-      setProducts(products);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      setProducts([]); // 에러 발생 시 빈 배열로 설정
-    }
-  };
+        const products: Product[] = response.data.result.content;
+        setProducts(products);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setProducts([]);
+      }
+    },
+    [categoryMapping]
+  );
 
   useEffect(() => {
     fetchProducts("사료", setSirials);
@@ -100,19 +136,20 @@ export default function Home() {
     fetchProducts("장난감", setToyProducts);
     fetchProducts("용품", setAccessory);
     fetchProducts("영양제", setSupplements);
-  }, []);
+  }, [fetchProducts]);
 
   return (
     <>
-      <div className="min-w-[583px] overflow-x-auto">
+      <div className="min-w-[880px] overflow-x-auto">
         <header>
           <Header />
+          <h1 className="text-4xl text-center mt-32 font-bold">For Dogs</h1>
         </header>
         <SEOMetaTag
           title="For Dogs Shop - 강아지를 위한 최고의 선택"
           description="여러분의 강아지를 위해 선물을 해주세요."
         />
-        <main className="mt-36 w-full">
+        <main className="mt-16 w-full">
           <div>
             <ul className="flex space-x-2 justify-around">
               {["사료", "의류", "간식", "장난감", "용품", "영양제"].map(
@@ -132,12 +169,12 @@ export default function Home() {
               )}
             </ul>
           </div>
-          <div className="relative w-full h-[90vh] overflow-hidden mt-5">
+          <div className="relative w-full h-[50vh] overflow-hidden mt-5">
             {imageURLs.map((url, index) => (
               <LazyImage
                 key={index}
                 src={url}
-                alt=""
+                alt="Rotating S3 Image"
                 className={`absolute inset-0 w-full h-full object-contain transition-all duration-1000 ease-in-out ${
                   index !== currentImageIndex ? "opacity-0" : "opacity-100"
                 }`}
