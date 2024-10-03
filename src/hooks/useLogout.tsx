@@ -9,6 +9,8 @@ export const useLogout = () => {
   const isLoggedIn = useRecoilValue(isLoggedInState);
 
   const clearUserState = () => {
+    if (!isLoggedIn) return;
+
     localStorage.removeItem("AccessToken");
     localStorage.removeItem("AccessTokenExpiration");
     localStorage.removeItem("user");
