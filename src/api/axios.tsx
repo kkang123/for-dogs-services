@@ -37,7 +37,6 @@ const MAX_RETRIES = 1;
 
 basicAxios.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    console.log("Starting request:", config);
     const accessToken = localStorage.getItem("AccessToken");
 
     if (config.url?.includes("/users/login")) {
@@ -61,7 +60,6 @@ basicAxios.interceptors.request.use(
 
 basicAxios.interceptors.response.use(
   (response: AxiosResponse) => {
-    console.log("Response received:", response);
     retryCount = 0;
     return response;
   },

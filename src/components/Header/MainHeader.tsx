@@ -42,10 +42,6 @@ function MainHeader() {
     navigate("/");
   };
 
-  useEffect(() => {
-    console.log("authIsLoggedIn:", authIsLoggedIn);
-  }, [authIsLoggedIn]);
-
   const handleLogin = (event: React.FormEvent) => {
     event.preventDefault();
     navigate("/login");
