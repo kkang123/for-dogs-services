@@ -374,14 +374,16 @@ function MyProfile() {
                 구매 내역
               </Button>
             </li>
-            <li>
-              <Button
-                size={"lg"}
-                onClick={() => setSelectedMenu("Change Password")}
-              >
-                비밀번호 변경
-              </Button>
-            </li>
+            {provider === "LOCAL" && (
+              <li>
+                <Button
+                  size={"lg"}
+                  onClick={() => setSelectedMenu("Change Password")}
+                >
+                  비밀번호 변경
+                </Button>
+              </li>
+            )}
             <li>
               <Button size={"lg"} className="lx" onClick={deleteUser}>
                 탈퇴하기
