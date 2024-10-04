@@ -104,7 +104,7 @@ function MyProfile() {
             confirmButtonColor: "#3085d6",
             confirmButtonText: "확인",
           });
-          fetchOrders(); // 주문 취소 후 목록을 갱신
+          fetchOrders();
         } else {
           Swal.fire({
             icon: "error",
@@ -156,7 +156,6 @@ function MyProfile() {
   };
 
   // 결제 상세 내역
-
   const renderOrderHistory = () => {
     return (
       <div>
@@ -279,6 +278,17 @@ function MyProfile() {
                     {provider === "LOCAL" && (
                       <p>
                         <strong>생년월일</strong> : {user.userBirthDate}
+                      </p>
+                    )}
+
+                    {provider === "GOOGLE" && (
+                      <p>
+                        <strong>로그인 유형</strong> : GOOGLE
+                      </p>
+                    )}
+                    {provider === "KAKAO" && (
+                      <p>
+                        <strong>로그인 유형</strong> : KAKAO
                       </p>
                     )}
 
