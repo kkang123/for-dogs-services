@@ -96,6 +96,11 @@ module.exports = {
           "66.66%": { transform: "translateX(-200%)" },
           "88.88%": { transform: "translateX(-200%)" },
           "100%": { transform: "translateX(-300%)" },
+          "skeleton-gradient": {
+            "0%": { backgroundColor: "rgba(165, 165, 165, 0.1)" },
+            "50%": { backgroundColor: "rgba(165, 165, 165, 0.3)" },
+            "100%": { backgroundColor: "rgba(165, 165, 165, 0.1)" },
+          },
         },
 
         "accordion-down": {
@@ -111,6 +116,7 @@ module.exports = {
         slide: "slide 9s linear infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        skeleton: "skeleton-gradient 1.0s infinite ease-in-out",
       },
     },
   },
