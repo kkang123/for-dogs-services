@@ -207,6 +207,12 @@ function SellProductDetail() {
     }
   };
 
+  useEffect(() => {
+    if (product) {
+      window.scrollTo(0, 0);
+    }
+  }, [product]);
+
   if (!product) {
     return (
       <>
