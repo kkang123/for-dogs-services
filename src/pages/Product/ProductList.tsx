@@ -8,6 +8,7 @@ import { basicAxios } from "@/api/axios";
 import SEOMetaTag from "@/components/SEOMetaTag";
 import ProductHeader from "@/components/Header/ProductHeader";
 import { userState } from "@/recoil/userState";
+import ProductSkeleton from "@/components/skeletons/ProductSkeleton";
 
 import { Product } from "@/interface/product";
 
@@ -76,7 +77,26 @@ function ProductList() {
   }, [data]);
 
   if (isLoading) {
-    return <div className="flex justify-center mt-10">Loading...</div>;
+    return (
+      <>
+        <header className="h-20">
+          <ProductHeader
+            showBackSellerProfileButton={true}
+            showUploadButton={true}
+          />
+        </header>
+
+        <main className="mt-16 h-screen overflow-y-scroll">
+          <div className="overflow-x-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 auto-rows-max gap-4">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <ProductSkeleton key={index} />
+              ))}
+            </div>
+          </div>
+        </main>
+      </>
+    );
   }
 
   if (isError) {

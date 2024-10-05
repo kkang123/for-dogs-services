@@ -8,6 +8,8 @@ import { useRecoilValue } from "recoil";
 import { userState } from "@/recoil/userState";
 import { Button } from "@/components/ui/button";
 import ProductHeader from "@/components/Header/ProductHeader";
+import SkeletonHeader from "@/components/skeletons/SkeletonHeader";
+import ProductSkeleton from "@/components/skeletons/ProductSkeleton";
 import SEOMetaTag from "@/components/SEOMetaTag";
 import CartModal from "@/components/modals/cartModal";
 
@@ -131,11 +133,16 @@ function Category() {
   if (isLoading) {
     return (
       <>
-        <header className="h-[78px]">
-          <ProductHeader showHomeButton={true} />
+        <header className="h-20">
+          <ProductHeader showHomeButton={true} showProductCart={true} />
         </header>
-        <main className="flex justify-center pt-5">
-          <div>상품을 불러오는 중입니다.</div>
+        <main className="mt-16">
+          <SkeletonHeader />
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 auto-rows-max gap-4 ">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <ProductSkeleton key={index} />
+            ))}
+          </div>
         </main>
         <footer></footer>
       </>
@@ -248,7 +255,7 @@ function Category() {
                   </Link>
                 ))
               ) : (
-                <div>상품이 없습니다.</div>
+                <div className="text-center">상품이 없습니다.</div>
               )}
               <div ref={ref}></div>
             </div>
