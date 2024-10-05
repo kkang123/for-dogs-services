@@ -14,6 +14,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import ProductDetailSkeleton from "@/components/skeletons/ProductDetailSkeleton";
 
 import { Product } from "@/interface/product";
 
@@ -126,9 +127,20 @@ function ProductDetail() {
 
   if (!product) {
     return (
-      <div className="flex justify-center mt-10">
-        상품을 불러오는 중입니다...
-      </div>
+      <>
+        <header className="h-20">
+          <ProductHeader
+            showPageBackSpaceButton={true}
+            showEditButton={true}
+            showDeleteButton={true}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+          />
+        </header>
+        <main>
+          <ProductDetailSkeleton />
+        </main>
+      </>
     );
   }
 
