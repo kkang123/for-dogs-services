@@ -17,6 +17,7 @@ import {
 import { userState, isLoggedInState } from "@/recoil/userState";
 import { cartState } from "@/recoil/cartState";
 import CartModal from "@/components/modals/cartModal";
+import SellProductDetailSkeleton from "@/components/skeletons/SellProductDetailSkeleton";
 
 import { Product } from "@/interface/product";
 import { CartItem } from "@/interface/cart";
@@ -207,7 +208,19 @@ function SellProductDetail() {
   };
 
   if (!product) {
-    return <div>상품을 불러오는 중...</div>;
+    return (
+      <>
+        <header className="h-20">
+          <ProductHeader
+            showPageBackSpaceButton={true}
+            showProductCart={true}
+          />
+        </header>
+        <main>
+          <SellProductDetailSkeleton />;
+        </main>
+      </>
+    );
   }
 
   return (
@@ -219,6 +232,7 @@ function SellProductDetail() {
           description="판매 중인 상품 상세보기 페이지입니다."
         />
       </header>
+
       <main style={{ minWidth: "1300px" }} className="center">
         <div className="flex  w-full gap-12 pt-[70px] pb-[80px] justify-center">
           <div className="w-[580px] h-[580px]">
