@@ -14,6 +14,7 @@ import { userState } from "@/recoil/userState";
 import useAuth from "@/hooks/useAuth";
 
 import photo from "@/assets/icon-photo.svg";
+import cancelBtn from "@/assets/cancel_btn.svg";
 
 import { Product } from "@/interface/product";
 
@@ -36,20 +37,6 @@ function ProductUpload() {
     productImages: [],
   });
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  const handlePrevClick = () => {
-    setCurrentImageIndex(
-      (prevIndex) =>
-        (prevIndex - 1 + product.productImages.length) %
-        product.productImages.length
-    );
-  };
-
-  const handleNextClick = () => {
-    setCurrentImageIndex(
-      (prevIndex) => (prevIndex + 1) % product.productImages.length
-    );
-  };
 
   const handleSaveProduct = async (
     event: React.MouseEvent<HTMLButtonElement>
@@ -89,7 +76,6 @@ function ProductUpload() {
 
     try {
       const response = await basicAxios.post("/products", product);
-      console.log("서버 응답 데이터:", response.data);
 
       if (response.status === 201) {
         if (response.data.ok) {
@@ -216,11 +202,13 @@ function ProductUpload() {
     }));
   };
 
-  const deleteUploadedImages = async () => {
+  const deleteUploadedImages = async (imageUrl?: string) => {
     try {
       await checkAndRefreshToken();
 
-      const deletePromises = product.productImages.map(async (imageUrl) => {
+      const imageUrlsToDelete = imageUrl ? [imageUrl] : product.productImages;
+
+      const deletePromises = imageUrlsToDelete.map(async (imageUrl) => {
         const response = await basicAxios.delete("/products/images", {
           params: { imageUrls: imageUrl },
         });
@@ -243,6 +231,40 @@ function ProductUpload() {
     }
   };
 
+  const handleDeleteClick = (imageUrl: string) => {
+    Swal.fire({
+      icon: "warning",
+      title: "이미지를 삭제하시겠습니까?",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "삭제",
+      cancelButtonText: "취소",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await deleteUploadedImages(imageUrl);
+
+        setProduct((prevProduct) => ({
+          ...prevProduct,
+          productImages: prevProduct.productImages.filter(
+            (image) => image !== imageUrl
+          ),
+        }));
+
+        if (currentImageIndex >= product.productImages.length - 1) {
+          setCurrentImageIndex(0);
+        }
+      }
+    });
+  };
+
+  const handleEmptyImageClick = () => {
+    const fileInput = document.getElementById("picture");
+    if (fileInput) {
+      fileInput.click();
+    }
+  };
+
   return (
     <>
       <header>
@@ -256,59 +278,88 @@ function ProductUpload() {
         />
       </header>
 
-      <main>
-        <form
-          className="flex justify-center mt-[70px] "
-          style={{ minWidth: "800px" }}
-        >
-          <section>
-            <div className="rounded border-2 shadow-lg shadow-gray-600 w-[480px] h-[420px] relative">
-              {product.productImages[currentImageIndex] ? (
-                <img
-                  className="object-fill w-full h-full"
-                  src={product.productImages[currentImageIndex]}
-                  alt={`Uploaded image ${currentImageIndex + 1}`}
-                />
-              ) : null}
+      <main className="mt-44 overflow-x-auto h-screen">
+        <div className="min-w-[768px]">
+          <section className="flex justify-center gap-14 w-full">
+            <div>
+              <div className="rounded border-2 shadow-lg shadow-gray-600 w-[480px] h-[420px] relative">
+                {product.productImages[currentImageIndex] ? (
+                  <img
+                    className="object-fill w-full h-full"
+                    src={product.productImages[currentImageIndex]}
+                    alt={`Uploaded image ${currentImageIndex + 1}`}
+                  />
+                ) : null}
 
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={handlePrevClick}
-                className="absolute left-0 top-1/2 h-6 w-6 rounded-full font-bold pt-1 pr-1 text-white bg-black border-black"
-              >
-                &lt;
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={handleNextClick}
-                className="absolute right-0 top-1/2 h-6 w-6 rounded-full font-bold pt-1 pl-1 text-white bg-black border-black"
-              >
-                &gt;
-              </Button>
+                <div className="absolute bottom-2 right-2  gap-1.5 ">
+                  <Label htmlFor="picture" className="cursor-pointer">
+                    <img src={photo} alt="photo-btn" />
+                  </Label>
+                  <Input
+                    className="cursor-pointer"
+                    id="picture"
+                    type="file"
+                    onChange={handleFileSelect}
+                    multiple
+                    accept=".jpg, .jpeg, .png, .webp"
+                    style={{ display: "none" }}
+                  />
+                </div>
+              </div>
 
-              <div className="absolute bottom-2 right-2   gap-1.5 ">
-                <Label htmlFor="picture" className="cursor-pointer">
-                  <img src={photo} alt="photo-btn" />
-                </Label>
-                <Input
-                  className="cursor-pointer"
-                  id="picture"
-                  type="file"
-                  onChange={handleFileSelect}
-                  multiple
-                  accept=".jpg, .jpeg, .png, .webp"
-                  style={{ display: "none" }}
-                />
+              <div className="grid grid-cols-3 gap-2 mt-6">
+                {product.productImages.length === 0 ? (
+                  <div className="col-span-3 grid grid-cols-3 gap-2">
+                    {[...Array(3)].map((_, index) => (
+                      <div
+                        key={index}
+                        className="relative flex items-center justify-center w-full h-24 bg-gray-200 border border-dashed border-gray-400 cursor-pointer rounded"
+                      >
+                        <span className="text-gray-400 text-4xl">+</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  product.productImages.map((image, index) => (
+                    <div
+                      key={index}
+                      className="relative cursor-pointer"
+                      onClick={() => setCurrentImageIndex(index)}
+                    >
+                      <img
+                        className="object-fit w-full h-24 rounded"
+                        src={image}
+                        alt={`Uploaded thumbnail ${index + 1}`}
+                      />
+                      <img
+                        src={cancelBtn}
+                        className="absolute top-0 right-0 h-6 w-6 p-1"
+                        alt="이미지 삭제 버튼"
+                        onClick={() => handleDeleteClick(image)}
+                      />
+                    </div>
+                  ))
+                )}
+
+                {product.productImages.length > 0 &&
+                  product.productImages.length < 3 &&
+                  [...Array(3 - product.productImages.length)].map(
+                    (_, index) => (
+                      <div
+                        key={index}
+                        className="relative flex items-center justify-center w-full h-24 bg-gray-200 border border-dashed border-gray-400 cursor-pointer rounded"
+                        onClick={handleEmptyImageClick}
+                      >
+                        <span className="text-gray-400 text-4xl">+</span>
+                      </div>
+                    )
+                  )}
               </div>
             </div>
 
-            <div>
+            <div className="flex-col space-y-8">
               <Input
-                className="border-gray-700 mt-8 hover:none border-b-2"
+                className="border-gray-700  hover:none border-b-2 mt-7"
                 type="text"
                 name="productName"
                 placeholder="상품 이름"
@@ -317,7 +368,7 @@ function ProductUpload() {
               />
 
               <Input
-                className="border-gray-700 mt-3 hover:none border-b-2"
+                className="border-gray-700 hover:none border-b-2"
                 name="productPrice"
                 placeholder="상품 가격"
                 type="number"
@@ -327,7 +378,7 @@ function ProductUpload() {
               />
 
               <Input
-                className="border-gray-700 mt-2 hover:none border-b-2"
+                className="border-gray-700 hover:none border-b-2"
                 type="number"
                 name="productQuantity"
                 placeholder="상품 수량"
@@ -338,7 +389,7 @@ function ProductUpload() {
 
               <div>
                 <Textarea
-                  className="border-black mt-3"
+                  className="border-black"
                   placeholder="상품 설명을 적어주세요."
                   name="productDescription"
                   value={product.productDescription}
@@ -346,7 +397,7 @@ function ProductUpload() {
                 />
               </div>
 
-              <div className="mt-1 relative">
+              <div className="relative">
                 <select
                   name="productCategory"
                   value={product.productCategory}
@@ -372,13 +423,13 @@ function ProductUpload() {
                 </div>
               </div>
               <div className="flex justify-center">
-                <Button className="mt-3" onClick={handleSaveProduct}>
-                  완료
+                <Button className="mt-8" onClick={handleSaveProduct}>
+                  상품 등록
                 </Button>
               </div>
             </div>
           </section>
-        </form>
+        </div>
       </main>
     </>
   );
