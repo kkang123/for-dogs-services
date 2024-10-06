@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import useAuth from "@/hooks/useAuth";
 
 import photo from "@/assets/icon-photo.svg";
+import cancelBtn from "@/assets/cancel_btn.svg";
 
 import { Product } from "@/interface/product";
 
@@ -53,16 +54,6 @@ function ProductEdit() {
     productCategory: "NONE",
     productImages: [],
   });
-
-  const handlePrevClick = () => {
-    setCurrentImageIndex(
-      (prevIndex) => (prevIndex - 1 + productImage.length) % productImage.length
-    );
-  };
-
-  const handleNextClick = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % productImage.length);
-  };
 
   useEffect(() => {
     const loadProductData = async () => {
@@ -125,7 +116,7 @@ function ProductEdit() {
       productQuantity: productQuantity || 0,
       productDescription,
       productCategory,
-      productImages: productImage,
+      productImages: editedProduct.productImages,
       productSeller: sellerId,
     };
 
@@ -215,6 +206,9 @@ function ProductEdit() {
 
     if (files && files.length <= 3) {
       const selectedFiles = Array.from(files);
+
+      await deleteUploadedImages(editedProduct.productImages);
+
       try {
         await handleUpload(selectedFiles);
       } catch (error) {
@@ -264,7 +258,82 @@ function ProductEdit() {
         console.error(`업로드 실패: ${file.name}`, error);
       }
     }
-    setProductImage(downloadURLs);
+
+    setProductImage((prevImages) => [...prevImages, ...downloadURLs]);
+    setEditedProduct((prevProduct) => ({
+      ...prevProduct,
+      productImages: [...prevProduct.productImages, ...downloadURLs],
+    }));
+  };
+
+  const deleteUploadedImages = async (imageUrls: string | string[]) => {
+    try {
+      await checkAndRefreshToken();
+
+      const urlsToDelete = Array.isArray(imageUrls) ? imageUrls : [imageUrls];
+
+      const deletePromises = urlsToDelete.map(async (imageUrl) => {
+        const response = await basicAxios.delete("/products/images", {
+          params: { imageUrls: imageUrl },
+        });
+        return response;
+      });
+
+      const responses = await Promise.all(deletePromises);
+
+      responses.forEach((response) => {
+        if (response.status === 204) {
+          console.log(`이미지 삭제 성공: ${response.config.params.imageUrls}`);
+        } else {
+          console.error(
+            `이미지 삭제 실패: ${response.config.params.imageUrls}`
+          );
+        }
+      });
+
+      setEditedProduct((prevProduct) => ({
+        ...prevProduct,
+        productImages: prevProduct.productImages.filter(
+          (image) => !urlsToDelete.includes(image)
+        ),
+      }));
+    } catch (error) {
+      console.error("업로드된 이미지를 삭제하는 중 오류 발생: ", error);
+    }
+  };
+
+  const handleDeleteClick = (imageUrl: string) => {
+    Swal.fire({
+      icon: "warning",
+      title: "이미지를 삭제하시겠습니까?",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "삭제",
+      cancelButtonText: "취소",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await deleteUploadedImages([imageUrl]);
+
+        setEditedProduct((prevProduct) => ({
+          ...prevProduct,
+          productImages: prevProduct.productImages.filter(
+            (image) => image !== imageUrl
+          ),
+        }));
+
+        if (currentImageIndex >= editedProduct.productImages.length - 1) {
+          setCurrentImageIndex(0);
+        }
+      }
+    });
+  };
+
+  const handleEmptyImageClick = () => {
+    const fileInput = document.getElementById("picture");
+    if (fileInput) {
+      fileInput.click();
+    }
   };
 
   if (isLoading) {
@@ -273,65 +342,97 @@ function ProductEdit() {
 
   return (
     <>
-      <header className="h-20">
-        <ProductHeader showPageBackSpaceButton={true} showEditButton={false} />
+      <header>
+        <ProductHeader showPageBackSpaceButton={true} />
         <SEOMetaTag
           title="For Dogs - ProductEdit"
           description="상품 수정 페이지입니다."
         />
       </header>
-      <main>
-        <form
-          className="flex justify-center mt-[70px] "
-          style={{ minWidth: "800px" }}
-        >
-          <section>
-            <div className="rounded border-2 shadow-lg shadow-gray-600 w-[480px] h-[420px] relative">
-              {productImage && productImage[currentImageIndex] ? (
-                <img
-                  className="object-fill w-full h-full"
-                  src={productImage[currentImageIndex]}
-                  alt={`Uploaded image ${currentImageIndex + 1}`}
-                />
-              ) : null}
 
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={handlePrevClick}
-                className="absolute left-0 top-1/2 h-6 w-6 rounded-full font-bold pt-1 pr-1 text-white bg-black border-black"
-              >
-                &lt;
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={handleNextClick}
-                className="absolute right-0 top-1/2 h-6 w-6 rounded-full font-bold pt-1 pl-1 text-white bg-black border-black"
-              >
-                &gt;
-              </Button>
+      <main className="mt-44 overflow-x-auto h-screen">
+        <div className="min-w-[768px]">
+          <section className="flex justify-center gap-14 w-full">
+            <div>
+              <div className="rounded border-2 shadow-lg shadow-gray-600 w-[480px] h-[420px] relative">
+                {editedProduct.productImages[currentImageIndex] ? (
+                  <img
+                    className="object-fill w-full h-full"
+                    src={editedProduct.productImages[currentImageIndex]}
+                    alt={`Uploaded image ${currentImageIndex + 1}`}
+                  />
+                ) : null}
 
-              <div className="absolute bottom-2 right-2 gap-1.5 ">
-                <Label htmlFor="picture">
-                  <img src={photo} alt="photo" className="w-6" />
-                </Label>
-                <Input
-                  id="picture"
-                  type="file"
-                  name="productImage"
-                  accept="image/*"
-                  onChange={handleFileSelect}
-                  style={{ display: "none" }}
-                />
+                <div className="absolute bottom-2 right-2 gap-1.5 ">
+                  <Label htmlFor="picture" className="cursor-pointer">
+                    <img src={photo} alt="photo-btn" className="w-6" />
+                  </Label>
+                  <Input
+                    className="cursor-pointer"
+                    id="picture"
+                    type="file"
+                    name="productImage"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    multiple
+                    style={{ display: "none" }}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 mt-6">
+                {editedProduct.productImages.length === 0 ? (
+                  <div className="col-span-3 grid grid-cols-3 gap-2">
+                    {[...Array(3)].map((_, index) => (
+                      <div
+                        key={index}
+                        className="relative flex items-center justify-center w-full h-24 bg-gray-200 border border-dashed border-gray-400 cursor-pointer rounded"
+                      >
+                        <span className="text-gray-400 text-4xl">+</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  editedProduct.productImages.map((image, index) => (
+                    <div
+                      key={index}
+                      className="relative cursor-pointer"
+                      onClick={() => setCurrentImageIndex(index)}
+                    >
+                      <img
+                        className="object-fit w-full h-24 rounded"
+                        src={image}
+                        alt={`Uploaded thumbnail ${index + 1}`}
+                      />
+                      <img
+                        src={cancelBtn}
+                        className="absolute top-0 right-0 h-6 w-6 p-1"
+                        alt="이미지 삭제 버튼"
+                        onClick={() => handleDeleteClick(image)}
+                      />
+                    </div>
+                  ))
+                )}
+
+                {editedProduct.productImages.length > 0 &&
+                  editedProduct.productImages.length < 3 &&
+                  [...Array(3 - editedProduct.productImages.length)].map(
+                    (_, index) => (
+                      <div
+                        key={index}
+                        className="relative flex items-center justify-center w-full h-24 bg-gray-200 border border-dashed border-gray-400 cursor-pointer rounded"
+                        onClick={handleEmptyImageClick}
+                      >
+                        <span className="text-gray-400 text-4xl">+</span>
+                      </div>
+                    )
+                  )}
               </div>
             </div>
 
-            <div>
+            <div className="flex-col space-y-8">
               <Input
-                className="border-gray-700 mt-8 hover:none border-b-2"
+                className="border-gray-700 hover:none border-b-2 mt-7"
                 type="text"
                 name="productName"
                 placeholder="상품 이름"
@@ -340,7 +441,7 @@ function ProductEdit() {
               />
 
               <Input
-                className="border-gray-700 mt-3 hover:none border-b-2"
+                className="border-gray-700 hover:none border-b-2"
                 name="productPrice"
                 placeholder="상품 가격"
                 type="number"
@@ -350,7 +451,7 @@ function ProductEdit() {
               />
 
               <Input
-                className="border-gray-700 mt-2 hover:none border-b-2"
+                className="border-gray-700 hover:none border-b-2"
                 type="number"
                 name="productQuantity"
                 placeholder="상품 수량"
@@ -361,7 +462,7 @@ function ProductEdit() {
 
               <div>
                 <Textarea
-                  className="border-black mt-3"
+                  className="border-black"
                   placeholder="상품 설명을 적어주세요."
                   name="productDescription"
                   value={productDescription}
@@ -369,7 +470,7 @@ function ProductEdit() {
                 />
               </div>
 
-              <div className="mt-1 relative">
+              <div className="relative">
                 <select
                   name="productCategory"
                   value={productCategory}
@@ -395,13 +496,13 @@ function ProductEdit() {
                 </div>
               </div>
               <div className="flex justify-center">
-                <Button className="mt-3" onClick={handleSaveProduct}>
+                <Button className="mt-8" onClick={handleSaveProduct}>
                   수정 완료
                 </Button>
               </div>
             </div>
           </section>
-        </form>
+        </div>
       </main>
       <footer className="mt-10"></footer>
     </>
