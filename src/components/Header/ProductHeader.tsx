@@ -22,6 +22,7 @@ interface ProductHeaderProps {
   showProductCart?: boolean;
   showSellerProfileButton?: boolean;
   showBackSellerProfileButton?: boolean;
+  showBackProductListButton?: boolean;
   onDelete?: () => void;
   onEdit?: () => void;
   onBackspaceClick?: () => void;
@@ -38,6 +39,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   showProductCart = false,
   showSellerProfileButton = false,
   showBackSellerProfileButton = false,
+  showBackProductListButton = false,
   onDelete,
   onEdit,
   onSellerProfile,
@@ -99,6 +101,11 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
     navigate(-1);
   };
 
+  const BackProductListButton = (event: FormEvent) => {
+    event.preventDefault();
+    navigate(`/productlist/${user.userId}`);
+  };
+
   return (
     <>
       <div className="fixed px-5 py-5 top-0 left-0 right-0 flex  w-full justify-between shadow-lg  bg-white z-50 h-20">
@@ -111,6 +118,12 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
         {showBackSellerProfileButton && (
           <button onClick={BackSellerProfileButton}>
             <img src={backspace} alt="판매자 프로필로 이동하는 뒤로가기 버튼" />
+          </button>
+        )}
+
+        {showBackProductListButton && (
+          <button onClick={BackProductListButton}>
+            <img src={backspace} alt="판매자 상품 리스트로 이동하는 버튼" />
           </button>
         )}
 

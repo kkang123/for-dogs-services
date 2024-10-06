@@ -136,7 +136,7 @@ function ProductDetail() {
       <>
         <header className="h-20">
           <ProductHeader
-            showPageBackSpaceButton={true}
+            showBackProductListButton={true}
             showEditButton={true}
             showDeleteButton={true}
             onDelete={handleDelete}
@@ -157,7 +157,7 @@ function ProductDetail() {
     <>
       <header className="h-20">
         <ProductHeader
-          showPageBackSpaceButton={true}
+          showBackProductListButton={true}
           showEditButton={true}
           showDeleteButton={true}
           onDelete={handleDelete}
