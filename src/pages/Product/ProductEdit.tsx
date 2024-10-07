@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import useAuth from "@/hooks/useAuth";
+import ProductEditSkeleton from "@/components/skeletons/ProductEditSkeleton";
 
 import photo from "@/assets/icon-photo.svg";
 import cancelBtn from "@/assets/cancel_btn.svg";
@@ -337,7 +338,16 @@ function ProductEdit() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <>
+        <header>
+          <ProductHeader showPageBackSpaceButton={true} />
+        </header>
+        <main className="mt-44 h-screen">
+          <ProductEditSkeleton />
+        </main>
+      </>
+    );
   }
 
   return (
