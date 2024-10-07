@@ -337,19 +337,6 @@ function ProductEdit() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <>
-        <header>
-          <ProductHeader showPageBackSpaceButton={true} />
-        </header>
-        <main className="mt-44 h-screen">
-          <ProductEditSkeleton />
-        </main>
-      </>
-    );
-  }
-
   return (
     <>
       <header>
@@ -361,158 +348,162 @@ function ProductEdit() {
       </header>
 
       <main className="mt-44 overflow-x-auto h-screen">
-        <div className="min-w-[768px]">
-          <section className="flex justify-center gap-14 w-full">
-            <div>
-              <div className="rounded border-2 shadow-lg shadow-gray-600 w-[480px] h-[420px] relative">
-                {editedProduct.productImages[currentImageIndex] ? (
-                  <img
-                    className="object-fill w-full h-full"
-                    src={editedProduct.productImages[currentImageIndex]}
-                    alt={`Uploaded image ${currentImageIndex + 1}`}
-                  />
-                ) : null}
+        {isLoading ? (
+          <ProductEditSkeleton />
+        ) : (
+          <div className="min-w-[768px]">
+            <section className="flex justify-center gap-14 w-full">
+              <div>
+                <div className="rounded border-2 shadow-lg shadow-gray-600 w-[480px] h-[420px] relative">
+                  {editedProduct.productImages[currentImageIndex] ? (
+                    <img
+                      className="object-fill w-full h-full"
+                      src={editedProduct.productImages[currentImageIndex]}
+                      alt={`Uploaded image ${currentImageIndex + 1}`}
+                    />
+                  ) : null}
 
-                <div className="absolute bottom-2 right-2 gap-1.5 ">
-                  <Label htmlFor="picture" className="cursor-pointer">
-                    <img src={photo} alt="photo-btn" className="w-6" />
-                  </Label>
-                  <Input
-                    className="cursor-pointer"
-                    id="picture"
-                    type="file"
-                    name="productImage"
-                    accept="image/*"
-                    onChange={handleFileSelect}
-                    multiple
-                    style={{ display: "none" }}
-                  />
+                  <div className="absolute bottom-2 right-2 gap-1.5 ">
+                    <Label htmlFor="picture" className="cursor-pointer">
+                      <img src={photo} alt="photo-btn" className="w-6" />
+                    </Label>
+                    <Input
+                      className="cursor-pointer"
+                      id="picture"
+                      type="file"
+                      name="productImage"
+                      accept="image/*"
+                      onChange={handleFileSelect}
+                      multiple
+                      style={{ display: "none" }}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 mt-6">
+                  {editedProduct.productImages.length === 0 ? (
+                    <div className="col-span-3 grid grid-cols-3 gap-2">
+                      {[...Array(3)].map((_, index) => (
+                        <div
+                          key={index}
+                          className="relative flex items-center justify-center w-full h-24 bg-gray-200 border border-dashed border-gray-400 cursor-pointer rounded"
+                        >
+                          <span className="text-gray-400 text-4xl">+</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    editedProduct.productImages.map((image, index) => (
+                      <div
+                        key={index}
+                        className="relative cursor-pointer"
+                        onClick={() => setCurrentImageIndex(index)}
+                      >
+                        <img
+                          className="object-fit w-full h-24 rounded"
+                          src={image}
+                          alt={`Uploaded thumbnail ${index + 1}`}
+                        />
+                        <img
+                          src={cancelBtn}
+                          className="absolute top-0 right-0 h-6 w-6 p-1"
+                          alt="이미지 삭제 버튼"
+                          onClick={() => handleDeleteClick(image)}
+                        />
+                      </div>
+                    ))
+                  )}
+
+                  {editedProduct.productImages.length > 0 &&
+                    editedProduct.productImages.length < 3 &&
+                    [...Array(3 - editedProduct.productImages.length)].map(
+                      (_, index) => (
+                        <div
+                          key={index}
+                          className="relative flex items-center justify-center w-full h-24 bg-gray-200 border border-dashed border-gray-400 cursor-pointer rounded"
+                          onClick={handleEmptyImageClick}
+                        >
+                          <span className="text-gray-400 text-4xl">+</span>
+                        </div>
+                      )
+                    )}
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-2 mt-6">
-                {editedProduct.productImages.length === 0 ? (
-                  <div className="col-span-3 grid grid-cols-3 gap-2">
-                    {[...Array(3)].map((_, index) => (
-                      <div
-                        key={index}
-                        className="relative flex items-center justify-center w-full h-24 bg-gray-200 border border-dashed border-gray-400 cursor-pointer rounded"
-                      >
-                        <span className="text-gray-400 text-4xl">+</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  editedProduct.productImages.map((image, index) => (
-                    <div
-                      key={index}
-                      className="relative cursor-pointer"
-                      onClick={() => setCurrentImageIndex(index)}
-                    >
-                      <img
-                        className="object-fit w-full h-24 rounded"
-                        src={image}
-                        alt={`Uploaded thumbnail ${index + 1}`}
-                      />
-                      <img
-                        src={cancelBtn}
-                        className="absolute top-0 right-0 h-6 w-6 p-1"
-                        alt="이미지 삭제 버튼"
-                        onClick={() => handleDeleteClick(image)}
-                      />
-                    </div>
-                  ))
-                )}
-
-                {editedProduct.productImages.length > 0 &&
-                  editedProduct.productImages.length < 3 &&
-                  [...Array(3 - editedProduct.productImages.length)].map(
-                    (_, index) => (
-                      <div
-                        key={index}
-                        className="relative flex items-center justify-center w-full h-24 bg-gray-200 border border-dashed border-gray-400 cursor-pointer rounded"
-                        onClick={handleEmptyImageClick}
-                      >
-                        <span className="text-gray-400 text-4xl">+</span>
-                      </div>
-                    )
-                  )}
-              </div>
-            </div>
-
-            <div className="flex-col space-y-8">
-              <Input
-                className="border-gray-700 hover:none border-b-2 mt-7"
-                type="text"
-                name="productName"
-                placeholder="상품 이름"
-                value={productName}
-                onChange={onChange}
-              />
-
-              <Input
-                className="border-gray-700 hover:none border-b-2"
-                name="productPrice"
-                placeholder="상품 가격"
-                type="number"
-                value={productPrice || ""}
-                onChange={onChange}
-                min="0"
-              />
-
-              <Input
-                className="border-gray-700 hover:none border-b-2"
-                type="number"
-                name="productQuantity"
-                placeholder="상품 수량"
-                value={productQuantity || ""}
-                onChange={onChange}
-                min="0"
-              />
-
-              <div>
-                <Textarea
-                  className="border-black"
-                  placeholder="상품 설명을 적어주세요."
-                  name="productDescription"
-                  value={productDescription}
+              <div className="flex-col space-y-8">
+                <Input
+                  className="border-gray-700 hover:none border-b-2 mt-7"
+                  type="text"
+                  name="productName"
+                  placeholder="상품 이름"
+                  value={productName}
                   onChange={onChange}
                 />
-              </div>
 
-              <div className="relative">
-                <select
-                  name="productCategory"
-                  value={productCategory}
+                <Input
+                  className="border-gray-700 hover:none border-b-2"
+                  name="productPrice"
+                  placeholder="상품 가격"
+                  type="number"
+                  value={productPrice || ""}
                   onChange={onChange}
-                  className="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                >
-                  <option value="NONE">카테고리를 선택하세요</option>
-                  <option value="FOOD">사료</option>
-                  <option value="SNACK">간식</option>
-                  <option value="CLOTHING">의류</option>
-                  <option value="TOY">장난감</option>
-                  <option value="ACCESSORY">용품</option>
-                  <option value="SUPPLEMENT">영양제</option>
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <svg
-                    className="fill-current h-4 w-4"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
+                  min="0"
+                />
+
+                <Input
+                  className="border-gray-700 hover:none border-b-2"
+                  type="number"
+                  name="productQuantity"
+                  placeholder="상품 수량"
+                  value={productQuantity || ""}
+                  onChange={onChange}
+                  min="0"
+                />
+
+                <div>
+                  <Textarea
+                    className="border-black"
+                    placeholder="상품 설명을 적어주세요."
+                    name="productDescription"
+                    value={productDescription}
+                    onChange={onChange}
+                  />
+                </div>
+
+                <div className="relative">
+                  <select
+                    name="productCategory"
+                    value={productCategory}
+                    onChange={onChange}
+                    className="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   >
-                    <path d="M10 12l6-6H4l6 6zm0 1l6 6H4l6-6z" />
-                  </svg>
+                    <option value="NONE">카테고리를 선택하세요</option>
+                    <option value="FOOD">사료</option>
+                    <option value="SNACK">간식</option>
+                    <option value="CLOTHING">의류</option>
+                    <option value="TOY">장난감</option>
+                    <option value="ACCESSORY">용품</option>
+                    <option value="SUPPLEMENT">영양제</option>
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg
+                      className="fill-current h-4 w-4"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M10 12l6-6H4l6 6zm0 1l6 6H4l6-6z" />
+                    </svg>
+                  </div>
+                </div>
+                <div className="flex justify-center">
+                  <Button className="mt-8" onClick={handleSaveProduct}>
+                    수정 완료
+                  </Button>
                 </div>
               </div>
-              <div className="flex justify-center">
-                <Button className="mt-8" onClick={handleSaveProduct}>
-                  수정 완료
-                </Button>
-              </div>
-            </div>
-          </section>
-        </div>
+            </section>
+          </div>
+        )}
       </main>
       <footer className="mt-10"></footer>
     </>

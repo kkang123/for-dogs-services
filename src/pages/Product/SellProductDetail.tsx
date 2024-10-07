@@ -213,22 +213,6 @@ function SellProductDetail() {
     }
   }, [product]);
 
-  if (!product) {
-    return (
-      <>
-        <header className="h-20">
-          <ProductHeader
-            showPageBackSpaceButton={true}
-            showProductCart={true}
-          />
-        </header>
-        <main>
-          <SellProductDetailSkeleton />;
-        </main>
-      </>
-    );
-  }
-
   return (
     <>
       <header className="h-20">
@@ -239,132 +223,138 @@ function SellProductDetail() {
         />
       </header>
 
-      <main style={{ minWidth: "1300px" }} className="center">
-        <div className="flex  w-full gap-12 pt-[70px] pb-[80px] justify-center">
-          <div className="w-[580px] h-[580px]">
-            <Carousel
-              opts={{
-                align: "start",
-              }}
-              className="w-full "
-            >
-              <CarouselContent>
-                {product.productImages && product.productImages.length > 0 ? (
-                  product.productImages.map((image, index) => (
-                    <CarouselItem key={index} className=" ">
-                      <div className="">
-                        <img
-                          src={image}
-                          alt={`Uploaded image ${index + 1}`}
-                          className="w-[580px] h-[580px]"
-                        />
-                      </div>
-                    </CarouselItem>
-                  ))
-                ) : (
-                  <p>No images available</p>
-                )}
-              </CarouselContent>
-
-              <CarouselPrevious />
-              <CarouselNext />
-            </Carousel>
-          </div>
-
-          <div className="flex flex-col gap-9 text-right w-[600px]">
-            <p className="font-bold text-4xl mt-8">{product.productName}</p>
-            <p className="text-3xl mt-3">{product.productPrice}원</p>
-            <p className="text-3xl mt-8">
-              남은 갯수 : {product.productQuantity}개
-            </p>
-            <div className="flex text-5xl justify-evenly">
-              <button
-                className=""
-                onClick={() => count > 0 && setCount(count - 1)}
+      {!product ? (
+        <main>
+          <SellProductDetailSkeleton />
+        </main>
+      ) : (
+        <main style={{ minWidth: "1300px" }} className="center">
+          <div className="flex  w-full gap-12 pt-[70px] pb-[80px] justify-center">
+            <div className="w-[580px] h-[580px]">
+              <Carousel
+                opts={{
+                  align: "start",
+                }}
+                className="w-full "
               >
-                -
-              </button>
-              <div className="  w-5">{count}</div>
-              <button
-                className=" "
-                onClick={() => count < 30 && setCount(count + 1)}
-              >
-                +
-              </button>
+                <CarouselContent>
+                  {product.productImages && product.productImages.length > 0 ? (
+                    product.productImages.map((image, index) => (
+                      <CarouselItem key={index} className=" ">
+                        <div className="">
+                          <img
+                            src={image}
+                            alt={`Uploaded image ${index + 1}`}
+                            className="w-[580px] h-[580px]"
+                          />
+                        </div>
+                      </CarouselItem>
+                    ))
+                  ) : (
+                    <p>No images available</p>
+                  )}
+                </CarouselContent>
+
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
             </div>
-            <div className="border-b-2"></div>
-            <div className="flex items-end justify-between mx-2 text-2xl ">
-              <div>총 상품 구매</div>
-              <div className="flex items-end ">
-                구매 수량{" "}
-                <span className="mx-1 text-LightBlue-500">{count}</span> |
-                <span className="ml-1 text-LightBlue-500 text-4xl">
-                  {product && product.productPrice
-                    ? product.productPrice * count
-                    : null}
-                </span>
-                원
+
+            <div className="flex flex-col gap-9 text-right w-[600px]">
+              <p className="font-bold text-4xl mt-8">{product.productName}</p>
+              <p className="text-3xl mt-3">{product.productPrice}원</p>
+              <p className="text-3xl mt-8">
+                남은 갯수 : {product.productQuantity}개
+              </p>
+              <div className="flex text-5xl justify-evenly">
+                <button
+                  className=""
+                  onClick={() => count > 0 && setCount(count - 1)}
+                >
+                  -
+                </button>
+                <div className="  w-5">{count}</div>
+                <button
+                  className=" "
+                  onClick={() => count < 30 && setCount(count + 1)}
+                >
+                  +
+                </button>
+              </div>
+              <div className="border-b-2"></div>
+              <div className="flex items-end justify-between mx-2 text-2xl ">
+                <div>총 상품 구매</div>
+                <div className="flex items-end ">
+                  구매 수량{" "}
+                  <span className="mx-1 text-LightBlue-500">{count}</span> |
+                  <span className="ml-1 text-LightBlue-500 text-4xl">
+                    {product && product.productPrice
+                      ? product.productPrice * count
+                      : null}
+                  </span>
+                  원
+                </div>
+              </div>
+
+              <div className="flex flex-col">
+                <button className="text-2xl text-gray-500 flex justify-end mr-2">
+                  <Link
+                    to={`/category/${categoryMapping[product.productCategory]}`}
+                  >
+                    #{categoryMapping[product.productCategory]}
+                  </Link>
+                </button>
+
+                <div className="flex justify-around ml-4 mt-1">
+                  <Button
+                    onClick={addToCart}
+                    size={"customsize"}
+                    className={`w-[250px] hover:bg-LightBlue-500 text-white ${
+                      user.userRole === "SELLER"
+                        ? "bg-gray-400"
+                        : "bg-LightBlue-200"
+                    } text-2xl`}
+                    disabled={user.userRole === "SELLER"}
+                  >
+                    장바구니 추가
+                  </Button>
+                  <Button
+                    size={"customsize"}
+                    className={`w-[250px] hover:bg-LightBlue-500 text-white ${
+                      user.userRole === "SELLER"
+                        ? "bg-gray-400"
+                        : "bg-LightBlue-200"
+                    } text-2xl`}
+                    disabled={user.userRole === "SELLER"}
+                  >
+                    구매하기
+                  </Button>
+                </div>
               </div>
             </div>
-
-            <div className="flex flex-col">
-              <button className="text-2xl text-gray-500 flex justify-end mr-2">
-                <Link
-                  to={`/category/${categoryMapping[product.productCategory]}`}
-                >
-                  #{categoryMapping[product.productCategory]}
-                </Link>
-              </button>
-
-              <div className="flex justify-around ml-4 mt-1">
-                <Button
-                  onClick={addToCart}
-                  size={"customsize"}
-                  className={`w-[250px] hover:bg-LightBlue-500 text-white ${
-                    user.userRole === "SELLER"
-                      ? "bg-gray-400"
-                      : "bg-LightBlue-200"
-                  } text-2xl`}
-                  disabled={user.userRole === "SELLER"}
-                >
-                  장바구니 추가
-                </Button>
-                <Button
-                  size={"customsize"}
-                  className={`w-[250px] hover:bg-LightBlue-500 text-white ${
-                    user.userRole === "SELLER"
-                      ? "bg-gray-400"
-                      : "bg-LightBlue-200"
-                  } text-2xl`}
-                  disabled={user.userRole === "SELLER"}
-                >
-                  구매하기
-                </Button>
-              </div>
-            </div>
           </div>
-        </div>
-        <div>
-          <div className="mx-12 text-4xl ">상품 설명</div>
-          <p
-            className="mx-10 mt-3 border-4 border-LightBlue-500 rounded  overflow-y-auto overflow-x-hidden word-wrap: break-word"
-            style={{ height: "8em" }}
-          >
-            {product.productDescription}
-          </p>
-        </div>
-        {user.userRole === "BUYER" && (
           <div>
-            <Button
-              onClick={toggleModal}
-              className="fixed flex justify-center items-center bottom-8 left-8 z-50 rounded-full bg-zinc-800"
+            <div className="mx-12 text-4xl ">상품 설명</div>
+            <p
+              className="mx-10 mt-3 border-4 border-LightBlue-500 rounded  overflow-y-auto overflow-x-hidden word-wrap: break-word"
+              style={{ height: "8em" }}
             >
-              장바구니 보기
-            </Button>
-            <CartModal isOpen={isModalOpen} toggleModal={toggleModal} />
+              {product.productDescription}
+            </p>
           </div>
-        )}
-      </main>
+          {user.userRole === "BUYER" && (
+            <div>
+              <Button
+                onClick={toggleModal}
+                className="fixed flex justify-center items-center bottom-8 left-8 z-50 rounded-full bg-zinc-800"
+              >
+                장바구니 보기
+              </Button>
+              <CartModal isOpen={isModalOpen} toggleModal={toggleModal} />
+            </div>
+          )}
+        </main>
+      )}
 
       <footer className="pt-[100px]">
         <div className="">

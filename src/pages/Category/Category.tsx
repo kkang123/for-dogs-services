@@ -134,25 +134,6 @@ function Category() {
     window.scrollTo(0, 0);
   }, []);
 
-  if (isLoading) {
-    return (
-      <>
-        <header className="h-20">
-          <ProductHeader showHomeButton={true} showProductCart={true} />
-        </header>
-        <main className="mt-16">
-          <SkeletonHeader />
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 auto-rows-max gap-4 ">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <ProductSkeleton key={index} />
-            ))}
-          </div>
-        </main>
-        <footer></footer>
-      </>
-    );
-  }
-
   if (isError) {
     return <div>Error occurred.</div>;
   }
@@ -166,111 +147,125 @@ function Category() {
           description="카테고리 페이지입니다."
         />
       </header>
+
       <main className="mt-16">
-        <div>
-          <h1 className="text-4xl px-4">{productCategory}</h1>
-
-          <div className="flex justify-between mt-4">
-            <div className="flex justify-end gap-2 pr-7 ml-7 mb-4">
-              <Button
-                variant={sortType.includes("updatedAt") ? "default" : "ghost"}
-                size={"sm"}
-                onClick={() =>
-                  setSortType(
-                    sortType === "updatedAtDesc"
-                      ? "updatedAtAsc"
-                      : "updatedAtDesc"
-                  )
-                }
-              >
-                날짜순 {sortType === "updatedAtDesc" ? "▼" : "▲"}
-              </Button>
-              <Button
-                variant={sortType.includes("price") ? "default" : "ghost"}
-                size={"sm"}
-                onClick={() =>
-                  setSortType(
-                    sortType === "priceAsc" ? "priceDesc" : "priceAsc"
-                  )
-                }
-              >
-                가격순 {sortType === "priceAsc" ? "▲" : "▼"}
-              </Button>
+        {isLoading ? (
+          <>
+            <SkeletonHeader />
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 auto-rows-max gap-4 ">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <ProductSkeleton key={index} />
+              ))}
             </div>
+          </>
+        ) : isError ? (
+          <div>시스템 오류 입니다. 잠시만 기다려주세요.</div>
+        ) : (
+          <div>
+            <h1 className="text-4xl px-4">{productCategory}</h1>
 
-            <div className="flex justify-end mr-7 mb-2">
-              <select
-                value={searchType}
-                onChange={(e) =>
-                  setSearchType(e.target.value as "seller" | "product")
-                }
-                className="border p-1 mr-2 rounded"
-              >
-                <option value="seller">판매자 이름</option>
-                <option value="product">상품 이름</option>
-              </select>
-              <input
-                type="text"
-                placeholder="검색어를 입력해주세요."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="border p-1 mr-2 rounded"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleSearch();
+            <div className="flex justify-between mt-4">
+              <div className="flex justify-end gap-2 pr-7 ml-7 mb-4">
+                <Button
+                  variant={sortType.includes("updatedAt") ? "default" : "ghost"}
+                  size={"sm"}
+                  onClick={() =>
+                    setSortType(
+                      sortType === "updatedAtDesc"
+                        ? "updatedAtAsc"
+                        : "updatedAtDesc"
+                    )
                   }
-                }}
-              />
-              <Button onClick={handleSearch} size="sm">
-                확인
-              </Button>
-            </div>
-          </div>
+                >
+                  날짜순 {sortType === "updatedAtDesc" ? "▼" : "▲"}
+                </Button>
+                <Button
+                  variant={sortType.includes("price") ? "default" : "ghost"}
+                  size={"sm"}
+                  onClick={() =>
+                    setSortType(
+                      sortType === "priceAsc" ? "priceDesc" : "priceAsc"
+                    )
+                  }
+                >
+                  가격순 {sortType === "priceAsc" ? "▲" : "▼"}
+                </Button>
+              </div>
 
-          <div className="overflow-x-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 auto-rows-max gap-4">
-              {uniqueProducts.length > 0 ? (
-                uniqueProducts.map((product: Product) => (
-                  <Link
-                    key={product.productId}
-                    to={`/sellproduct/${product.productId}`}
-                    className="flex justify-center items-center"
-                  >
-                    <div className="shadow border-2 rounded w-[380px] h-[380px] flex-shrink-0">
-                      {product.productImages[currentImageIndex] ? (
-                        <img
-                          className="w-full h-[300px] rounded"
-                          src={product.productImages[currentImageIndex]}
-                          alt={`Uploaded image ${currentImageIndex + 1}`}
-                        />
-                      ) : null}
-                      <div className="m-1">
-                        <div className="overflow-hidden text-overflow ellipsis whitespace-nowrap">
-                          {product.productName}
-                        </div>
-                        <div className="overflow-hidden text-overflow ellipsis whitespace-nowrap">
-                          {product.productPrice}원
-                        </div>
-                        <div className="overflow-hidden text-overflow ellipsis whitespace-nowrap font-bold">
-                          남은 수량: {product.productQuantity}
+              <div className="flex justify-end mr-7 mb-2">
+                <select
+                  value={searchType}
+                  onChange={(e) =>
+                    setSearchType(e.target.value as "seller" | "product")
+                  }
+                  className="border p-1 mr-2 rounded"
+                >
+                  <option value="seller">판매자 이름</option>
+                  <option value="product">상품 이름</option>
+                </select>
+                <input
+                  type="text"
+                  placeholder="검색어를 입력해주세요."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="border p-1 mr-2 rounded"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleSearch();
+                    }
+                  }}
+                />
+                <Button onClick={handleSearch} size="sm">
+                  확인
+                </Button>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 auto-rows-max gap-4">
+                {uniqueProducts.length > 0 ? (
+                  uniqueProducts.map((product: Product) => (
+                    <Link
+                      key={product.productId}
+                      to={`/sellproduct/${product.productId}`}
+                      className="flex justify-center items-center"
+                    >
+                      <div className="shadow border-2 rounded w-[380px] h-[380px] flex-shrink-0">
+                        {product.productImages[currentImageIndex] ? (
+                          <img
+                            className="w-full h-[300px] rounded"
+                            src={product.productImages[currentImageIndex]}
+                            alt={`Uploaded image ${currentImageIndex + 1}`}
+                          />
+                        ) : null}
+                        <div className="m-1">
+                          <div className="overflow-hidden text-overflow ellipsis whitespace-nowrap">
+                            {product.productName}
+                          </div>
+                          <div className="overflow-hidden text-overflow ellipsis whitespace-nowrap">
+                            {product.productPrice}원
+                          </div>
+                          <div className="overflow-hidden text-overflow ellipsis whitespace-nowrap font-bold">
+                            남은 수량: {product.productQuantity}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </Link>
-                ))
-              ) : (
-                <div className="text-center">상품이 없습니다.</div>
-              )}
-              <div ref={ref}></div>
+                    </Link>
+                  ))
+                ) : (
+                  <div className="text-center">상품이 없습니다.</div>
+                )}
+                <div ref={ref}></div>
+              </div>
             </div>
-          </div>
 
-          {isFetchingNextPage && (
-            <div className="text-center">
-              상품을 불러오는 중입니다. 잠시만 기다려주세요!
-            </div>
-          )}
-        </div>
+            {isFetchingNextPage && (
+              <div className="text-center">
+                상품을 불러오는 중입니다. 잠시만 기다려주세요!
+              </div>
+            )}
+          </div>
+        )}
 
         {user.userRole === "BUYER" && (
           <div>
