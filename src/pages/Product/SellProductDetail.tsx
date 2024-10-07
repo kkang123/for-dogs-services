@@ -42,9 +42,8 @@ function SellProductDetail() {
     CLOTHING: "의류",
     SNACK: "간식",
     TOY: "장난감",
-    ACCESSORY: "액세서리",
-    SUPPLEMENT: "보충제",
-    NONE: "기타",
+    ACCESSORY: "용품",
+    SUPPLEMENT: "영양제",
   };
 
   const toggleModal = () => {

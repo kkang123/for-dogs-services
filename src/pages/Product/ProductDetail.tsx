@@ -30,7 +30,7 @@ function ProductDetail() {
     if (user.userId) navigate(`/productlist/${user.userId}`);
   };
 
-  const categoryMap: { [key: string]: string } = {
+  const categoryMapping: { [key: string]: string } = {
     FOOD: "사료",
     CLOTHING: "의류",
     SNACK: "간식",
@@ -131,19 +131,6 @@ function ProductDetail() {
     }
   }, [product]);
 
-  if (!product) {
-    return (
-      <>
-        <main>
-          <ProductDetailSkeleton />
-        </main>
-      </>
-    );
-  }
-
-  const Category =
-    categoryMap[product.productCategory] || product.productCategory;
-
   return (
     <>
       <header className="h-20">
@@ -161,10 +148,7 @@ function ProductDetail() {
       </header>
 
       {!product ? (
-        <main>
-          {" "}
-          <ProductDetailSkeleton />
-        </main>
+        <ProductDetailSkeleton />
       ) : (
         <main style={{ minWidth: "1300px" }}>
           <div className="flex w-full gap-12 pt-[70px] pb-[80px] justify-center">
@@ -197,7 +181,11 @@ function ProductDetail() {
               <div className="border-b-2"></div>
 
               <button className="text-2xl text-gray-500 flex justify-end mr-2">
-                <Link to={`/category/${Category}`}>#{Category}</Link>
+                <Link
+                  to={`/category/${categoryMapping[product.productCategory]}`}
+                >
+                  #{categoryMapping[product.productCategory]}
+                </Link>
               </button>
             </div>
           </div>
