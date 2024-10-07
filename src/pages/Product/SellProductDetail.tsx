@@ -224,9 +224,7 @@ function SellProductDetail() {
       </header>
 
       {!product ? (
-        <main>
-          <SellProductDetailSkeleton />
-        </main>
+        <SellProductDetailSkeleton />
       ) : (
         <main style={{ minWidth: "1300px" }} className="center">
           <div className="flex  w-full gap-12 pt-[70px] pb-[80px] justify-center">
