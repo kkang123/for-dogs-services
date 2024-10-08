@@ -11,25 +11,7 @@ import SEOMetaTag from "@/components/SEOMetaTag";
 import { Button } from "@/components/ui/button";
 import { CartItem } from "@/interface/cart";
 
-interface PaymentData {
-  pg: string;
-  pay_method: string;
-  merchant_uid: string;
-  amount: number;
-  name: string;
-  buyer_name: string;
-  buyer_tel: string;
-  buyer_email: string;
-  buyer_addr: string;
-  buyer_postcode: string;
-}
-
-interface PaymentResponse {
-  success: boolean;
-  imp_uid?: string;
-  merchant_uid?: string;
-  error_msg?: string;
-}
+import { PaymentData, PaymentResponse } from "@/interface/payment";
 
 interface DaumPostcodeData {
   address: string;
