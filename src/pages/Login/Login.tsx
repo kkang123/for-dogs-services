@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 import SEOMetaTag from "@/components/SEOMetaTag";
@@ -85,6 +85,10 @@ export default function SignIn() {
     }
   }, [location]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <>
       <header>
@@ -92,10 +96,15 @@ export default function SignIn() {
           title="For Dogs - Login"
           description="로그인 페이지입니다."
         />
+        <Link to={`/`}>
+          <h1 className="mt-12 text-5xl bold flex justify-center items-center font-bold">
+            For Dogs
+          </h1>
+        </Link>
       </header>
 
       <main className="flex flex-col items-center justify-center h-screen some-element">
-        <h2 className="mt-56 mb-0 text-3xl font-bold text-gray-700">Login</h2>
+        <h2 className="mt-24 text-3xl font-bold text-gray-700">Login</h2>
 
         <div className="m-auto mt-10">
           <div
