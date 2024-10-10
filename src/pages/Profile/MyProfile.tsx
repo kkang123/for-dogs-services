@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { AxiosError } from "axios";
 import Swal from "sweetalert2";
 
 import { basicAxios } from "@/api/axios";
@@ -14,6 +15,12 @@ import useDeleteUser from "@/hooks/useDeleteUser";
 import usePaymentDetails from "@/hooks/usePaymentDetails";
 
 import { Order } from "@/interface/order";
+
+interface ErrorResponse {
+  error: {
+    message: string;
+  };
+}
 
 function MyProfile() {
   const [selectedMenu, setSelectedMenu] = useState<string>("My Information");
@@ -117,12 +124,19 @@ function MyProfile() {
           });
         }
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Failed to cancel order:", error);
+
+      const axiosError = error as AxiosError<ErrorResponse>;
+
+      const errorMessage =
+        axiosError.response?.data?.error?.message ||
+        "주문을 취소할 수 없습니다.";
+
       Swal.fire({
         icon: "error",
         title: "취소 실패",
-        text: "주문을 취소할 수 없습니다.",
+        text: errorMessage,
         confirmButtonColor: "#3085d6",
         confirmButtonText: "확인",
       });
