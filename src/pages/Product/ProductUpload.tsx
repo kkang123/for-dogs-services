@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
+import { AxiosError } from "axios";
 import Swal from "sweetalert2";
 
 import { basicAxios } from "@/api/axios";
@@ -98,15 +99,29 @@ function ProductUpload() {
         console.error("응답 상태 코드:", response.status);
         throw new Error("제품 업로드 중 문제가 발생했습니다.");
       }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "제품 업로드 실패",
-        text: "제품 업로드 중 문제가 발생했습니다. 다시 시도해주세요.",
-        confirmButtonColor: "#3085d6",
-        confirmButtonText: "확인",
-      });
-      console.error("제품 추가 중 에러: ", error);
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        Swal.fire({
+          icon: "error",
+          title: "제품 업로드 실패",
+          text: `${
+            error.response?.data?.error?.message ||
+            "알 수 없는 에러가 발생했습니다."
+          }`,
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "확인",
+        });
+        console.error("제품 추가 중 에러: ", error);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "제품 업로드 실패",
+          text: "알 수 없는 에러가 발생했습니다.",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "확인",
+        });
+        console.error("알 수 없는 에러: ", error);
+      }
     }
   };
 
