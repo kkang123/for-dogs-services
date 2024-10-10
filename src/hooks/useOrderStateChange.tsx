@@ -23,6 +23,7 @@ const useChangeOrderStatus = () => {
         icon: "success",
         title: "변경 완료",
         text: "주문 상태가 성공적으로 변경되었습니다.",
+        confirmButtonColor: "#3085d6",
         confirmButtonText: "확인",
       });
     } catch (error) {
@@ -34,6 +35,7 @@ const useChangeOrderStatus = () => {
           axiosError.response?.data?.message ||
           "알 수 없는 오류가 발생했습니다.",
         confirmButtonText: "확인",
+        confirmButtonColor: "#3085d6",
       });
     } finally {
       setIsLoading(false);
