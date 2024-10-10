@@ -83,7 +83,9 @@ function MyProfile() {
         },
         showCancelButton: true,
         confirmButtonText: "주문 취소",
+        confirmButtonColor: "#3085d6",
         cancelButtonText: "취소",
+        cancelButtonColor: "#5b656e",
       });
 
       if (selectedReason !== undefined) {
