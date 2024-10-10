@@ -73,6 +73,8 @@ const usePaymentDetails = () => {
         customClass: {
           popup: "rounded-lg shadow-lg border border-gray-300",
         },
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "확인",
       });
     } catch (error) {
       console.error("Failed to fetch payment details:", error);
@@ -80,6 +82,8 @@ const usePaymentDetails = () => {
         icon: "error",
         title: "에러",
         text: "결제 상세 내역을 불러오는데 실패했습니다.",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "확인",
       });
     }
   };
