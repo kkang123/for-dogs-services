@@ -190,12 +190,12 @@ function ProductDetail() {
             </div>
           </div>
 
-          <div>
-            <div className="mx-12 text-4xl">상품 설명</div>
-            <p
-              className="mx-10 mt-3 border-4 border-LightBlue-500 rounded overflow-y-auto overflow-x-hidden word-wrap: break-word"
-              style={{ height: "8em" }}
-            >
+          <div className="mx-12 text-4xl mb-4">상품 설명</div>
+          <div
+            className="mx-10 mt-3 p-6 border border-gray-300 rounded-lg bg-white shadow-sm overflow-hidden"
+            style={{ maxHeight: "250px", lineHeight: "1.6em" }}
+          >
+            <p className="text-lg leading-relaxed text-gray-700 break-words">
               {product.productDescription}
             </p>
           </div>

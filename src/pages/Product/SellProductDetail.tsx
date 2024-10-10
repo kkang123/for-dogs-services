@@ -330,15 +330,17 @@ function SellProductDetail() {
               </div>
             </div>
           </div>
-          <div>
-            <div className="mx-12 text-4xl ">상품 설명</div>
-            <p
-              className="mx-10 mt-3 border-4 border-LightBlue-500 rounded  overflow-y-auto overflow-x-hidden word-wrap: break-word"
-              style={{ height: "8em" }}
-            >
+
+          <div className="mx-12 text-4xl mb-4">상품 설명</div>
+          <div
+            className="mx-10 mt-3 p-6 border border-gray-300 rounded-lg bg-white shadow-sm overflow-hidden"
+            style={{ maxHeight: "250px", lineHeight: "1.6em" }}
+          >
+            <p className="text-lg leading-relaxed text-gray-700 break-words">
               {product.productDescription}
             </p>
           </div>
+
           {user.userRole === "BUYER" && (
             <div>
               <Button
@@ -354,7 +356,7 @@ function SellProductDetail() {
       )}
 
       <footer className="pt-[100px]">
-        <div className="">
+        <div className="p-4">
           <h2 className="text-2xl font-bold mb-4">이 카테고리의 다른 상품들</h2>
           {relatedProducts.map((relatedProduct: Product) => (
             <div key={relatedProduct.productId} className="mb-4">
