@@ -122,6 +122,7 @@ export default function SignIn() {
               }`}
               aria-selected={tab === "BUYER"}
               onClick={() => setTab("BUYER")}
+              aria-label="구매자 탭"
             >
               구매자
             </button>
@@ -135,6 +136,7 @@ export default function SignIn() {
               }`}
               aria-selected={tab === "SELLER"}
               onClick={() => setTab("SELLER")}
+              aria-label="판매자 탭"
             >
               판매자
             </button>
@@ -184,6 +186,7 @@ export default function SignIn() {
                     type="button"
                     className="absolute inset-y-0 right-0 px-4 py-2 text-xs leading-tight text-gray-700 bg-transparent border-none cursor-pointer focus:outline-none"
                     onClick={togglePasswordVisibility}
+                    aria-label="비밀번호 표시 여부 버튼"
                   >
                     {passwordShown ? "비밀번호 숨기기" : "비밀번호 표시하기"}
                   </button>
@@ -194,6 +197,7 @@ export default function SignIn() {
                 <button
                   className="w-[100px] px-4 py-2 mt-5 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline"
                   type="submit"
+                  aria-label="로그인"
                 >
                   로그인
                 </button>
@@ -201,6 +205,7 @@ export default function SignIn() {
                   className=" w-[100px] px-4 py-2 mt-5 font-bold text-gray-700 bg-gray-300 rounded hover:bg-gray-500 focus:outline-none focus:shadow-outline"
                   onClick={buyersignUp}
                   type="button"
+                  aria-label="회원가입"
                 >
                   회원가입
                 </button>
@@ -267,6 +272,7 @@ export default function SignIn() {
                   className=" w-[100px] px-4 py-2 mt-5 font-bold text-gray-700 bg-gray-300 rounded hover:bg-gray-500 focus:outline-none focus:shadow-outline"
                   onClick={sellersignUp}
                   type="button"
+                  aria-label="회원가입"
                 >
                   회원가입
                 </button>
@@ -281,7 +287,7 @@ export default function SignIn() {
                 <button
                   onClick={startGoogleLogin}
                   className="mt-6 p-2 w-full flex justify-center border-2 border-blue-300 rounded-lg hover:bg-blue-300"
-                  aria-label="Google로 로그인"
+                  aria-label="Google 로그인"
                   disabled={googleLoading}
                 >
                   {googleLoading
@@ -296,7 +302,7 @@ export default function SignIn() {
                 <button
                   onClick={startKakaoLogin}
                   className="mt-2 p-2 w-full flex justify-center border-2 border-yellow-300 rounded-lg hover:bg-yellow-300"
-                  aria-label="Kakao로 로그인"
+                  aria-label="Kakao 로그인"
                   disabled={kakaoLoading}
                 >
                   {kakaoLoading
