@@ -11,7 +11,7 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["jest", "node"],
+    "types": ["vitest/globals", "@testing-library/jest-dom", "node"],
 
     /* Bundler mode */
     "allowImportingTsExtensions": true,
@@ -26,6 +26,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "test"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

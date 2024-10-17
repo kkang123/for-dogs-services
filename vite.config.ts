@@ -1,30 +1,5 @@
-//vite.config.ts
-// import { defineConfig } from "vite";
-// import react from "@vitejs/plugin-react";
-// import path from "path";
-// import { fileURLToPath } from "url";
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
-// import { visualizer } from "rollup-plugin-visualizer";
-
-// export default defineConfig({
-//   plugins: [react()],
-//   resolve: {
-//     alias: {
-//       "@": path.resolve(__dirname, "src/"),
-//     },
-//   },
-//   build: {
-//     rollupOptions: {
-//       plugins: [visualizer()],
-//     },
-//   },
-//   server: {
-//     host: "127.0.0.1",
-//   },
-// });
-
-import { defineConfig, loadEnv } from "vite";
+import { loadEnv } from "vite";
+import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -37,8 +12,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default ({ mode }: { mode: string }) => {
-  // 환경 변수 로드
-  process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
+  const env = loadEnv(mode, process.cwd());
+  process.env = { ...process.env, ...env };
 
   const isDevelop = process.env.VITE_DEVELOP === "true";
 
@@ -73,23 +48,13 @@ export default ({ mode }: { mode: string }) => {
       chunkSizeWarningLimit: 1000,
     },
     server: serverConfig,
+    define: {
+      "import.meta.env": env,
+    },
+    test: {
+      globals: true,
+      environment: "jsdom",
+      setupFiles: "./src/tests/setupTests.ts",
+    },
   });
 };
-
-// https://vitejs.dev/config/
-// export default defineConfig({
-//   plugins: [react()],
-//   resolve: {
-//     alias: {
-//       "@": path.resolve(__dirname, "src/"),
-//     },
-//   },
-// });
-
-// import { defineConfig } from 'vite'
-// import react from '@vitejs/plugin-react'
-
-// // https://vitejs.dev/config/
-// export default defineConfig({
-//   plugins: [react()],
-// })
