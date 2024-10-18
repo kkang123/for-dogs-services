@@ -1,32 +1,68 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { BrowserRouter, MemoryRouter, Route, Routes } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
+import { RecoilRoot } from "recoil";
+
 import SignIn from "@/pages/Login/Login";
+import Home from "@/pages/home/home";
 import { useLogin } from "@/hooks/useLogin";
 import useOAuth2 from "@/hooks/useOAuth2";
 
 // Mock hooks
-jest.mock("@/hooks/useLogin");
-jest.mock("@/hooks/useOAuth2");
+vi.mock("@/hooks/useLogin");
+vi.mock("@/hooks/useOAuth2");
 
-const mockedUseNavigate = jest.fn();
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useNavigate: () => mockedUseNavigate,
-}));
+// 스파이 함수 생성
+const mockGoogleLogin = vi.fn();
+const mockKakaoLogin = vi.fn();
+
+const mockedUseNavigate = vi.fn();
+vi.mock("react-router-dom", async (importOriginal) => {
+  const actual: typeof import("react-router-dom") = await importOriginal();
+  return {
+    ...actual,
+    useNavigate: () => mockedUseNavigate,
+    MemoryRouter: actual.MemoryRouter,
+  };
+});
 
 describe("SignIn Component", () => {
-  const mockLogin = jest.fn();
-  const mockGoogleLogin = jest.fn();
-  const mockKakaoLogin = jest.fn();
+  const mockLogin = vi.fn();
 
   beforeEach(() => {
-    (useLogin as jest.Mock).mockReturnValue({ login: mockLogin });
-    (useOAuth2 as jest.Mock).mockImplementation((provider) => ({
-      startOAuth2Flow: provider === "google" ? mockGoogleLogin : mockKakaoLogin,
-      loading: false,
-      error: null,
-    }));
+    // useLogin Mock
+    vi.mocked(useLogin).mockReturnValue({
+      login: mockLogin,
+    });
+
+    // useOAuth2 모의 함수 설정
+    (useOAuth2 as jest.Mock).mockImplementation((provider: string) => {
+      return {
+        startOAuth2Flow:
+          provider === "kakao" ? mockKakaoLogin : mockGoogleLogin,
+        loading: false,
+        error: null,
+      };
+    });
+  });
+
+  it("비로그인 시 Link가 올바르게 렌더링되고 클릭 시 '/'로 이동해야 한다", () => {
+    render(
+      <HelmetProvider>
+        <RecoilRoot>
+          <MemoryRouter initialEntries={["/signin"]}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/signin" element={<SignIn />} />
+            </Routes>
+          </MemoryRouter>
+        </RecoilRoot>
+      </HelmetProvider>
+    );
+
+    fireEvent.click(screen.getByLabelText("메인페이지 이동"));
+    expect(screen.getByText("For Dogs")).toBeInTheDocument();
   });
 
   it("세션 만료 시 경고창을 표시해야 합니다.", () => {
@@ -82,16 +118,17 @@ describe("SignIn Component", () => {
 
     const toggleButton = screen.getByLabelText("비밀번호 표시 여부 버튼");
     fireEvent.click(toggleButton);
-
     expect(toggleButton.textContent).toBe("비밀번호 숨기기");
   });
 
   it("로그인 버튼 클릭 시 login 함수가 호출되어야 합니다.", async () => {
     render(
       <HelmetProvider>
-        <BrowserRouter>
-          <SignIn />
-        </BrowserRouter>
+        <RecoilRoot>
+          <BrowserRouter>
+            <SignIn />
+          </BrowserRouter>
+        </RecoilRoot>
       </HelmetProvider>
     );
 
@@ -99,14 +136,17 @@ describe("SignIn Component", () => {
       target: { value: "testUser" },
     });
     fireEvent.change(screen.getByPlaceholderText("비밀번호를 입력해주세요."), {
-      target: { value: "password123" },
+      target: { value: "test001!!@@" },
     });
 
     fireEvent.click(screen.getByLabelText("로그인"));
-    expect(mockLogin).toHaveBeenCalledWith({
-      userId: "testUser",
-      userPassword: "password123",
-      userRole: "BUYER",
+
+    await waitFor(() => {
+      expect(mockLogin).toHaveBeenCalledWith({
+        userId: "testUser",
+        userPassword: "test001!!@@",
+        userRole: "BUYER",
+      });
     });
   });
 
@@ -132,7 +172,7 @@ describe("SignIn Component", () => {
       </HelmetProvider>
     );
 
-    fireEvent.click(screen.getByLabelText("Google 로그인")); // 구글 로그인 버튼을 찾아내줌
+    fireEvent.click(screen.getByLabelText("Google 로그인"));
     expect(mockGoogleLogin).toHaveBeenCalled();
   });
 
@@ -145,7 +185,6 @@ describe("SignIn Component", () => {
       </HelmetProvider>
     );
 
-    // fireEvent.click(screen.getByRole("button", { name: "Kakao 로그인" }));
     fireEvent.click(screen.getByLabelText("Kakao 로그인"));
     expect(mockKakaoLogin).toHaveBeenCalled();
   });

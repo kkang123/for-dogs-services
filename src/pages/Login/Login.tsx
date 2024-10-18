@@ -96,7 +96,7 @@ export default function SignIn() {
           title="For Dogs - Login"
           description="로그인 페이지입니다."
         />
-        <Link to={`/`}>
+        <Link to={`/`} aria-label="메인페이지 이동">
           <h1 className="mt-12 text-5xl bold flex justify-center items-center font-bold">
             For Dogs
           </h1>
@@ -265,6 +265,7 @@ export default function SignIn() {
                 <button
                   className="w-[100px] px-4 py-2 mt-5 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline"
                   type="submit"
+                  aria-label="로그인"
                 >
                   로그인
                 </button>
