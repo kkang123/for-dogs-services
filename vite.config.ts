@@ -55,6 +55,13 @@ export default ({ mode }: { mode: string }) => {
       globals: true,
       environment: "jsdom",
       setupFiles: "./src/tests/setupTests.ts",
+      coverage: {
+        provider: "v8",
+        reporter: ["text", "json", "html"],
+        // include: ["src/**/*.ts", "src/**/*.tsx"],
+        include: ["src/pages/Login/Login.tsx"],
+        exclude: ["node_modules/", "dist/"],
+      },
     },
   });
 };
