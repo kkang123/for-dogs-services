@@ -1,0 +1,38 @@
+@media (orientation: landscape) {
+  header {
+    margin-bottom: 50px; /* 가로 모드일 때 margin-bottom 추가 */
+  }
+}
+
+@media (max-width: 400px) {
+  #root {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .mini-element {
+    min-width: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  #root {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .some-element {
+    min-width: 768px;
+  }
+}
+
+@media (max-width: 1040px) {
+  #root {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .more-element {
+    min-width: 1040px;
+  }
+}

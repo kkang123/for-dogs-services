@@ -42,9 +42,9 @@ export default function FindID() {
 
   return (
     <>
-      <header></header>
+      <header className="mb-5"></header>
 
-      <main className="flex flex-col items-center justify-center h-screen some-element">
+      <main className="flex flex-col items-center justify-center h-screen mini-element border-red-500 border-2">
         <div>
           <h1 className="flex justify-center mb-10 text-3xl font-bold text-gray-700">
             아이디 찾기

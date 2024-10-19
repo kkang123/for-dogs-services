@@ -15,28 +15,6 @@
   font-family: GmarketSansMedium;
 }
 
-@media (max-width: 768px) {
-  #root {
-    max-width: 100%;
-    overflow-x: auto;
-  }
-
-  .some-element {
-    min-width: 768px;
-  }
-}
-
-@media (max-width: 1040px) {
-  #root {
-    max-width: 100%;
-    overflow-x: auto;
-  }
-
-  .more-element {
-    min-width: 1040px;
-  }
-}
-
 ::-webkit-scrollbar {
   display: none;
 }

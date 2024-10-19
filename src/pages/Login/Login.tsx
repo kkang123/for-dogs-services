@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import SEOMetaTag from "@/components/SEOMetaTag";
 import { useLogin } from "@/hooks/useLogin";
 import useOAuth2 from "@/hooks/useOAuth2";
+import "@/style.css";
 
 export default function SignIn() {
   const [userId, setUserId] = useState<string>("");
@@ -91,7 +92,7 @@ export default function SignIn() {
 
   return (
     <>
-      <header>
+      <header className="mini-element">
         <SEOMetaTag
           title="For Dogs - Login"
           description="로그인 페이지입니다."
@@ -103,8 +104,8 @@ export default function SignIn() {
         </Link>
       </header>
 
-      <main className="flex flex-col items-center justify-center h-screen some-element">
-        <h2 className="mt-24 text-3xl font-bold text-gray-700">Login</h2>
+      <main className="flex flex-col items-center justify-center h-screen mini-element">
+        <h2 className="mt-20 text-3xl font-bold text-gray-700">Login</h2>
 
         <div className="m-auto mt-10">
           <div
@@ -338,6 +339,7 @@ export default function SignIn() {
           </p>
         </div>
       </main>
+      <footer className="mt-5"></footer>
     </>
   );
 }

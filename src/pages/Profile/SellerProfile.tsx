@@ -306,9 +306,9 @@ function SellerProfile() {
         />
       </header>
 
-      <main className="flex mt-10 more-element">
-        <nav className="fixed top-56 left-6 w-64 h-[calc(100vh-14rem)] p-4 z-10">
-          <ul className="space-y-4">
+      <main className="flex mt-10">
+        <nav className="fixed top-44 left-2 w-64 h-[calc(100vh-14rem)] p-1 z-10">
+          <ul className="space-y-3">
             <li>
               <Button
                 size={"lg"}
