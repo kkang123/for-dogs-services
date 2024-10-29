@@ -18,6 +18,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import ChatModal from "@/components/modals/chatModal";
+import FloatingButton from "@/components/modals/FloatingButton";
 
 import { Product } from "@/interface/product";
 
@@ -677,6 +679,10 @@ export default function Home() {
               <CartModal isOpen={isModalOpen} toggleModal={toggleModal} />
             </div>
           )}
+          <div>
+            <FloatingButton />
+            <ChatModal />
+          </div>
         </main>
 
         <footer className="mt-5 text-center p-4 bg-gray-100">
@@ -686,6 +692,7 @@ export default function Home() {
           <p className="text-sm text-gray-600">
             프론트 개발자: 김지헌 | 백엔드 개발자: 유경우
           </p>
+
           <p className="text-sm text-gray-400 mt-4">
             본 페이지는 현재 운영 중이지 않습니다. For Dogs는
             통신판매중개자로서, 판매자가 등록한 상품 정보와 관련된 거래의 책임을
