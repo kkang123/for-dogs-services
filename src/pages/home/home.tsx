@@ -679,10 +679,12 @@ export default function Home() {
               <CartModal isOpen={isModalOpen} toggleModal={toggleModal} />
             </div>
           )}
-          <div>
-            <FloatingButton />
-            <ChatModal />
-          </div>
+          {user.isLoggedIn === true && (
+            <div>
+              <FloatingButton />
+              <ChatModal />
+            </div>
+          )}
         </main>
 
         <footer className="mt-5 text-center p-4 bg-gray-100">
