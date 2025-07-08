@@ -107,6 +107,7 @@ PW : test001!!@@
   <summary>다수의 불필요한 API 호출</summary>
   <ul>useRef를 활용하여 이미 데이터를 가져온 경우 API 요청을 방지하는 로직을 구현했습니다. 이로 인해, 사용자가 페이지를 새로 고치거나 다른 작업을 수행해도 동일한 사용자 프로필 정보를 중복 요청하지 않아 성능과 사용자 경험을 개선하였고 API 부하를 줄였습니다.</ul>
   </details>
+  
 <details>
   <summary>OAuth2 authCode - 공백 발생</summary>
   <ul>백엔드에서 authCode를 인코딩해서 전달해줘야했는데 이 부분이 생략되어서 OAuth2 인증 과정에서 authCode를 URL로 받을 때, + 기호가 공백으로 변환되는 문제가 발생했습니다.   
@@ -119,6 +120,17 @@ PW : test001!!@@
 다음과 같이 해결했습니다. 쿼리 문자열을 가져와 사용할때 디코딩되어 공백으로 변한 값을 다시 공백에서 +로 바꾸어주어서 인코딩을 해준 것처럼 표현했습니다.
 
 </ul>
+  </details>
+
+  <details>
+  <summary>JWT 토큰 저장 과정에서 발생한 CORS 이슈</summary>
+  <ul>
+  서버에서 리프레시 토큰을 Set-Cookie로 전달했지만, SameSite 기본값이 Lax로 되어 있어 로컬 환경과 서버 간 쿠키 전달이 차단됐습니다.
+
+  이를 해결하기 위해 SameSite를 None으로 설정하고 Secure: true를 적용해야 했으며, 이를 위해 HTTPS 환경이 필요해 도메인을 구매하고 SSL 인증서를 발급받아 HTTPS 서버를 구성했습니다. 
+
+  이후 로컬에서 발생한 partitioned 쿠키 관련 에러도 대응한 후 배포 완료 후에는 samesite를 strict로 변경해주어 해결했습니다.
+  </ul>
   </details>
 
 ## 📦 폴더 구조
